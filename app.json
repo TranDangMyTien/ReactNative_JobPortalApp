@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "JobPortalApp",
+    "slug": "JobPortalApp",
+    "version": "1.0.0",
+    "plugins": [
+      "expo-font"
+    ]
+  },
+  "name": "JobPortalApp"
+}
