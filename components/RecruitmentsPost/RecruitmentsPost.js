@@ -4,7 +4,7 @@ import MyStyles from "../../styles/MyStyles";
 const RecruitmentsPost = () => {
 
     return(
-        <Text style={MyStyles.title}>XIN CHÀO CÁC BẠN!!</Text>
+        <Text style={MyStyles.subject}>XIN CHÀO CÁC BẠN!!</Text>
     );
 
 }

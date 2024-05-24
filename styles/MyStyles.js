@@ -7,7 +7,7 @@ export default StyleSheet.create(
             // justifyContent: "center",
             // alignItems: "center"
         },
-        title:{
+        subject:{
             fontSize: 25,
             fontWeight: "bold",
             color:"blue",
