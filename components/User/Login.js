@@ -35,13 +35,14 @@ const Login = () => {
         try {
             let res = await APIs.post(endpoints['login'], {
                 ...user, 
-                'client_id': 'kA0MxYf0QVmEnCybBJWywtpU5xAru3aiiR9QPUBO',
-                'client_secret': 'N9bDkAt4uXZuqOWSlRiOV7g8yRq9AGvP4Swg0oDCNe4H3XOyxa57IpzaMp2aeT7fzgsxDEQMGaXJfRc8Mr8Qovl82zsbFZLaeZSa1e90SbUDYuGE37phwugTeL2pgHfn',
+                'client_id': 'NeVC6qnpHJRgsBLyvgsRH9sxHyjMvp0PwvbsTzMD',
+                'client_secret': 'ivNEzYwTq6gGqjXBDw9bACnfWraPZGSyDm8y5Jr1opAt52JCvGuVoePOP3w3PRBDWZ1LnP9jYdIxWESY2nP05lmRApwmbT3pVq8UmK3CckRPzFU4SlNOLgcZg6foYGPw',
                 'grant_type': 'password'
             });
             await AsyncStorage.setItem("token", res.data.access_token);
 
-            setTimeout(async () => {
+            //Gọi giữa 2 trang cho độ trễ 
+            setTimeout(async () => { //khi đăng nhập phải cho độ trễ nếu không sẽ lỗi 
                 let user = await authApi(res.data.access_token).get(endpoints['current-user']);
                 console.info(user.data);
 

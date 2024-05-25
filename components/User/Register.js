@@ -12,7 +12,7 @@ LogBox.ignoreLogs([
     'Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.'
 ]);
 
-const Register = () => {
+const Register = () => { 
     const [user, setUser] = useState({});
     const [err, setErr] = useState(false);
     const fields = [{
@@ -44,7 +44,7 @@ const Register = () => {
     const picker = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') //Nếu không cho phép truy cập vào nguồn tài nguyên máy tính 
-            Alert.alert("iCourseApp", "Permissions Denied!");
+            Alert.alert("JobPortalApp", "Permissions Denied!");
         else { //Được truy cập vào nguồn tài nguyên 
             let res = await ImagePicker.launchImageLibraryAsync(); //Cho phép chọn ảnh 
             if (!res.canceled) {
@@ -91,8 +91,19 @@ const Register = () => {
                     }
                 });
     
-                if (res.status === 201) //Nếu dư liệu trả về 201 là tạo mới thành công 
-                    nav.navigate("Login"); //Tạo mới thàng công sẽ chuyển qua đăng nhập 
+                if (res.status === 201) {
+                    // Kiểm tra xem res có phải là một đối tượng Response hợp lệ hay không
+                    if (res.data) {
+                        let resData = res.data; // Lấy dữ liệu phản hồi từ res.data
+                        nav.navigate("RegisterRole", { userId: resData.id, is_employer: resData.is_employer });
+                    } else {
+                        Alert.alert("Error", "Invalid response data");
+                    }
+                } else {
+                    let errorData = res.data; // Lấy dữ liệu lỗi từ res.data
+                    Alert.alert("Error", errorData.message || "Something went wrong");
+                }
+                    
             } catch (ex) {
                 console.error(ex);
             } finally {
