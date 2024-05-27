@@ -1,4 +1,4 @@
-import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal,} from "react-native";
+import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal, StyleSheet,} from "react-native";
 import {Button,HelperText,TextInput,TouchableRipple,List,Card,} from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 import * as ImagePicker from "expo-image-picker";
@@ -16,6 +16,7 @@ import { LogBox } from "react-native";
     const [applicant, setApplicant] = useState({});
     const [err, setErr] = useState(false);
     const { userId } = route.params;
+    // const userId = 100;
     const fields = [
       {
         label: "Vị trí ứng tuyển",
@@ -203,14 +204,14 @@ import { LogBox } from "react-native";
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <ScrollView>
-            <Text style={MyStyles.subject}>ĐĂNG KÝ</Text>
+            <Text style={styles.subject}>ĐĂNG KÝ</Text>
             {fields.map((f) => (
               <TextInput
                 key={f.name}
                 label={f.label}
                 left={<TextInput.Icon name={f.icon} />}
                 onChangeText={(txt) => updateState(f.name, txt)}
-                style={MyStyles.margin}
+                style={styles.input}
                 multiline={f.multiline}
                 keyboardType={f.keyboardType}
               />
@@ -352,7 +353,7 @@ import { LogBox } from "react-native";
                 )}
               </ScrollView>
   
-              <Button onPress={() => setCareersModalVisible(false)}>Đóng</Button>
+              <Button  onPress={() => setCareersModalVisible(false)}>Đóng</Button>
             </Modal>
   
             <HelperText type="error" visible={err}>
@@ -360,14 +361,19 @@ import { LogBox } from "react-native";
             </HelperText>
   
             {/* Chọn CV */}
-            <TouchableRipple style={MyStyles.margin} onPress={picker}>
-              <Card>
-                <Card.Content>
+            <TouchableRipple style={styles.avatarPicker} onPress={picker}>
                   <Text>Tải lên CV...</Text>
-                </Card.Content>
-              </Card>
+               
             </TouchableRipple>
   
+            {applicant.cv && (
+                  <View style={styles.cancelCVContainer}>
+                    <Text style={styles.cancelCVText} onPress={() => updateState("cv", null)}>
+                        Hủy tải CV
+                    </Text>
+                </View>
+            )}
+
             {applicant.cv && (
               <Image source={{ uri: applicant.cv.uri }} style={MyStyles.avatar} />
             )}
@@ -377,6 +383,7 @@ import { LogBox } from "react-native";
               loading={loading}
               mode="contained"
               onPress={register}
+              style={styles.button}
             >
               ĐĂNG KÝ
             </Button>
@@ -386,5 +393,84 @@ import { LogBox } from "react-native";
     );
   };
   
+  const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    subject: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#333',
+    },
+    input: {
+        marginVertical: 10, // Slightly increased margin
+        backgroundColor: 'white',
+        borderRadius: 8,
+        paddingHorizontal: 15, // Slightly increased padding
+        height: 50, // Slightly increased height
+        fontSize: 16, // Slightly increased font size
+    },
+    avatarPicker: {
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: '#E0E0E0',
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    avatarPickerText: {
+        color: '#333',
+        fontSize: 16,
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginVertical: 10,
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+    },
+    linkText: {
+        color: 'green',
+        textDecorationLine: 'underline',
+    },
+    linkTextCentered: {
+        color: 'green',
+        textAlign: 'center',
+        marginTop: 10,
+    },
+    button: {
+        backgroundColor: '#28A745',
+        marginVertical: 10,
+    },cancelCVContainer: {
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    cancelCVText: {
+        color: 'red',
+        fontSize: 16,
+        textDecorationLine: 'underline',
+    },
+
+});
   export default RegisterApplicant;
   

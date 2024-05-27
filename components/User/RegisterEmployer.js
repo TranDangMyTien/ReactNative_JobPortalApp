@@ -1,4 +1,4 @@
-import { View, Text, Alert, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Alert, ScrollView, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { Button, HelperText, TextInput, Card, Paragraph } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 import React, { useState } from "react";
@@ -19,7 +19,6 @@ const RegisterEmployer = ({ route }) => {
 
     // // TEST BẰNG TAY - Tạo EMPLOYER 
     // const userId = 73;
-    // const is_employer = true;
 
     const fields = [{
         "label": "Tên công ty",
@@ -110,26 +109,28 @@ const RegisterEmployer = ({ route }) => {
         <View style={[MyStyles.container, MyStyles.margin]}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView>
-                    <Text style={MyStyles.subject}>ĐĂNG KÝ NHÀ TUYỂN DỤNG</Text>
+                    <Text style={styles.subject}>ĐĂNG KÝ NHÀ TUYỂN DỤNG</Text>
 
-                    {fields.map(c => {
+                    {fields.map(c => { 
                         if (c.name === "company_type") {
                             return (
-                                <View key={c.name} style={MyStyles.margin}>
+                                <View key={c.name} style={margin = 5}>
                                     <TextInput
                                         value={companyType !== null ? companyType.toString() : ''} // Chuyển đổi giá trị số thành chuỗi khi hiển thị
                                         onChangeText={handleCompanyTypeChange} // Sử dụng hàm xử lý riêng để xác nhận giá trị nhập vào là số
                                         label={c.label}
                                         right={<TextInput.Icon icon={c.icon} />}
                                         keyboardType={c.keyboardType}
-                                        error={companyTypeError} // Đánh dấu lỗi trên TextInput
+                                        error={companyTypeError}
+                                        style={styles.input}
+                                         // Đánh dấu lỗi trên TextInput
                                     />
                                     {companyTypeError && (
                                         <HelperText type="error" visible={companyTypeError}>
                                             Vui lòng nhập giá trị từ 0 đến 5.
                                         </HelperText>
                                     )}
-                                    <Card style={{ marginTop: 10 }}>
+                                    <Card style={{ marginTop: 5 }}>
                                         <Card.Content>
                                             <Paragraph style={{ fontWeight: 'bold' }}>Loại hình công ty (nhập số):</Paragraph>
                                             <Paragraph>0 - Công ty TNHH</Paragraph>
@@ -148,7 +149,7 @@ const RegisterEmployer = ({ route }) => {
                                     secureTextEntry={c.secureTextEntry}
                                     value={employer[c.name]}
                                     onChangeText={t => updateState(c.name, t)}
-                                    style={MyStyles.margin}
+                                    style={styles.input}
                                     key={c.name}
                                     label={c.label}
                                     right={<TextInput.Icon icon={c.icon} />}
@@ -163,11 +164,90 @@ const RegisterEmployer = ({ route }) => {
                         Có lỗi xảy ra!
                     </HelperText>
 
-                    <Button icon="briefcase-plus" loading={loading} mode="contained" onPress={register}>ĐĂNG KÝ</Button>
+                    <Button icon="briefcase-plus" loading={loading} mode="contained" onPress={register} style={styles.button}>ĐĂNG KÝ</Button>
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    subject: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#333',
+    },
+    input: {
+        marginVertical: 5, // Slightly increased margin
+        backgroundColor: 'white',
+        borderRadius: 8,
+        paddingHorizontal: 15, // Slightly increased padding
+        height: 50, // Slightly increased height
+        fontSize: 16, // Slightly increased font size
+    },
+    avatarPicker: {
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: '#E0E0E0',
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    avatarPickerText: {
+        color: '#333',
+        fontSize: 16,
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginVertical: 10,
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+    },
+    linkText: {
+        color: 'green',
+        textDecorationLine: 'underline',
+    },
+    linkTextCentered: {
+        color: 'green',
+        textAlign: 'center',
+        marginTop: 10,
+    },
+    button: {
+        backgroundColor: '#28A745',
+        marginVertical: 0,
+    },cancelCVContainer: {
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    cancelCVText: {
+        color: 'red',
+        fontSize: 16,
+        textDecorationLine: 'underline',
+    },
+
+});
 export default RegisterEmployer;

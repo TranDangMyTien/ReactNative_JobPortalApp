@@ -45,13 +45,13 @@ const MyTab = () => {
   const user = useContext(MyUserContext);
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={MyStack} options={{title: 'Trang chủ', tabBarIcon: () => <Icon size={30} color="blue" source="home" />}} />
+      <Tab.Screen name="Home" component={MyStack} options={{title: 'Trang chủ', tabBarIcon: () => <Icon size={30} color="black" source="home" />}} />
 
       {user===null?<>
-        <Tab.Screen name="Register" component={MyRegister} options={{title: 'Đăng ký', tabBarIcon: () => <Icon size={30} color="blue" source="account" />}} />
-        <Tab.Screen name="Login" component={Login} options={{title: 'Đăng nhập', tabBarIcon: () => <Icon size={30} color="blue" source="login" />}} />
+        <Tab.Screen name="Register" component={MyRegister} options={{title: 'Đăng ký', tabBarIcon: () => <Icon size={30} color="black" source="account" />}} />
+        <Tab.Screen name="Login" component={Login} options={{title: 'Đăng nhập', tabBarIcon: () => <Icon size={30} color="black" source="login" />}} />
       </>:<>
-        <Tab.Screen name="Profile" component={Profile} options={{title: user.username, tabBarIcon: () => <Icon size={30} color="blue" source="account" />}} />
+        <Tab.Screen name="Profile" component={Profile} options={{title: user.username, tabBarIcon: () => <Icon size={30} color="black" source="account" />}} />
       </>}
       
     </Tab.Navigator>
