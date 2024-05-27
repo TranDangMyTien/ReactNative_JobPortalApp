@@ -30,6 +30,8 @@ const MyStack = () => {
 const MyRegister = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+
+      {/* TEST - CREARE EMPLOYER THÌ TẮT 3 CÁI ĐẦU */}
        <Stack.Screen name="MyRegister" component={Register} />
        <Stack.Screen name="RegisterRole" component={RegisterRole} />
        <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />

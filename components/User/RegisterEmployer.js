@@ -1,7 +1,6 @@
-import { View, Text, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import { Button, HelperText, TextInput, TouchableRipple } from "react-native-paper";
+import { View, Text, Alert, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Button, HelperText, TextInput, Card, Paragraph } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
-import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
@@ -12,10 +11,16 @@ LogBox.ignoreLogs([
     'Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.'
 ]);
 
-const RegisterEmployer = ({route}) => {
+const RegisterEmployer = ({ route }) => {
     const [employer, setEmployer] = useState({});
     const [err, setErr] = useState(false);
+    const [companyTypeError, setCompanyTypeError] = useState(false); // Thêm state để lưu trữ lỗi loại hình công ty
     const { userId } = route.params;
+
+    // // TEST BẰNG TAY - Tạo EMPLOYER 
+    // const userId = 73;
+    // const is_employer = true;
+
     const fields = [{
         "label": "Tên công ty",
         "icon": "domain",
@@ -44,13 +49,31 @@ const RegisterEmployer = ({route}) => {
         "name": "company_type",
         "keyboardType": "numeric"
     }];
+
     const nav = useNavigation();
     const [loading, setLoading] = useState(false);
+    const [companyType, setCompanyType] = useState(""); // State mới để lưu trữ giá trị số của loại hình công ty
 
     const updateState = (field, value) => {
         setEmployer(current => {
-            return {...current, [field]: value}
+            return { ...current, [field]: value }
         });
+    }
+
+    const handleCompanyTypeChange = (value) => {
+        // Kiểm tra xem giá trị nhập vào có phải là số không và nằm trong khoảng 0-5
+        const parsedValue = parseInt(value);
+        if (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 5) {
+            // Nếu là số hợp lệ trong khoảng 0-5, cập nhật giá trị của companyType
+            setCompanyType(parsedValue);
+            setCompanyTypeError(false); // Xóa lỗi nếu có
+            updateState("company_type", parsedValue); // Cập nhật vào employer state
+        } else {
+            // Nếu không phải số hợp lệ, đặt giá trị của companyType thành null hoặc một giá trị khác để biểu thị giá trị không hợp lệ
+            setCompanyType("");
+            setCompanyTypeError(true); // Hiển thị lỗi
+            updateState("company_type", ""); // Cập nhật vào employer state
+        }
     }
 
     const register = async () => {
@@ -77,6 +100,7 @@ const RegisterEmployer = ({route}) => {
                 nav.navigate("Login");  //Đăng ký xong thì chuyển qua login 
         } catch (ex) {
             console.error(ex);
+            setErr(true);  // Hiển thị lỗi nếu có lỗi xảy ra
         } finally {
             setLoading(false);
         }
@@ -85,27 +109,62 @@ const RegisterEmployer = ({route}) => {
     return (
         <View style={[MyStyles.container, MyStyles.margin]}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView>
-                <Text style={MyStyles.subject}>ĐĂNG KÝ NHÀ TUYỂN DỤNG</Text>
+                <ScrollView>
+                    <Text style={MyStyles.subject}>ĐĂNG KÝ NHÀ TUYỂN DỤNG</Text>
 
-                {fields.map(c => <TextInput
-                    secureTextEntry={c.secureTextEntry}
-                    value={employer[c.name]}
-                    onChangeText={t => updateState(c.name, t)}
-                    style={MyStyles.margin}
-                    key={c.name}
-                    label={c.label}
-                    right={<TextInput.Icon icon={c.icon} />}
-                    multiline={c.multiline}
-                    keyboardType={c.keyboardType}
-                />)}
+                    {fields.map(c => {
+                        if (c.name === "company_type") {
+                            return (
+                                <View key={c.name} style={MyStyles.margin}>
+                                    <TextInput
+                                        value={companyType !== null ? companyType.toString() : ''} // Chuyển đổi giá trị số thành chuỗi khi hiển thị
+                                        onChangeText={handleCompanyTypeChange} // Sử dụng hàm xử lý riêng để xác nhận giá trị nhập vào là số
+                                        label={c.label}
+                                        right={<TextInput.Icon icon={c.icon} />}
+                                        keyboardType={c.keyboardType}
+                                        error={companyTypeError} // Đánh dấu lỗi trên TextInput
+                                    />
+                                    {companyTypeError && (
+                                        <HelperText type="error" visible={companyTypeError}>
+                                            Vui lòng nhập giá trị từ 0 đến 5.
+                                        </HelperText>
+                                    )}
+                                    <Card style={{ marginTop: 10 }}>
+                                        <Card.Content>
+                                            <Paragraph style={{ fontWeight: 'bold' }}>Loại hình công ty (nhập số):</Paragraph>
+                                            <Paragraph>0 - Công ty TNHH</Paragraph>
+                                            <Paragraph>1 - Công ty Cổ phần</Paragraph>
+                                            <Paragraph>2 - Công ty trách nhiệm hữu hạn một thành viên</Paragraph>
+                                            <Paragraph>3 - Công ty tư nhân</Paragraph>
+                                            <Paragraph>4 - Công ty liên doanh</Paragraph>
+                                            <Paragraph>5 - Công ty tập đoàn</Paragraph>
+                                        </Card.Content>
+                                    </Card>
+                                </View>
+                            );
+                        } else {
+                            return (
+                                <TextInput
+                                    secureTextEntry={c.secureTextEntry}
+                                    value={employer[c.name]}
+                                    onChangeText={t => updateState(c.name, t)}
+                                    style={MyStyles.margin}
+                                    key={c.name}
+                                    label={c.label}
+                                    right={<TextInput.Icon icon={c.icon} />}
+                                    multiline={c.multiline}
+                                    keyboardType={c.keyboardType}
+                                />
+                            );
+                        }
+                    })}
 
-                <HelperText type="error" visible={err}>
-                    Có lỗi xảy ra!
-                </HelperText>
+                    <HelperText type="error" visible={err}>
+                        Có lỗi xảy ra!
+                    </HelperText>
 
-                <Button icon="briefcase-plus" loading={loading} mode="contained" onPress={register}>ĐĂNG KÝ</Button>
-            </ScrollView>
+                    <Button icon="briefcase-plus" loading={loading} mode="contained" onPress={register}>ĐĂNG KÝ</Button>
+                </ScrollView>
             </KeyboardAvoidingView>
         </View>
     );

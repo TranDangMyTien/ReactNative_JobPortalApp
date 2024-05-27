@@ -1,27 +1,11 @@
-import {
-    View,
-    Text,
-    Alert,
-    Image,
-    ScrollView,
-    KeyboardAvoidingView,
-    Platform,
-    Modal,
-  } from "react-native";
-  import {
-    Button,
-    HelperText,
-    TextInput,
-    TouchableRipple,
-    List,
-    Card,
-  } from "react-native-paper";
-  import MyStyles from "../../styles/MyStyles";
-  import * as ImagePicker from "expo-image-picker";
-  import React, { useState, useEffect } from "react";
-  import APIs, { endpoints } from "../../configs/APIs";
-  import { useNavigation } from "@react-navigation/native";
-  import { LogBox } from "react-native";
+import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal,} from "react-native";
+import {Button,HelperText,TextInput,TouchableRipple,List,Card,} from "react-native-paper";
+import MyStyles from "../../styles/MyStyles";
+import * as ImagePicker from "expo-image-picker";
+import React, { useState, useEffect } from "react";
+import APIs, { endpoints } from "../../configs/APIs";
+import { useNavigation } from "@react-navigation/native";
+import { LogBox } from "react-native";
   
   // Đóng warning
   LogBox.ignoreLogs([
