@@ -2,7 +2,6 @@ import axios from "axios";
 const BASE_URL = "https://tdmtien.pythonanywhere.com/";
 
 
-
 export const endpoints = {
     'register': '/users/', //Phần tạo user 
     'login': '/o/token/', //Phần xin token để đăng nhập 
@@ -15,7 +14,12 @@ export const endpoints = {
 
     // Phần tạo employer 
     //https://tdmtien.pythonanywhere.com/users/{id}/create_employer/
-    'create-employer': (userId) => `/users/${userId}/create_employer/`
+    'create-employer': (userId) => `/users/${userId}/create_employer/`,
+
+    //Lấy danh sách các model phụ 
+    'skills': '/skills/',
+    'areas':'/areas/',
+    'careers':'/careers/',
 
     
 };

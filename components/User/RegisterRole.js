@@ -12,11 +12,11 @@ const RegisterRole = ({route}) => {
   };
 
   const handleEmployerPress = () => {
-    // if (is_employer === true){
+    if (is_employer === true){
       navigation.navigate('RegisterEmployer', { userId });
-    // } else{
-    //   Alert.alert("Thông báo", "Chờ admin xét duyệt");
-    // }
+    } else{
+      Alert.alert("Thông báo", "Chờ admin xét duyệt");
+    }
     
   };
 

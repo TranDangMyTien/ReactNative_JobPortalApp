@@ -1,7 +1,7 @@
 const MyUserReducer = (current, action) => {
     switch (action.type) {
         case 'login':
-            return action.payload;
+            return action.payload; //Truy cập đến dữ liệu được gửi kèm theo hành động
         case 'logout':
             return null;
     }
