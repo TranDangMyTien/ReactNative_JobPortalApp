@@ -143,7 +143,7 @@ const Register = () => {
                                 <Text style={styles.linkText}>
                                     Chính sách bảo mật
                                 </Text>
-                                {' '}của TopCV.
+                                {' '}của OU Job!
                             </Text>
                         </View>
                     </TouchableOpacity>
@@ -158,7 +158,7 @@ const Register = () => {
                         </Text>
                     </TouchableRipple>
 
-                    <TouchableRipple onPress={() => nav.navigate("Home")}>
+                    <TouchableRipple onPress={() => nav.navigate("HomeScreen")}>
                         <Text style={styles.linkTextCentered}>
                             Trải nghiệm không cần đăng nhập
                         </Text>

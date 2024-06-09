@@ -21,11 +21,39 @@ export const endpoints = {
     'areas':'/areas/',
     'careers':'/careers/',
 
+    // thông tin applicant
+    'applicant-detail': (id) => `/applicants/${id}/`,
+
+    'jobs-list': '/recruitments_post/',  // tất cả bài tuyển dụng công việc
+    'fetch-job-list': (pageNum) => `/recruitments_post/?page=${pageNum}`, //phân trang
+    'job-detail': (id) => `/recruitments_post/${id}/`,  // Endpoint chi tiết công việc
+
+
     
 };
 
 
-
+export const fetchApplyPost = (id) => {
+    return axios.get(BASE_URL + endpoints['apply-job'](id));
+  }
+  
+  
+  //dùng cho ds các bài tuyển dụng mới nhất
+  export const fetchJobList = async (pageNum = 1) => {
+      try {
+          const response = await axios.get(BASE_URL + endpoints['fetch-job-list'](pageNum));
+          return response.data;
+      } catch (error) {
+          console.error('Error fetching job list:', error);
+          throw error;
+      }
+  };
+  
+  //chi tiết bài tuyển dụng công việc
+  export const fetchJobDetail = (id) => {
+      return axios.get(BASE_URL + endpoints['job-detail'](id));
+  }
+  
 
 
 //Xác thực người dùng 
@@ -41,3 +69,5 @@ export const authApi = (token) => {
 export default axios.create({
     baseURL: BASE_URL,
   });
+
+

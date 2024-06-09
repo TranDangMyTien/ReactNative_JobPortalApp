@@ -1,11 +1,12 @@
+import React, { useContext, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image } from "react-native";
+import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { TextInput } from "react-native-paper";
 import APIs, { authApi, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
-
+import Config from "react-native-config";
+// import {CLIENT_ID, CLIENT_SECRET } from 'react-native-dotenv';
 const Login = () => {
   const fields = [
     { label: "Email", icon: "email", field: "username" },
@@ -21,12 +22,15 @@ const Login = () => {
       return { ...current, [field]: value };
     });
   };
-
   const login = async () => {
     setLoading(true);
+    console.log("Client ID: ", Config.CLIENT_ID); // Kiểm tra giá trị
+    console.log("Client Secret: ", Config.CLIENT_SECRET); // Kiểm tra giá trị
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
+        // "client_id": Config.CLIENT_ID,
+        // "client_secret": Config.CLIENT_SECRET,
         "client_id": "NeVC6qnpHJRgsBLyvgsRH9sxHyjMvp0PwvbsTzMD",
         "client_secret": "ivNEzYwTq6gGqjXBDw9bACnfWraPZGSyDm8y5Jr1opAt52JCvGuVoePOP3w3PRBDWZ1LnP9jYdIxWESY2nP05lmRApwmbT3pVq8UmK3CckRPzFU4SlNOLgcZg6foYGPw",
         "grant_type": "password",
@@ -36,7 +40,7 @@ const Login = () => {
         let user = await authApi(res.data.access_token).get(endpoints["current-user"]);
         console.info(user.data);
         dispatch({ type: "login", payload: user.data });
-        nav.navigate("Home");
+        nav.navigate("HomeScreen");
       }, 100);
     } catch (ex) {
       console.error(ex);
@@ -60,24 +64,33 @@ const Login = () => {
           label={f.label}
           secureTextEntry={f.secureTextEntry}
           left={<TextInput.Icon icon={f.icon} />}
+          theme={{
+            colors: {
+              background: '#f2f2f2',
+            },
+          }}
         />
       ))}
       <TouchableOpacity style={styles.forgotPassword}>
         <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={login}>
-        <Text style={styles.buttonText}>Đăng nhập</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Đăng nhập</Text>
+        )}
       </TouchableOpacity>
       <Text style={styles.registerText}>Hoặc đăng nhập bằng</Text>
       <View style={styles.socialLoginContainer}>
         <TouchableOpacity style={styles.socialLoginButton}>
-          <Text style={styles.socialLoginButtonText}>Facebook</Text>
+          <Image source={require('../Images/facebook.png')} style={styles.socialLoginImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialLoginButton}>
-          <Text style={styles.socialLoginButtonText}>Google</Text>
+          <Image source={require('../Images/google.png')} style={styles.socialLoginImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialLoginButton}>
-          <Text style={styles.socialLoginButtonText}>Apple</Text>
+          <Image source={require('../Images/apple.png')} style={styles.socialLoginImage} />
         </TouchableOpacity>
       </View>
       <Text style={styles.registerText}>
@@ -86,7 +99,7 @@ const Login = () => {
       <TouchableOpacity style={styles.registerButton} onPress={() => nav.navigate("Register")}>
         <Text style={styles.registerButtonText}>Bạn chưa có tài khoản? Đăng ký ngay</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.experienceButton} onPress={() => nav.navigate("Home")}>
+      <TouchableOpacity style={styles.experienceButton} onPress={() => nav.navigate("HomeScreen")}>
         <Text style={styles.experienceButtonText}>Trải nghiệm không cần đăng nhập</Text>
       </TouchableOpacity>
     </View>
@@ -117,6 +130,9 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginBottom: 16,
+    backgroundColor: "#f2f2f2",
+    borderRadius: 30, // Rounded corners
+    elevation: 2,
   },
   forgotPassword: {
     alignSelf: "flex-end",
@@ -145,13 +161,16 @@ const styles = StyleSheet.create({
   },
   socialLoginButton: {
     backgroundColor: "#f2f2f2",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
+    padding: 12,
+    borderRadius: 50,
     marginHorizontal: 8,
+    elevation: 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  socialLoginButtonText: {
-    color: "#333",
+  socialLoginImage: {
+    width: 24,
+    height: 24,
   },
   registerButton: {
     marginBottom: 16,
