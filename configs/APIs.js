@@ -21,6 +21,10 @@ export const endpoints = {
     'areas':'/areas/',
     'careers':'/careers/',
 
+    //Lấy danh sách các loại hình công việc (full-part-...)
+    'employmenttypes' : '/employmenttypes/',
+
+
     // thông tin applicant
     'applicant-detail': (id) => `/applicants/${id}/`,
 
@@ -28,7 +32,9 @@ export const endpoints = {
     'fetch-job-list': (pageNum) => `/recruitments_post/?page=${pageNum}`, //phân trang
     'job-detail': (id) => `/recruitments_post/${id}/`,  // Endpoint chi tiết công việc
 
-
+    
+    //Phần hiện danh sách các bài đăng tuyển dụng 
+    'recruitments_post' : '/recruitments_post/',
     
 };
 

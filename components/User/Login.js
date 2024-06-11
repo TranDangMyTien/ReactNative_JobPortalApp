@@ -6,7 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 import APIs, { authApi, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import Config from "react-native-config";
+import { CLIENT_ID, CLIENT_SECRET } from "../../utils/evn";
+import { Alert } from "react-native";
 // import {CLIENT_ID, CLIENT_SECRET } from 'react-native-dotenv';
+// import { CLIENT_ID, CLIENT_SECRET } from "@env"; // Import from @env
+
 const Login = () => {
   const fields = [
     { label: "Email", icon: "email", field: "username" },
@@ -24,15 +28,15 @@ const Login = () => {
   };
   const login = async () => {
     setLoading(true);
-    console.log("Client ID: ", Config.CLIENT_ID); // Kiểm tra giá trị
-    console.log("Client Secret: ", Config.CLIENT_SECRET); // Kiểm tra giá trị
+    // console.log("Client ID: ", Config.process.env.CLIENT_ID); // Kiểm tra giá trị
+    // console.log("Client Secret: ", Config.process.env.CLIENT_SECRET); // Kiểm tra giá trị
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
-        // "client_id": Config.CLIENT_ID,
-        // "client_secret": Config.CLIENT_SECRET,
-        "client_id": "NeVC6qnpHJRgsBLyvgsRH9sxHyjMvp0PwvbsTzMD",
-        "client_secret": "ivNEzYwTq6gGqjXBDw9bACnfWraPZGSyDm8y5Jr1opAt52JCvGuVoePOP3w3PRBDWZ1LnP9jYdIxWESY2nP05lmRApwmbT3pVq8UmK3CckRPzFU4SlNOLgcZg6foYGPw",
+        // "client_id": CLIENT_ID,
+        // "client_secret": CLIENT_SECRET,
+        "client_id": process.env.CLIENT_ID,
+        "client_secret": process.env.CLIENT_SECRET,
         "grant_type": "password",
       });
       await AsyncStorage.setItem("token", res.data.access_token);
@@ -43,7 +47,18 @@ const Login = () => {
         nav.navigate("HomeScreen");
       }, 100);
     } catch (ex) {
-      console.error(ex);
+      Alert.alert(
+        'Lỗi đăng nhập',
+        'Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!',
+        [
+          {
+            text: 'Đóng',
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false }
+      );
+
     } finally {
       setLoading(false);
     }
