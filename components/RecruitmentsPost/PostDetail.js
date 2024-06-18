@@ -1,10 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, TextInput, FlatList, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Alert, Keyboard } from 'react-native';
+import { Appbar, Menu, Divider, Card } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { fetchJobDetail } from '../../configs/APIs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MyUserContext } from '../../configs/Contexts';
+import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
+import { LogBox } from 'react-native';
+import { getToken } from '../../utils/storage';
+import Comments from './Comments';
+import Ratings from './Ratings';
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
+
 
 const PostDetail = () => {
   const navigation = useNavigation();
