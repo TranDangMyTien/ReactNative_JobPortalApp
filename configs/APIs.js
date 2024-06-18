@@ -16,7 +16,7 @@ export const endpoints = {
     //https://tdmtien.pythonanywhere.com/users/{id}/create_employer/
     'create-employer': (userId) => `/users/${userId}/create_employer/`,
     //Lấy danh sách các model phụ 
-    
+
     'skills': '/skills/',
     'areas':'/areas/',
     'careers':'/careers/',
@@ -45,6 +45,14 @@ export const endpoints = {
     //Phần JobApply 
     "job-apply": (jobId, applicantId) => `/recruitments_post/${jobId}/applicant/${applicantId}/apply/`,
 
+    'list-comment': (id) => `/recruitments_post/${id}/read-comments/`,
+    'add-comments' : (id) => `/recruitments_post/${id}/comments/`,
+    'del-comment': (id, commentId) => `/recruitments_post/${id}/comments/${commentId}/delete/`,
+    'patch-comment': (id, commentId) => `/recruitments_post/${id}/comments/${commentId}/partial-update/`,
+    //
+    'ratings': (id) => `/recruitments_post/${id}/ratings/`,
+    'delete-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/delete/`,
+    'patch-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/partial-update/`
     
 };
 
