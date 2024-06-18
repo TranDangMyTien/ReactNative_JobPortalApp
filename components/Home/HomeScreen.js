@@ -3,8 +3,8 @@ import { Chip, List, ActivityIndicator, Searchbar } from "react-native-paper";
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import NewPost from "../RecruitmentsPost/NewPost";
+import TopPopular from '../RecruitmentsPost/TopPopular';
 import APIs, { endpoints } from "../../configs/APIs";
-import moment from "moment";
 import "moment/locale/vi";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -20,14 +20,43 @@ const HomeScreen = () => {
   const [title, setTitle] = useState("");
   const [page, setPage] = useState(1);
 
+
+  const renderOption = (option, optionText) => (
+    <TouchableOpacity
+      style={[
+        styles.option,
+        selectedOption === option && styles.selectedOption,
+      ]}
+      onPress={() => setSelectedOption(option)}
+    >
+      <Text style={styles.optionText}>{optionText}</Text>
+    </TouchableOpacity>
+  );
+
+
   const renderHeader = () => (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>Công việc mới nhất</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("JobList")}>
+      <TouchableOpacity onPress={() => navigation.navigate("AllJobs")}>
         <Text style={styles.viewAllButton}>All Jobs</Text>
       </TouchableOpacity>
     </View>
   );
+
+  const renderFooter = () => (
+    <View>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Top công việc phổ biến</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('PopularJobs')}>
+          <Text style={styles.viewAllButton}>All Jobs</Text>
+        </TouchableOpacity>
+      </View>
+      {/* component danh sách top công việc được apply nhiều nhất */}
+      <TopPopular />
+    </View>
+  );
+
+
 
   const loadTypes = async () => {
     try {
@@ -159,7 +188,7 @@ const HomeScreen = () => {
         <FlatList
           data={[]}
           ListHeaderComponent={renderHeader}
-          // ListFooterComponent={renderFooter}
+          ListFooterComponent={renderFooter}
           renderItem={null}
           keyExtractor={(item, index) => index.toString()}
           ListHeaderComponentStyle={{ marginBottom: 10 }}

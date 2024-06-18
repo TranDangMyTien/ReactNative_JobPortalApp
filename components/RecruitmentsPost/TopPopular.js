@@ -1,9 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { fetchAllJobs } from '../../configs/APIs';
+import { fetchPopularJobs } from '../../configs/APIs';
 
-const NewPost = () => {
+const TopPopular = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -18,9 +19,9 @@ const NewPost = () => {
 
     while (hasMorePages) {
       try {
-        const data = await fetchAllJobs(currentPage);
-        if (data && Array.isArray(data.results)) {
-          allJobs = [...allJobs, ...data.results];
+        const data = await fetchPopularJobs(currentPage);
+        if (data && Array.isArray(data)) {
+          allJobs = [...allJobs, ...data];
           currentPage++;
           if (data.next === null) {
             hasMorePages = false;
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 20,
     marginLeft: 20,
-    backgroundColor: '#add8e6',
+    backgroundColor: '#8fbc8f',
   },
   jobImage: {
     width: 50,
@@ -127,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewPost;
+export default TopPopular;

@@ -16,23 +16,32 @@ export const endpoints = {
     //https://tdmtien.pythonanywhere.com/users/{id}/create_employer/
     'create-employer': (userId) => `/users/${userId}/create_employer/`,
     //Lấy danh sách các model phụ 
+    
     'skills': '/skills/',
     'areas':'/areas/',
     'careers':'/careers/',
-    //Lấy danh sách các loại hình công việc (full-part-...)
     'employmenttypes' : '/employmenttypes/',
-
+    'recruitments_post' : '/recruitments_post/',
 
     // thông tin applicant
     'applicant-detail': (id) => `/applicants/${id}/`,
 
     'jobs-list': '/recruitments_post/',  // tất cả bài tuyển dụng công việc
     'fetch-job-list': (pageNum) => `/recruitments_post/?page=${pageNum}`, //phân trang
-    'job-detail': (id) => `/recruitments_post/${id}/`,  // Endpoint chi tiết công việc
 
     
-    //Phần hiện danh sách các bài đăng tuyển dụng 
-    'recruitments_post' : '/recruitments_post/',
+    'all-jobs': (pageNum) => `/recruitments_post/newest/?page=${pageNum}`,
+    'popular-jobs': (pageNum) => `/recruitments_post/popular/?page=${pageNum}`,
+    'job-detail': (id) => `/recruitments_post/${id}/`,  
+    'apply-job': (id) => `/recruitments_post/${id}/apply/`, 
+    'create-recruitment': `/recruitments_post/`,
+    'list-createpost': (id, pageNum) => `/employers/${id}/recruitment_posts/?page=${pageNum}`,
+    'delete-post': (id, post_id ) => `/employers/${id}/recruitment_posts/${post_id}/delete/`,
+    'detail-apply': (id) => `/recruitments_post/${id}/list_apply/`,
+    'list-apply': (id, pageNum) => `/applicants/${id}/applied_jobs/?page=${pageNum}`,
+
+
+    
     //Phần JobApply 
     "job-apply": (jobId, applicantId) => `/recruitments_post/${jobId}/applicant/${applicantId}/apply/`,
 
@@ -45,22 +54,54 @@ export const fetchApplyPost = (id) => {
   }
   
   
-  //dùng cho ds các bài tuyển dụng mới nhất
-  export const fetchJobList = async (pageNum = 1) => {
-      try {
-          const response = await axios.get(BASE_URL + endpoints['fetch-job-list'](pageNum));
-          return response.data;
-      } catch (error) {
-          console.error('Error fetching job list:', error);
-          throw error;
-      }
+// // ds các bài tuyển dụng mới nhất
+// export const fetchJobList = async (pageNum = 1) => {
+//     try {
+//         const response = await axios.get(BASE_URL + endpoints['fetch-job-list'](pageNum));
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching job list:', error);
+//         throw error;
+//     }
+// };
+  
+//Chi tiết danh sách công việc 
+export const fetchJobDetail = (id) => {
+    return axios.get(BASE_URL + endpoints['job-detail'](id));
+}
+  
+// TẤT CẢ CÁC CÔNG VIỆC
+export const fetchAllJobs = async (pageNum = 1) => {
+    try {
+        const response = await axios.get(BASE_URL + endpoints['all-jobs'](pageNum));
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching all job:', error);
+        throw error;
+    }
+  };
+
+//  CÁC CÔNG VIỆC PHỔ BIẾN DỰA VÀO SỐ NGƯỜI APPLY
+export const fetchPopularJobs = async (pageNum = 1) => {
+    try {
+        const response = await axios.get(BASE_URL + endpoints['popular-jobs'](pageNum));
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching popular job:', error);
+        throw error;
+    }
   };
   
-  //chi tiết bài tuyển dụng công việc
-  export const fetchJobDetail = (id) => {
-      return axios.get(BASE_URL + endpoints['job-detail'](id));
-  }
-  
+// DANH SÁCH CÁC CÔNG VIỆC MÀ APPLICANT ĐÃ APPLY
+export const fetchListApplyJobs = async (id, pageNum = 1) => {
+    try {
+        const response = axios.get(BASE_URL + endpoints['list-apply'](id, pageNum));
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching apply job:', error);
+        throw error;
+    }
+};
 
 
 //Xác thực người dùng 

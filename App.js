@@ -25,6 +25,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Profile from './components/User/Normal User/Profile';
 import ForgotPassword from './components/User/ForgotPassword';
 import UpdateUser from './components/User/UpdateUser';
+import AllJobs from './components/RecruitmentsPost/AllJobs';
+import PopularJobs from './components/RecruitmentsPost/PopularJobs';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Cài đặt stack
@@ -39,6 +41,8 @@ const MyHome = () => {
       <Stack.Screen name="NewPost" component={NewPost} />
       <Stack.Screen name="ApplyJob" component={ApplyJob} />
       <Stack.Screen name="FavoriteJobs" component={FavoriteJobs} />
+      <Stack.Screen name="AllJobs" component={AllJobs} />
+      <Stack.Screen name="PopularJobs" component={PopularJobs} />
     </Stack.Navigator>
   );
 }
@@ -51,6 +55,8 @@ const MyRegister = () => {
       <Stack.Screen name="RegisterRole" component={RegisterRole} />
       <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
+      <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
+      
     </Stack.Navigator>
   )
 }
