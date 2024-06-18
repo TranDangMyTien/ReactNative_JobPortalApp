@@ -1,8 +1,8 @@
-import { View, Text, Alert, ScrollView, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { View, Text, Alert, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Button, HelperText, TextInput, Card, Paragraph } from "react-native-paper";
-import MyStyles from "../../styles/MyStyles";
+import MyStyles from "../../../styles/MyStyles";
 import React, { useState } from "react";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints } from "../../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
 import { LogBox } from 'react-native';
 
@@ -106,6 +106,7 @@ const RegisterEmployer = ({ route }) => {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[MyStyles.container, MyStyles.margin]}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView>
@@ -168,6 +169,7 @@ const RegisterEmployer = ({ route }) => {
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>
+        </TouchableWithoutFeedback>
     );
 }
 

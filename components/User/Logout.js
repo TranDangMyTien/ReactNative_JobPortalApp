@@ -12,7 +12,7 @@ const Logout = ({ navigation }) => {
         dispatch({
             type: "logout",
         });
-        navigation.navigate("Login");
+        // navigation.navigate("Login");
     };
 
     return (

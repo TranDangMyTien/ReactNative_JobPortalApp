@@ -6,21 +6,19 @@ export const endpoints = {
     'register': '/users/', //Phần tạo user 
     'login': '/o/token/', //Phần xin token để đăng nhập 
     'current-user': '/users/current-user/', //Xem trạng thái user 
+    // 'patch_current_user' : '/users/patch-current-user/',
+    'patch_current_user': (userId) => `/users/${userId}/patch-current-user/`,
 
     // Phần tạo application 
     //https://tdmtien.pythonanywhere.com/users/{id}/create_applicant/
     'create-applicant': (userId) => `/users/${userId}/create_applicant/`,
-
-
     // Phần tạo employer 
     //https://tdmtien.pythonanywhere.com/users/{id}/create_employer/
     'create-employer': (userId) => `/users/${userId}/create_employer/`,
-
     //Lấy danh sách các model phụ 
     'skills': '/skills/',
     'areas':'/areas/',
     'careers':'/careers/',
-
     //Lấy danh sách các loại hình công việc (full-part-...)
     'employmenttypes' : '/employmenttypes/',
 
@@ -35,6 +33,9 @@ export const endpoints = {
     
     //Phần hiện danh sách các bài đăng tuyển dụng 
     'recruitments_post' : '/recruitments_post/',
+    //Phần JobApply 
+    "job-apply": (jobId, applicantId) => `/recruitments_post/${jobId}/applicant/${applicantId}/apply/`,
+
     
 };
 

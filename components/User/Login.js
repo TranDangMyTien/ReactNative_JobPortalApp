@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -8,12 +8,11 @@ import { MyDispatchContext } from "../../configs/Contexts";
 import Config from "react-native-config";
 import { CLIENT_ID, CLIENT_SECRET } from "../../utils/evn";
 import { Alert } from "react-native";
-// import {CLIENT_ID, CLIENT_SECRET } from 'react-native-dotenv';
-// import { CLIENT_ID, CLIENT_SECRET } from "@env"; // Import from @env
+
 
 const Login = () => {
   const fields = [
-    { label: "Email", icon: "email", field: "username" },
+    { label: "Tên đăng nhập", icon: "email", field: "username" },
     { label: "Nhập mật khẩu", icon: "lock", field: "password", secureTextEntry: true },
   ];
   const [user, setUser] = useState({});
@@ -65,6 +64,7 @@ const Login = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={[styles.headerText, { fontSize: 32, marginTop: -20 }]}>OU Job</Text>
@@ -86,7 +86,7 @@ const Login = () => {
           }}
         />
       ))}
-      <TouchableOpacity style={styles.forgotPassword}>
+      <TouchableOpacity style={styles.forgotPassword} onPress={() => nav.navigate("ForgotPassword")}>
         <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={login}>
@@ -118,6 +118,7 @@ const Login = () => {
         <Text style={styles.experienceButtonText}>Trải nghiệm không cần đăng nhập</Text>
       </TouchableOpacity>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, Alert, Image, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Alert, Image, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Button, HelperText, TextInput, TouchableRipple, Checkbox } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 import { LogBox } from 'react-native';
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints } from "../../../configs/APIs";
 
 // Ignore specific warning
 LogBox.ignoreLogs([
@@ -85,9 +85,14 @@ const Register = () => {
                 });
 
                 if (res.status === 201 && res.data) {
+                    // Clear user state to reset input fields
+                    setUser({});
+                    // Navigate to next screen after a delay
                     setTimeout(() => {
                         nav.navigate("RegisterRole", { userId: res.data.id, is_employer: res.data.is_employer });
                     }, 3000);
+                    // Show success alert
+                    Alert.alert("Success", "Đăng ký thành công!");
                 } else {
                     Alert.alert("Error", res.data?.message || "Something went wrong");
                 }
@@ -101,6 +106,7 @@ const Register = () => {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.innerContainer}>
@@ -109,7 +115,7 @@ const Register = () => {
                     {fields.map(c => (
                         <TextInput
                             secureTextEntry={c.secureTextEntry}
-                            value={user[c.name]}
+                            value={user[c.name] || ''} // Ensure the text input value resets
                             onChangeText={t => updateState(c.name, t)}
                             style={styles.input}
                             key={c.name}
@@ -166,6 +172,7 @@ const Register = () => {
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 

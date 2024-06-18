@@ -1,9 +1,9 @@
-import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal, StyleSheet,} from "react-native";
+import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal, StyleSheet, TouchableWithoutFeedback, Keyboard} from "react-native";
 import {Button,HelperText,TextInput,TouchableRipple,List,Card,} from "react-native-paper";
-import MyStyles from "../../styles/MyStyles";
+import MyStyles from "../../../styles/MyStyles";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState, useEffect } from "react";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints } from "../../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
 import { LogBox } from "react-native";
   
@@ -199,6 +199,7 @@ import { LogBox } from "react-native";
     };
   
     return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[MyStyles.container, MyStyles.margin]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -390,6 +391,7 @@ import { LogBox } from "react-native";
           </ScrollView>
         </KeyboardAvoidingView>
       </View>
+      </TouchableWithoutFeedback>
     );
   };
   

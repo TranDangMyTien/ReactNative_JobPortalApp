@@ -25,7 +25,7 @@ const PostDetail = () => {
   const handleApplyJob = async () => {
     try {
       if (user) {
-        navigation.navigate('ApplyJob');
+        navigation.navigate('ApplyJob',{ jobId: jobId });
       } else {
         Alert.alert(
           'Thông báo',

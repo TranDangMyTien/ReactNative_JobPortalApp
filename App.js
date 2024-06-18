@@ -8,21 +8,24 @@ import MyUserReducer from './configs/Reducers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './components/Home/HomeScreen';
 import PostList from './components/RecruitmentsPost/PostList';
-import ProfileApplicant from './components/User/ProfileApplicant';
-import ProfileEmployer from './components/User/ProfileEmployer';
-import ProfileAdmin from './components/User/ProfileAdmin';
+import ProfileApplicant from './components/User/Applicant/ProfileApplicant';
+import ProfileEmployer from './components/User/Employer/ProfileEmployer';
+import ProfileAdmin from './components/User/Admin/ProfileAdmin';
 import Login from './components/User/Login';
-import Register from './components/User/Register';
-import RegisterRole from './components/User/RegisterRole';
-import RegisterApplicant from './components/User/RegisterApplicant';
-import RegisterEmployer from './components/User/RegisterEmployer';
-import RecruitmentsPost from './components/RecruitmentsPost/RecruitmentsPost';
+import Register from './components/User/Register/Register';
+import RegisterRole from './components/User/Register/RegisterRole';
+import RegisterApplicant from './components/User/Register/RegisterApplicant';
+import RegisterEmployer from './components/User/Register/RegisterEmployer';
 import PostDetail from './components/RecruitmentsPost/PostDetail';
 import NewPost from './components/RecruitmentsPost/NewPost';
 import ApplyJob from './components/RecruitmentsPost/ApplyJob';
 import FavoriteJobs from './components/RecruitmentsPost/FavoriteJobs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Profile from './components/User/Normal User/Profile';
+import ForgotPassword from './components/User/ForgotPassword';
+import UpdateUser from './components/User/UpdateUser';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Cài đặt stack
 const Stack = createStackNavigator();
@@ -44,13 +47,32 @@ const MyHome = () => {
 const MyRegister = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MyRegister" component={Register} />
+      <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="RegisterRole" component={RegisterRole} />
       <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
     </Stack.Navigator>
   )
 }
+
+const MyLogin = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+    </Stack.Navigator>
+  )
+}
+const MyProfileApplicant = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ProfileApplicant" component={ProfileApplicant} />
+      <Stack.Screen name="UpdateUser" component={UpdateUser} />
+    </Stack.Navigator>
+  )
+}
+
+
 
 const Tab = createBottomTabNavigator();
 const MyTab = () => {
@@ -64,10 +86,10 @@ const MyTab = () => {
           if (route.name === 'MyHome') {
             iconName = 'home';
             return <FontAwesome name={iconName} size={size} color={color} />;
-          } else if (route.name === 'Register') {
+          } else if (route.name === 'MyRegister') {
             iconName = 'account-plus';
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-          } else if (route.name === 'Login') {
+          } else if (route.name === 'MyLogin') {
             iconName = 'login';
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
           } else if (route.name === 'ProfileApplicant') {
@@ -103,19 +125,23 @@ const MyTab = () => {
 
       {user === null ? (
         <>
-          <Tab.Screen name="Register" component={MyRegister} options={{ title: 'Đăng ký' }} />
-          <Tab.Screen name="Login" component={Login} options={{ title: 'Đăng nhập' }} />
+          <Tab.Screen name="MyRegister" component={MyRegister} options={{ title: 'Đăng ký' }} />
+          <Tab.Screen name="MyLogin" component={MyLogin} options={{ title: 'Đăng nhập' }} />
+          
         </>
       ) : (
         <>
           {user.is_applicant && (
-            <Tab.Screen name="ProfileApplicant" component={ProfileApplicant} options={{ title: 'Ứng viên' }} />
+            <Tab.Screen name="ProfileApplicant" component={MyProfileApplicant} options={{ title: 'Ứng viên' }} />
           )}
           {user.is_employer && (
             <Tab.Screen name="ProfileEmployer" component={ProfileEmployer} options={{ title: 'Nhà tuyển dụng' }} />
           )}
           {(user.is_staff || user.is_superuser) && (
             <Tab.Screen name="Admin" component={ProfileAdmin} options={{ title: 'Quản trị viên' }} />
+          )}
+          {!user.is_applicant && !user.is_employer && !user.is_staff && !user.is_superuser && (
+            <Tab.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} />
           )}
         </>
       )}
