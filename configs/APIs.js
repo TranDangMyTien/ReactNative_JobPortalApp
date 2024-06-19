@@ -6,9 +6,10 @@ export const endpoints = {
     'register': '/users/', //Phần tạo user 
     'login': '/o/token/', //Phần xin token để đăng nhập 
     'current-user': '/users/current-user/', //Xem trạng thái user 
-    // 'patch_current_user' : '/users/patch-current-user/',
     'patch_current_user': (userId) => `/users/${userId}/patch-current-user/`,
-
+    'patch-avatar': (id) => `/users/${id}/patch-current-user/`,
+    'update-applicant': (userId) => `/applicants/${userId}/`,
+    'update-employer': (userId) => `/employers/${userId}/`,
     // Phần tạo application 
     //https://tdmtien.pythonanywhere.com/users/{id}/create_applicant/
     'create-applicant': (userId) => `/users/${userId}/create_applicant/`,

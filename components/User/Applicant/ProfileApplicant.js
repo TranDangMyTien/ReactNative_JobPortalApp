@@ -11,7 +11,7 @@ import Experiences from './Experiences';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Career from './Career';
 import * as ImagePicker from 'expo-image-picker';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons  } from '@expo/vector-icons';
 
 
 const ProfileApplicant = () => {
@@ -48,6 +48,11 @@ const ProfileApplicant = () => {
         { id: 4, title: 'Việc làm đã ứng tuyển', icon: 'work'},
     ];
 
+    const dataAccount = [
+        { id: 1, title: 'Xóa tài khoản', icon: 'delete' },
+        { id: 2, title: 'Xóa thông tin Applicant',  icon: 'clear' },
+    ];
+
     const renderItem = ({ item }) => (
         <TouchableOpacity
            onPress={() => navigateToDetail(item)}
@@ -59,6 +64,18 @@ const ProfileApplicant = () => {
         </TouchableOpacity>
     );
 
+    const renderItemAcc = ({ item }) => (
+        <TouchableOpacity
+           onPress={() => navigateToDetail(item)}
+           style={styles.itemAccount}
+        >
+          <Icon name={item.icon} size={24} color="#00b14f" />   
+          <Text style={styles.itemTitle2}>{item.title}</Text>
+          <Text style={styles.itemValue}>{item.value}</Text>
+        </TouchableOpacity>
+    );
+
+
     const navigateToDetail = (item) => {
         if (item.id === 1) {
           navigation.navigate('UpdateUser'); 
@@ -69,7 +86,7 @@ const ProfileApplicant = () => {
             navigation.navigate('SuitableJob'); //gợi ý việc làm phù hợp
         }
         else if (item.id === 4) {
-            navigation.navigate('SuitableJob'); //Việc làm đã ứng tuyển
+            navigation.navigate('ListApply'); //Việc làm đã ứng tuyển
         }
         
       };
@@ -239,7 +256,7 @@ const ProfileApplicant = () => {
     };
 
     // PATCH AVATAR
-    const handleUpdateAvatar = async () => {
+    const handleUpdateAvatar = async (selectedImage) => {
         if (!selectedImage) {
             Alert.alert('Thông báo', 'Vui lòng chọn một ảnh!');
             return;
@@ -248,12 +265,12 @@ const ProfileApplicant = () => {
             let form = new FormData();
             form.append('avatar', {
                     uri: selectedImage.uri, 
-                    name: selectedImage.fileName, 
-                    type: selectedImage.mimeType 
+                    name: selectedImage.fileName || 'avatar.jpg', 
+                    type: selectedImage.mimeType ||'image/jpeg'
                 });
             const token = await getToken();
             const res = await authAPI(token).patch(
-                endpoints["patch-avatar"], 
+                endpoints["patch-avatar"](user.id), 
                 form, 
                 {
                     headers: {
@@ -263,7 +280,7 @@ const ProfileApplicant = () => {
             );
       
             if (res.status === 200 ) {
-                setProfileImage(selectedImage);
+                setProfileImage(selectedImage.uri);
                 setSelectedImage(null); // Reset state sau khi cập nhật thành công
                 Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công!');
             } else {
@@ -276,7 +293,8 @@ const ProfileApplicant = () => {
 
 
     //UPDATE CV
-    const handleUpdateCV = async () => {
+    const handleUpdateCV = async (selectedCV) => {
+        console.log(selectedCV);
         if (!selectedCV) {
             Alert.alert('Thông báo', 'Vui lòng chọn một ảnh!');
             return;
@@ -284,10 +302,11 @@ const ProfileApplicant = () => {
         try {
             let form = new FormData();
             form.append('cv', {
-                    uri: selectedCV, 
-                    name: 'cv.jpg', 
-                    type: 'image/jpg' 
-                });
+                uri: selectedCV.uri, 
+                name: selectedCV.fileName || 'cv.jpg', 
+                type: selectedCV.mimeType || 'image/jpeg' 
+ 
+            });
             const token = await getToken();
             const res = await authAPI(token).patch(
                 endpoints["update-applicant"](user.applicant.id),  
@@ -298,21 +317,20 @@ const ProfileApplicant = () => {
                     },
                 }
             );
-      
             if (res.status === 200 ) {
-                setUploadCV(selectedCV);
+                setUploadCV(selectedCV.uri);
                 setSelectedCV(null); // Reset state sau khi cập nhật thành công
-                Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công!');
+                Alert.alert('Thông báo', 'Cập nhật ảnh CV thành công!');
             } else {
-                console.error('Lỗi khi cập nhật ảnh đại diện');
+                console.error('Lỗi khi cập nhật ảnh CV');
             }
         } catch (error) {
             console.error('Lỗi khi gửi yêu cầu:', error);
         }
     };
 
-     // HÀM CHỌN ẢNH CV TỪ THƯ VIỆN
-     const handleChooseCV = async () => {
+    // HÀM CHỌN ẢNH CV TỪ THƯ VIỆN
+    const handleChooseCV = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -322,6 +340,7 @@ const ProfileApplicant = () => {
 
         if (!result.canceled) {
             // Hiển thị cửa sổ cảnh báo xác nhận chọn ảnh
+            const selectedCV = result.assets[0];
             Alert.alert(
                 'Xác nhận',
                 'Bạn có muốn chọn ảnh này?',
@@ -333,8 +352,8 @@ const ProfileApplicant = () => {
                     {
                         text: 'Xác nhận',
                         onPress: () => {
-                            handleUpdateCV(),
-                            setSelectedCV(result.assets[0].uri);
+                            setSelectedCV(selectedCV),
+                            handleUpdateCV(selectedCV);
                         },
                     },
                 ],
@@ -536,7 +555,7 @@ const ProfileApplicant = () => {
                         <View style={styles.contentCV}>
                             {user.applicant.cv ? (
                                 <TouchableOpacity onPress={() => setModalCV(true)}>
-                                    <Image source={{ uri: user.applicant.cv }} style={styles.imageCV} />
+                                    <Image source={{ uri: uploadCV }} style={styles.imageCV} />
                                 </TouchableOpacity>
                             ) : (
                                 <Text style={styles.itemCV}>Bạn chưa cập nhật</Text>
@@ -550,7 +569,7 @@ const ProfileApplicant = () => {
                                 onRequestClose={() => setModalCV(false)}
                             >
                                 <View style={styles.modalContainer}>
-                                    <Image source={{ uri: user.applicant.cv }} style={styles.modalImage} />
+                                    <Image source={{ uri: uploadCV }} style={styles.modalImage} />
                                     <TouchableOpacity style={styles.closeButton} onPress={() => setModalCV(false)}>
                                         <Text style={styles.closeText}>Đóng</Text>
                                     </TouchableOpacity>
@@ -567,6 +586,18 @@ const ProfileApplicant = () => {
                         numColumns={2}
                         data={dataList}
                         renderItem={renderItem}
+                        keyExtractor={(item) => item.id.toString()}
+                    />
+                </View>
+
+                <Divider />
+                <View style={{marginBottom: 20}}>
+                    <Title style={{fontWeight: "bold", marginTop: 20, marginLeft: 15}}>Quản lý tài khoản</Title>
+                    <FlatList
+                        scrollEnabled={false}
+                        numColumns={2}
+                        data={dataAccount}
+                        renderItem={renderItemAcc}
                         keyExtractor={(item) => item.id.toString()}
                     />
                 </View>
@@ -604,6 +635,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: "#8fbc8f"
       },
+      itemAccount: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        width: "45%",
+        margin: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        backgroundColor: "#a52a2a"
+      },
       itemTitle: {
         flex: 1,
         marginLeft: 10,
@@ -612,6 +653,12 @@ const styles = StyleSheet.create({
       itemValue: {
         fontSize: 16,
         color: '#00b14f',
+      },
+      itemTitle2: {
+        flex: 1,
+        marginLeft: 10,
+        fontSize: 14,
+        color: '#f5fffa',
       },
     surface: {
         padding: 8,
@@ -667,7 +714,7 @@ const styles = StyleSheet.create({
     },
     formInfor: {
         alignItems: 'center',
-        backgroundColor: "#f5fffa",
+        backgroundColor: "#e6e6fa",
     },
     experience: {
         marginBottom: 10,

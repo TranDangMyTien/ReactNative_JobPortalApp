@@ -194,7 +194,8 @@ const CreateRecruitment = () => {
 		for (let key in job) {
 			form.append(key, job[key]);
 		}
-
+		form.append("reported", "False");
+		form.append("active", "True");
 		form.append("employer", user.employer.id);
 		setLoading(true);
 		try {
@@ -211,7 +212,11 @@ const CreateRecruitment = () => {
 
 			if (res.status === 201) {
 				Alert.alert("Thành công", "Bài đăng đã được tạo thành công.");
-				//nav.navigate(""); Điều hướng tới Quản lý bài đăng tuyển dụng
+				setJob({});
+				setGender("");
+				setDate(new Date());
+				setSelectedImage(null);
+				nav.navigate("ListJobPost"); //Điều hướng tới Quản lý bài đăng tuyển dụng
 			}
 		} catch (ex) {
 			console.error(ex.response);
@@ -229,14 +234,14 @@ const CreateRecruitment = () => {
 					height: 30,
 					marginBottom: 7,
 				}}>
-				<Appbar.BackAction onPress={handleGoBack} />
+				<Appbar.BackAction onPress={handleGoBack} color="white" />
 				<Appbar.Content
 					title="Đăng tin tuyển dụng"
 					style={{
 						alignItems: "center",
 						justifyContent: "center",
-						color: "#fff",
 					}}
+					titleStyle={{ color: 'white' }}
 				/>
 			</Appbar.Header>
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -316,7 +321,7 @@ const CreateRecruitment = () => {
 								return (
 									<TextInput
 										secureTextEntry={c.secureTextEntry}
-										value={job[c.name]}
+										value={job[c.name] ? job[c.name] : ""}
 										onChangeText={(t) =>
 											updateState(c.name, t)
 										}

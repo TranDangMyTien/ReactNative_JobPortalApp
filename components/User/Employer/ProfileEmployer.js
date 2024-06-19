@@ -9,7 +9,7 @@ import { endpoints, authAPI } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProfileEmployer = () => {
     const navigation = useNavigation();
@@ -43,10 +43,15 @@ const ProfileEmployer = () => {
     };
 
     const dataList = [
-        { id: 1, title: 'Cập nhật thông tin cá nhân', icon: 'update' },
+        { id: 1, title: 'Cập nhật nhà tuyển dụng', icon: 'update' },
         { id: 2, title: 'Đăng tin tuyển dụng',  icon: 'favorite' },
         { id: 3, title: 'Tìm kiếm ứng viên',  icon: 'search' },
         { id: 4, title: 'Quản lý bài đăng tuyển dụng', icon: 'work'},
+    ];
+
+    const dataAccount = [
+        { id: 1, title: 'Xóa tài khoản', icon: 'delete' },
+        { id: 2, title: 'Xóa thông tin NTD',  icon: 'clear' },
     ];
 
     const renderItem = ({ item }) => (
@@ -60,6 +65,18 @@ const ProfileEmployer = () => {
         </TouchableOpacity>
     );
 
+    const renderItemAcc = ({ item }) => (
+        <TouchableOpacity
+           onPress={() => navigateToDetail(item)}
+           style={styles.itemAccount}
+        >
+          <Icon name={item.icon} size={24} color="#00b14f" />   
+          <Text style={styles.itemTitle2}>{item.title}</Text>
+          <Text style={styles.itemValue}>{item.value}</Text>
+        </TouchableOpacity>
+    );
+
+
     const navigateToDetail = (item) => {
         if (item.id === 1) {
           navigation.navigate('UpdateEmployer'); 
@@ -67,10 +84,10 @@ const ProfileEmployer = () => {
           navigation.navigate('CreateRecruitment'); 
         }
         else if (item.id === 3) {
-            navigation.navigate('SuitableJob'); 
+            navigation.navigate('DetailApply'); 
         }
         else if (item.id === 4) {
-            navigation.navigate('SuitableJob'); 
+            navigation.navigate('ListJobPost'); 
         }
         
       };
@@ -84,7 +101,7 @@ const ProfileEmployer = () => {
         );
     }
     
-    // HÀM CHỌN ẢNH TỪ THƯ VIỆN
+    //HÀM CHỌN ẢNH TỪ THƯ VIỆN
     const handleChooseImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -94,6 +111,7 @@ const ProfileEmployer = () => {
         });
 
         if (!result.canceled) {
+            const selectedImage = result.assets[0];
             // Hiển thị cửa sổ cảnh báo xác nhận chọn ảnh
             Alert.alert(
                 'Xác nhận',
@@ -106,8 +124,8 @@ const ProfileEmployer = () => {
                     {
                         text: 'Xác nhận',
                         onPress: () => {
-                            handleUpdateAvatar(),
-                            setSelectedImage(result.assets[0]);
+                            setSelectedImage(selectedImage),
+                            handleUpdateAvatar(selectedImage);
                         },
                     },
                 ],
@@ -117,7 +135,7 @@ const ProfileEmployer = () => {
     };
 
     // PATCH AVATAR
-    const handleUpdateAvatar = async () => {
+    const handleUpdateAvatar = async (selectedImage) => {
         if (!selectedImage) {
             Alert.alert('Thông báo', 'Vui lòng chọn một ảnh!');
             return;
@@ -126,12 +144,12 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('avatar', {
                     uri: selectedImage.uri, 
-                    name: selectedImage.fileName, 
-                    type: selectedImage.mimeType 
+                    name: selectedImage.fileName || 'avatar.jpg', 
+                    type: selectedImage.mimeType ||'image/jpeg'
                 });
             const token = await getToken();
             const res = await authAPI(token).patch(
-                endpoints["patch-avatar"], 
+                endpoints["patch-avatar"](user.id), 
                 form, 
                 {
                     headers: {
@@ -141,10 +159,9 @@ const ProfileEmployer = () => {
             );
       
             if (res.status === 200 ) {
-                setProfileImage(selectedImage);
+                setProfileImage(selectedImage.uri);
                 setSelectedImage(null); // Reset state sau khi cập nhật thành công
                 Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công!');
-                
             } else {
                 console.error('Lỗi khi cập nhật ảnh đại diện');
             }
@@ -325,7 +342,7 @@ const ProfileEmployer = () => {
                     />
             </Appbar.Header>
             <View style={{ backgroundColor: '#28A745', alignItems: 'center', zIndex: 1 }}>
-            <Surface style={[styles.surface, { elevation: 10, top: 8}]}>
+                <Surface style={[styles.surface, { elevation: 10, top: 8}]}>
                     <View style={styles.header}>
                         <View>
                             <Image
@@ -605,6 +622,18 @@ const ProfileEmployer = () => {
                     />
                 </View>
 
+                <Divider />
+                <View style={{marginBottom: 20}}>
+                    <Title style={{fontWeight: "bold", marginTop: 20, marginLeft: 15}}>Quản lý tài khoản</Title>
+                    <FlatList
+                        scrollEnabled={false}
+                        numColumns={2}
+                        data={dataAccount}
+                        renderItem={renderItemAcc}
+                        keyExtractor={(item) => item.id.toString()}
+                    />
+                </View>
+
                 <Logout navigation={navigation} />
             </ScrollView>
             
@@ -625,6 +654,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: "#8fbc8f"
       },
+      itemAccount: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        width: "45%",
+        margin: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        backgroundColor: "#a52a2a"
+      },
       itemTitle: {
         flex: 1,
         marginLeft: 10,
@@ -632,7 +671,12 @@ const styles = StyleSheet.create({
       },
       itemValue: {
         fontSize: 16,
-        color: '#00b14f',
+      },
+      itemTitle2: {
+        flex: 1,
+        marginLeft: 10,
+        fontSize: 14,
+        color: '#f5fffa',
       },
     surface: {
         height: 90,
@@ -685,7 +729,7 @@ const styles = StyleSheet.create({
     },
     formInfor: {
         alignItems: 'center',
-        backgroundColor: "#f5fffa",
+        backgroundColor: "#e6e6fa",
     },
     experience: {
         marginBottom: 10,
@@ -702,62 +746,6 @@ const styles = StyleSheet.create({
     item: {
         fontSize: 15,
         paddingRight: 14,
-    },
-    contentCV: {
-        marginTop: 10,
-        alignItems: 'center',
-    },
-    itemCV: {
-        fontSize: 16,
-        color: 'red',
-    },
-    imageCV: {
-        width: 200,
-        height: 200,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalImage: {
-        width: '80%',
-        height: '80%',
-    },
-    closeButton: {
-        position: 'absolute',
-        bottom: 20,
-        backgroundColor: '#fff',
-        padding: 10,
-        borderRadius: 5,
-    },
-    closeText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    pickerContainer: {
-        width: '80%',
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-    },
-    pickerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    modalButton: {
-        marginTop: 20,
-        backgroundColor: 'rgb(0, 177, 79)',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    modalButtonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#fff',
     },
 });
 

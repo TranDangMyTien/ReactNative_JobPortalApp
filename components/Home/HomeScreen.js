@@ -20,7 +20,6 @@ const HomeScreen = () => {
   const [title, setTitle] = useState("");
   const [page, setPage] = useState(1);
 
-
   const renderOption = (option, optionText) => (
     <TouchableOpacity
       style={[
@@ -32,7 +31,6 @@ const HomeScreen = () => {
       <Text style={styles.optionText}>{optionText}</Text>
     </TouchableOpacity>
   );
-
 
   const renderHeader = () => (
     <View style={styles.sectionHeader}>
@@ -55,8 +53,6 @@ const HomeScreen = () => {
       <TopPopular />
     </View>
   );
-
-
 
   const loadTypes = async () => {
     try {
@@ -129,34 +125,36 @@ const HomeScreen = () => {
       <Text style={styles.title}>OU Job đồng hành cùng bạn</Text>
       <View style={styles.chipContainer}>
         <FlatList
-            data={employmentTypes}
-            horizontal
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Chip
-                mode={item.id === typeId ? "outlined" : "flat"}
-                key={item.id}
-                onPress={() => search(item.id, setTypeId)}
-                style={[styles.chip, item.id === typeId ? styles.chipSelected : null]}
-                icon={() => <MaterialCommunityIcons name="tag-heart" size={20} color="white" />}
-              >
+          data={employmentTypes}
+          horizontal
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Chip
+              mode={item.id === typeId ? "outlined" : "flat"}
+              key={item.id}
+              onPress={() => search(item.id, setTypeId)}
+              style={[styles.chip, item.id === typeId ? styles.chipSelected : null]}
+              icon={() => <MaterialCommunityIcons name="tag-heart" size={20} color="white" />}
+            >
+              <Text style={[styles.chipText, item.id === typeId ? styles.chipTextSelected : null]}>
                 {item.type}
-              </Chip>
-            )}
-            ListHeaderComponent={() => (
-              <Chip
-                mode={!typeId ? "outlined" : "flat"}
-                style={[styles.chip, !typeId ? styles.chipSelected : null]}
-                onPress={() => search("", setTypeId)}
-                icon={() => <MaterialCommunityIcons name="heart-outline" size={20} color="white" />}
-              >
-                Tất cả
-              </Chip>
-            )}
-            ListFooterComponent={employmentTypes === null ? <ActivityIndicator /> : null}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chipContentContainer}
-          />
+              </Text>
+            </Chip>
+          )}
+          ListHeaderComponent={() => (
+            <Chip
+              mode={!typeId ? "outlined" : "flat"}
+              style={[styles.chip, !typeId ? styles.chipSelected : null]}
+              onPress={() => search("", setTypeId)}
+              icon={() => <MaterialCommunityIcons name="heart-outline" size={20} color="white" />}
+            >
+              <Text style={[styles.chipText, !typeId ? styles.chipTextSelected : null]}>Tất cả</Text>
+            </Chip>
+          )}
+          ListFooterComponent={employmentTypes === null ? <ActivityIndicator /> : null}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipContentContainer}
+        />
       </View>
       <View style={styles.searchContainer}>
         <Searchbar
@@ -197,9 +195,7 @@ const HomeScreen = () => {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
-      
       <Footer />
-      
     </View>
   );
 };
@@ -238,6 +234,12 @@ const styles = StyleSheet.create({
   chipSelected: {
     backgroundColor: "#4caf50",
     borderColor: "#4caf50",
+  },
+  chipText: {
+    color: "#000000", // Default color for all types
+  },
+  chipTextSelected: {
+    color: "#FFFFFF", // Text color when selected
   },
   row: {
     flexDirection: "row",

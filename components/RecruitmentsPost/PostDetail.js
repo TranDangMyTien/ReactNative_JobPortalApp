@@ -13,7 +13,6 @@ import { getToken } from '../../utils/storage';
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
 
-
 const PostDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -30,7 +29,6 @@ const PostDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false); // State hide and report
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // keyboard visibility
   const [isLiked, setIsLiked] = useState(false);
-
 
   const handleGoBack = () => {
     navigation.navigate("HomeScreen");
@@ -187,10 +185,9 @@ const PostDetail = () => {
     // Implement logic to toggle like status and send to server if needed
   };
 
-
   return (
     <View style={styles.container}>
-      <Appbar.Header style={{ backgroundColor: '#28A745', height: 45 }}>
+      <Appbar.Header style={styles.appbarHeader}>
         <Appbar.BackAction onPress={handleGoBack} color='white'/>
         <Appbar.Content title="Thông tin chi tiết" 
         style={{ alignItems: 'center', justifyContent: 'center' }} 
@@ -301,6 +298,10 @@ const PostDetail = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  appbarHeader: {
+    backgroundColor: '#28A745',
+    height: 45,  // Set the height here
   },
   contentContainer: {
     padding: 16,

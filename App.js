@@ -27,23 +27,29 @@ import ForgotPassword from './components/User/ForgotPassword';
 import UpdateUser from './components/User/UpdateUser';
 import AllJobs from './components/RecruitmentsPost/AllJobs';
 import PopularJobs from './components/RecruitmentsPost/PopularJobs';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { Provider as PaperProvider } from 'react-native-paper'; 
+import UpdateApplicant from './components/User/Applicant/UpdateApplicant';
+import SuitableJob from './components/User/Applicant/SuitableJob';
+import UpdateEmployer from './components/User/Employer/UpdateEmployer';
+import CreateRecruitment from './components/User/Employer/CreateRecruitment';
+import ListJobPost from './components/User/Employer/ListJobPost';
 // Cài đặt stack
 const Stack = createStackNavigator();
 
 const MyHome = () => {
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="JobList" component={PostList} />
-      <Stack.Screen name="JobDetail" component={PostDetail} />
-      <Stack.Screen name="NewPost" component={NewPost} />
-      <Stack.Screen name="ApplyJob" component={ApplyJob} />
-      <Stack.Screen name="FavoriteJobs" component={FavoriteJobs} />
-      <Stack.Screen name="AllJobs" component={AllJobs} />
-      <Stack.Screen name="PopularJobs" component={PopularJobs} />
-    </Stack.Navigator>
+    <PaperProvider>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="JobList" component={PostList} />
+        <Stack.Screen name="JobDetail" component={PostDetail} />
+        <Stack.Screen name="NewPost" component={NewPost} />
+        <Stack.Screen name="ApplyJob" component={ApplyJob} />
+        <Stack.Screen name="FavoriteJobs" component={FavoriteJobs} />
+        <Stack.Screen name="AllJobs" component={AllJobs} />
+        <Stack.Screen name="PopularJobs" component={PopularJobs} />
+      </Stack.Navigator>
+    </PaperProvider>
   );
 }
 
@@ -55,8 +61,7 @@ const MyRegister = () => {
       <Stack.Screen name="RegisterRole" component={RegisterRole} />
       <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
-      <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
-      
+    
     </Stack.Navigator>
   )
 }
@@ -74,11 +79,24 @@ const MyProfileApplicant = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileApplicant" component={ProfileApplicant} />
       <Stack.Screen name="UpdateUser" component={UpdateUser} />
+      <Stack.Screen name="UpdateApplicant" component={UpdateApplicant} />
+      <Stack.Screen name="SuitableJob" component={SuitableJob} />
+
     </Stack.Navigator>
   )
 }
 
-
+const MyProfileEmployer = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ProfileEmployer" component={ProfileEmployer} />
+      <Stack.Screen name="UpdateUser" component={UpdateUser} />
+      <Stack.Screen name="UpdateEmployer" component={UpdateEmployer} />
+      <Stack.Screen name="CreateRecruitment" component={CreateRecruitment} />
+      <Stack.Screen name="ListJobPost" component={ListJobPost} />
+    </Stack.Navigator>
+  )
+}
 
 const Tab = createBottomTabNavigator();
 const MyTab = () => {
@@ -98,10 +116,10 @@ const MyTab = () => {
           } else if (route.name === 'MyLogin') {
             iconName = 'login';
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-          } else if (route.name === 'ProfileApplicant') {
+          } else if (route.name === 'MyProfileApplicant') {
             iconName = 'account';
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-          } else if (route.name === 'ProfileEmployer') {
+          } else if (route.name === 'MyProfileEmployer') {
             iconName = 'office-building';
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
           } else if (route.name === 'Admin') {
@@ -138,10 +156,10 @@ const MyTab = () => {
       ) : (
         <>
           {user.is_applicant && (
-            <Tab.Screen name="ProfileApplicant" component={MyProfileApplicant} options={{ title: 'Ứng viên' }} />
+            <Tab.Screen name="MyProfileApplicant" component={MyProfileApplicant} options={{ title: 'Ứng viên' }} />
           )}
           {user.is_employer && (
-            <Tab.Screen name="ProfileEmployer" component={ProfileEmployer} options={{ title: 'Nhà tuyển dụng' }} />
+            <Tab.Screen name="MyProfileEmployer" component={MyProfileEmployer} options={{ title: 'Nhà tuyển dụng' }} />
           )}
           {(user.is_staff || user.is_superuser) && (
             <Tab.Screen name="Admin" component={ProfileAdmin} options={{ title: 'Quản trị viên' }} />
