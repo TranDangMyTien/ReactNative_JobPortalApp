@@ -20,17 +20,20 @@ const ListApply = () => {
     navigation.navigate("HomeScreen");
   };
 
-  const fetchJobs = async (pageNum = 1) => {
-    if (loading) return;
+  const fetchJobs = async (pageNum = 1, isRefreshing = false) => {
+    if (loading && !isRefreshing) return;
     setLoading(true);
-    console.log(user.applicant.id);
 
     try {
       const data = await fetchListApplyJobs(user.applicant.id, pageNum);
-      console.log(data);
       if (data && Array.isArray(data.results)) {
-        setJobs(data.results);
-        setFilteredJobs(data.results);
+        if (pageNum === 1) {
+          setJobs(data.results);
+          setFilteredJobs(data.results);
+        } else {
+          setJobs(prevJobs => [...prevJobs, ...data.results]);
+          setFilteredJobs(prevJobs => [...prevJobs, ...data.results]);
+        }
         setPage(pageNum);
         setHasNextPage(!!data.next);
       } else {
@@ -50,18 +53,12 @@ const ListApply = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    fetchJobs(1);
+    fetchJobs(1, true);
   };
 
-  const handleNextPage = () => {
-    if (hasNextPage) {
+  const handleLoadMore = () => {
+    if (hasNextPage && !loading) {
       fetchJobs(page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      fetchJobs(page - 1);
     }
   };
 
@@ -122,25 +119,11 @@ const ListApply = () => {
             keyExtractor={(item) => item.id.toString()}
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={loading && hasNextPage ? <ActivityIndicator size="large" color="#0000ff" /> : null}
           />
         )}
-        <View style={styles.paginationContainer}>
-          <TouchableOpacity
-            style={[styles.button, page === 1 && styles.buttonDisabled]}
-            onPress={handlePrevPage}
-            disabled={page === 1}
-          >
-            <Text style={styles.buttonText}>Trang trước</Text>
-          </TouchableOpacity>
-          <Text style={styles.pageNumber}>Trang {page}</Text>
-          <TouchableOpacity
-            style={[styles.button, !hasNextPage && styles.buttonDisabled]}
-            onPress={handleNextPage}
-            disabled={!hasNextPage}
-          >
-            <Text style={styles.buttonText}>Trang tiếp theo</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );

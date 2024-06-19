@@ -5,7 +5,7 @@ import { MyUserContext } from '../../../configs/Contexts';
 import { useNavigation } from '@react-navigation/native';
 import Logout from '../Logout';
 import { IconButton, Surface, Divider, Appbar, Title, TextInput } from 'react-native-paper';
-import { endpoints, authAPI } from '../../../configs/APIs';
+import { endpoints, authApi, authAPI } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Experiences from './Experiences';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -49,8 +49,9 @@ const ProfileApplicant = () => {
     ];
 
     const dataAccount = [
-        { id: 1, title: 'Xóa tài khoản', icon: 'delete' },
+        { id: 1, title: 'Cập nhật thông tin tài khoản', icon: 'update' },
         { id: 2, title: 'Xóa thông tin Applicant',  icon: 'clear' },
+        { id: 3, title: 'Xóa tài khoản',  icon: 'delete' },
     ];
 
     const renderItem = ({ item }) => (
@@ -66,7 +67,7 @@ const ProfileApplicant = () => {
 
     const renderItemAcc = ({ item }) => (
         <TouchableOpacity
-           onPress={() => navigateToDetail(item)}
+           onPress={() => navigateToDetailAcc(item)}
            style={styles.itemAccount}
         >
           <Icon name={item.icon} size={24} color="#00b14f" />   
@@ -78,7 +79,7 @@ const ProfileApplicant = () => {
 
     const navigateToDetail = (item) => {
         if (item.id === 1) {
-          navigation.navigate('UpdateUser'); 
+          navigation.navigate('UpdateApplicant'); 
         } else if (item.id === 2) {
           navigation.navigate('FavoriteJobs'); //lưu trữ cái bài tuyển dụng yêu thích
         }
@@ -87,6 +88,18 @@ const ProfileApplicant = () => {
         }
         else if (item.id === 4) {
             navigation.navigate('ListApply'); //Việc làm đã ứng tuyển
+        }
+        
+      };
+
+    const navigateToDetailAcc = (item) => {
+        if (item.id === 1) {
+          navigation.navigate('UpdateUser'); 
+        } else if (item.id === 2) {
+          navigation.navigate(''); //xóa thông tin cá nhân
+        }
+        else if (item.id === 3) {
+            navigation.navigate(''); //xóa tài khoản
         }
         
       };
@@ -223,8 +236,8 @@ const ProfileApplicant = () => {
         console.log('Update address');
     };
 
-    // HÀM CHỌN ẢNH TỪ THƯ VIỆN
-    const handleChooseImage = async () => {
+     // HÀM CHỌN ẢNH TỪ THƯ VIỆN
+     const handleChooseImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -233,7 +246,7 @@ const ProfileApplicant = () => {
         });
 
         if (!result.canceled) {
-            // Hiển thị cửa sổ cảnh báo xác nhận chọn ảnh
+            const selectedImage = result.assets[0];
             Alert.alert(
                 'Xác nhận',
                 'Bạn có muốn chọn ảnh này?',
@@ -245,8 +258,8 @@ const ProfileApplicant = () => {
                     {
                         text: 'Xác nhận',
                         onPress: () => {
-                            handleUpdateAvatar(),
-                            setSelectedImage(result.assets[0]);
+                            setSelectedImage(selectedImage),
+                            handleUpdateAvatar(selectedImage);
                         },
                     },
                 ],
@@ -365,12 +378,23 @@ const ProfileApplicant = () => {
 
     return (
         <>
-            <Appbar.Header style={{backgroundColor: '#28A745', height: 30}}>
-                    <Appbar.BackAction onPress={handleGoBack} color='white'/>
-                    <Appbar.Content title="Thông tin cá nhân" 
-                        style={{ alignItems: 'center', justifyContent: 'center', color: "#fff" }} 
-                        titleStyle={{ color: 'white' }}
+             <Appbar.Header style={{ backgroundColor: '#28A745', height: 30 }}>
+                <View style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                }}>
+                    <Appbar.BackAction onPress={handleGoBack} color="white" />
+                    <Appbar.Content
+                        title="Thông tin cá nhân"
+                        titleStyle={{
+                        color: 'white',
+                        textAlign: 'center',
+                        flex: 1,
+                        }}
                     />
+                </View>
             </Appbar.Header>
             <View style={{ backgroundColor: '#28A745', alignItems: 'center', zIndex: 1 }}>
                 <Surface style={[styles.surface, { elevation: 10, top: 8}]}>
@@ -612,9 +636,9 @@ const ProfileApplicant = () => {
 
              {/* Modal Chọn Chuyên Ngành */}
             <Career
-                visible={careerModal}
+                visible={careerModal} //Prop điều khiển xem modal
                 onClose={() => setCareerModal(false)}
-                onSave={updateCareer}
+                onSave={updateCareer} //lưu thông tin
             />
             
             <Logout navigation={navigation} />
@@ -643,7 +667,7 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 10,
         borderWidth: 1,
-        backgroundColor: "#a52a2a"
+        backgroundColor: "#2f4f4f"
       },
       itemTitle: {
         flex: 1,

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
+import axiosInstance, { endpoints, authApi, authAPI } from '../../configs/APIs';
 import { MyUserContext } from '../../configs/Contexts';
 import { getToken } from '../../utils/storage';
 import moment from 'moment';
-
+import { useNavigation } from '@react-navigation/native';
 const Comments = ({ jobId, comments, setComments }) => {
   const [comment, setComment] = useState('');
   const [menuVisible, setMenuVisible] = useState(null);
   const [editCommentId, setEditCommentId] = useState(null);
   const [editContent, setEditContent] = useState('');
   const user = useContext(MyUserContext);
-
+  const navigation = useNavigation();
   // method GET comments
   useEffect(() => {
     const fetchComments = async () => {

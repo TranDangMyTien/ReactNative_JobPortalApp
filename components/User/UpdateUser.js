@@ -121,7 +121,6 @@ const UpdateUser = () => {
 
             setLoading(true);
             console.info(USER.id)
-            console.info(USERID)
             try {
                 const authToken = await AsyncStorage.getItem("token");
                 let res = await APIs.patch(endpoints['patch_current_user'](userId), form, {

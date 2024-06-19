@@ -5,7 +5,7 @@ import { MyUserContext } from '../../../configs/Contexts';
 import { useNavigation } from '@react-navigation/native';
 import Logout from '../Logout';
 import { IconButton, Surface, Divider, Appbar, Title } from 'react-native-paper';
-import { endpoints, authAPI } from '../../../configs/APIs';
+import { endpoints, authAPI, authApi } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';

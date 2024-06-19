@@ -1,6 +1,7 @@
 import axios from "axios";
 const BASE_URL = "https://tdmtien.pythonanywhere.com/";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getToken } from '../utils/storage';
 
 export const endpoints = {
     'register': '/users/', //Phần tạo user 
@@ -27,8 +28,6 @@ export const endpoints = {
     // thông tin applicant
     'applicant-detail': (id) => `/applicants/${id}/`,
 
-    'jobs-list': '/recruitments_post/',  // tất cả bài tuyển dụng công việc
-    'fetch-job-list': (pageNum) => `/recruitments_post/?page=${pageNum}`, //phân trang
 
     
     'all-jobs': (pageNum) => `/recruitments_post/newest/?page=${pageNum}`,
@@ -40,7 +39,6 @@ export const endpoints = {
     'delete-post': (id, post_id ) => `/employers/${id}/recruitment_posts/${post_id}/delete/`,
     'detail-apply': (id) => `/recruitments_post/${id}/list_apply/`,
     'list-apply': (id, pageNum) => `/applicants/${id}/applied_jobs/?page=${pageNum}`,
-
 
     
     //Phần JobApply 
@@ -102,9 +100,19 @@ export const fetchPopularJobs = async (pageNum = 1) => {
   };
   
 // DANH SÁCH CÁC CÔNG VIỆC MÀ APPLICANT ĐÃ APPLY
+// export const fetchListApplyJobs = async (id, pageNum = 1) => {
+//     try {
+//         const response = axios.get(BASE_URL + endpoints['list-apply'](id, pageNum));
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching apply job:', error);
+//         throw error;
+//     }
+// };
 export const fetchListApplyJobs = async (id, pageNum = 1) => {
     try {
-        const response = axios.get(BASE_URL + endpoints['list-apply'](id, pageNum));
+        const authToken = await AsyncStorage.getItem("token");
+        const response = authApi(authToken).get(endpoints['list-apply'](id, pageNum));
         return response.data;
     } catch (error) {
         console.error('Error fetching apply job:', error);
@@ -114,7 +122,7 @@ export const fetchListApplyJobs = async (id, pageNum = 1) => {
 
 
 //Xác thực người dùng 
-export const authApi = (token) => {
+export const authAPI = (token) => {
     return axios.create({
         baseURL: BASE_URL,
         headers: {
@@ -123,8 +131,36 @@ export const authApi = (token) => {
     });
   }
 
-export default axios.create({
-    baseURL: BASE_URL,
+  export const authApi = (token) => {
+    return axios.create({
+        baseURL: BASE_URL,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+  }
+
+  const axiosInstance = axios.create({
+    baseURL: BASE_URL
   });
 
+  axiosInstance.interceptors.request.use(async (config) => {
+    const token = await getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  }, 
+    (error) => {
+    return Promise.reject(error);
+  });
+
+// export default axios.create({
+//     baseURL: BASE_URL,
+//   });
+
+// Tạo một axios instance mới
+
+
+export default axiosInstance;
 

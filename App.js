@@ -1,13 +1,14 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MyDispatchContext, MyUserContext } from './configs/Contexts';
 import { useContext, useReducer, useEffect } from 'react';
 import MyUserReducer from './configs/Reducers';
+import { authApi, endpoints,  } from './configs/APIs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './components/Home/HomeScreen';
-import PostList from './components/RecruitmentsPost/PostList';
 import ProfileApplicant from './components/User/Applicant/ProfileApplicant';
 import ProfileEmployer from './components/User/Employer/ProfileEmployer';
 import ProfileAdmin from './components/User/Admin/ProfileAdmin';
@@ -33,6 +34,7 @@ import SuitableJob from './components/User/Applicant/SuitableJob';
 import UpdateEmployer from './components/User/Employer/UpdateEmployer';
 import CreateRecruitment from './components/User/Employer/CreateRecruitment';
 import ListJobPost from './components/User/Employer/ListJobPost';
+import ListApply from './components/User/Applicant/ListApply';
 // Cài đặt stack
 const Stack = createStackNavigator();
 
@@ -41,7 +43,6 @@ const MyHome = () => {
     <PaperProvider>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="JobList" component={PostList} />
         <Stack.Screen name="JobDetail" component={PostDetail} />
         <Stack.Screen name="NewPost" component={NewPost} />
         <Stack.Screen name="ApplyJob" component={ApplyJob} />
@@ -81,6 +82,7 @@ const MyProfileApplicant = () => {
       <Stack.Screen name="UpdateUser" component={UpdateUser} />
       <Stack.Screen name="UpdateApplicant" component={UpdateApplicant} />
       <Stack.Screen name="SuitableJob" component={SuitableJob} />
+      <Stack.Screen name="ListApply" component={ListApply} />
 
     </Stack.Navigator>
   )
@@ -186,7 +188,7 @@ export default function App() {
       }
 
       try {
-        const currentUser = await authAPI(authToken).get(
+        const currentUser = await authApi(authToken).get(
           endpoints["current-user"]
         );
         dispatch({ type: "login", payload: currentUser.data });
