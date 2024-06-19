@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MyUserContext } from '../../configs/Contexts';
 import Comments from './Comments';
 import Ratings from './Ratings';
-import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
+import axiosInstance, { authApi, endpoints } from '../../configs/APIs';
 import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
 
@@ -164,11 +164,11 @@ const PostDetail = () => {
     //setMenuVisible(false);
   };
 
-  
+  // DELETE BÀI TUYỂN DỤNG, NẾU ĐÓ LÀ BÀI VIẾT DO NHÀ TUYỂN DỤNG TẠO RA 
   const handleDeleteJob = async (jobId, userId) => {
     try {
       const token = await getToken();
-      const res = await authAPI(token).delete(endpoints['delete-post'](jobId, userId));
+      const res = await authApi(token).delete(endpoints['delete-post'](jobId, userId));
       if (res.status === 200) {
         Alert.alert('Thông báo', 'Xóa bài tuyển dụng thành công.');
         navigation.navigate('HomeScreen'); 
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   },
   appbarHeader: {
     backgroundColor: '#28A745',
-    height: 45,  // Set the height here
+    height: 30,
   },
   contentContainer: {
     padding: 16,

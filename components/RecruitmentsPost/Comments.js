@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
+import axiosInstance, { authApi, endpoints } from '../../configs/APIs';
 import { MyUserContext } from '../../configs/Contexts';
 import { getToken } from '../../utils/storage';
 import moment from 'moment';
@@ -53,7 +53,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     form.append('content', comment);
     try {
       const token = await getToken();
-      const response = await authAPI(token).post(
+      const response = await authApi(token).post(
         endpoints['add-comments']
         (jobId), 
         form,
@@ -78,7 +78,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     try {
       setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
       const token = await getToken();
-      await authAPI(token).delete(
+      await authApi(token).delete(
         endpoints['del-comment']
         (jobId, commentId));
     } catch (error) {
@@ -100,7 +100,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     }
     try {
       const token = await getToken();
-      const response = await authAPI(token).patch(
+      const response = await authApi(token).patch(
         endpoints['patch-comment']
         (jobId, editCommentId), {
         content: editContent,

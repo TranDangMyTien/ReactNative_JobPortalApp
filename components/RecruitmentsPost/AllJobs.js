@@ -77,7 +77,7 @@ const AllJobs = () => {
   const renderJobItem = ({ item }) => (
     <TouchableOpacity
       style={styles.jobItem}
-      onPress={() => navigation.navigate('JobDetail', { jobId: item.id.toString() })}
+      onPress={() => navigation.navigate('PostDetail', { jobId: item.id.toString() })}
     >
       <Image source={{ uri: item.image }} style={styles.jobImage} />
       <View style={styles.jobDetails}>
@@ -91,12 +91,23 @@ const AllJobs = () => {
 
   return (
     <>
-      <Appbar.Header style={{ backgroundColor: '#28A745', height: 45 }}>
-        <Appbar.BackAction onPress={handleGoBack} color="white" />
-        <Appbar.Content title="Tất cả bài tuyển dụng"
-          style={{ alignItems: 'center', justifyContent: 'center' }}
-          titleStyle={{ color: 'white' }}
-        />
+      <Appbar.Header style={{ backgroundColor: '#28A745', height: 30 }}>
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <Appbar.BackAction onPress={handleGoBack} color="white" />
+          <Appbar.Content
+            title="Tất cả bài tuyển dụng"
+            titleStyle={{
+              color: 'white',
+              textAlign: 'center',
+              flex: 1,
+            }}
+          />
+        </View>
       </Appbar.Header>
       <View style={styles.container}>
         <View style={{ marginBottom: 10, marginTop: 10 }}>

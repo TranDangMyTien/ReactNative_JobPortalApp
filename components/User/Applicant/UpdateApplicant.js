@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Appbar, TouchableRipple } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import Experiences from './Experiences';
-import axiosInstance, {authAPI, endpoints } from '../../../configs/APIs'; 
+import axiosInstance, {authApi, endpoints } from '../../../configs/APIs'; 
 import { getToken } from '../../../utils/storage';
 import { MyUserContext, MyDispatchContext  } from '../../../configs/Contexts';
 import CV from './CV';
@@ -102,7 +102,7 @@ const UpdateApplicant = () => {
             });
 
             const token = await getToken();
-            const res = await authAPI(token).put(
+            const res = await authApi(token).put(
                 endpoints["update-applicant"](user.applicant.id), 
                 form,
                 {

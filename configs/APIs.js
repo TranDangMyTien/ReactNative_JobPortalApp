@@ -11,13 +11,10 @@ export const endpoints = {
     'update-applicant': (userId) => `/applicants/${userId}/`,
     'update-employer': (userId) => `/employers/${userId}/`,
     // Phần tạo application 
-    //https://tdmtien.pythonanywhere.com/users/{id}/create_applicant/
     'create-applicant': (userId) => `/users/${userId}/create_applicant/`,
     // Phần tạo employer 
-    //https://tdmtien.pythonanywhere.com/users/{id}/create_employer/
     'create-employer': (userId) => `/users/${userId}/create_employer/`,
     //Lấy danh sách các model phụ 
-
     'skills': '/skills/',
     'areas':'/areas/',
     'careers':'/careers/',
@@ -30,6 +27,8 @@ export const endpoints = {
     'jobs-list': '/recruitments_post/',  // tất cả bài tuyển dụng công việc
     'fetch-job-list': (pageNum) => `/recruitments_post/?page=${pageNum}`, //phân trang
 
+    //tìm kiếm ứng viên theo tiêu chí
+    'search_applicant' : `/applicants/search_applicant/`,
     
     'all-jobs': (pageNum) => `/recruitments_post/newest/?page=${pageNum}`,
     'popular-jobs': (pageNum) => `/recruitments_post/popular/?page=${pageNum}`,
@@ -62,18 +61,7 @@ export const fetchApplyPost = (id) => {
     return axios.get(BASE_URL + endpoints['apply-job'](id));
   }
   
-  
-// // ds các bài tuyển dụng mới nhất
-// export const fetchJobList = async (pageNum = 1) => {
-//     try {
-//         const response = await axios.get(BASE_URL + endpoints['fetch-job-list'](pageNum));
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching job list:', error);
-//         throw error;
-//     }
-// };
-  
+
 //Chi tiết danh sách công việc 
 export const fetchJobDetail = (id) => {
     return axios.get(BASE_URL + endpoints['job-detail'](id));
@@ -123,8 +111,9 @@ export const authApi = (token) => {
     });
   }
 
-export default axios.create({
-    baseURL: BASE_URL,
-  });
+const axiosInstance = axios.create({
+baseURL: BASE_URL
+});
 
 
+export default axiosInstance;

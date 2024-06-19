@@ -4,7 +4,7 @@ import React, { useState, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getToken } from '../../../utils/storage';
 import { MyUserContext, MyDispatchContext  } from '../../../configs/Contexts';
-import {authAPI, endpoints } from '../../../configs/APIs'; 
+import {authApi, endpoints } from '../../../configs/APIs'; 
 import { LogBox } from 'react-native';
 
 
@@ -94,7 +94,7 @@ const UpdateEmployer = () => {
         setLoading(true);
         try {
             const token = await getToken();
-            const res = await authAPI(token).put(endpoints['update-employer'](user.employer.id), 
+            const res = await authApi(token).put(endpoints['update-employer'](user.employer.id), 
             form, 
             {
                 headers: {

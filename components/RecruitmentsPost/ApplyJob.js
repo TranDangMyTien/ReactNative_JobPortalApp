@@ -5,8 +5,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyUserContext } from "../../configs/Contexts";
 import { RadioButton } from "react-native-paper";
 import APIs, { authApi, endpoints } from "../../configs/APIs";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import { getToken } from "../../utils/storage";
+
 const ApplyJob = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -17,7 +17,7 @@ const ApplyJob = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [maxLength, setMaxLength] = useState(1000);
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
-  const { jobId } = route.params; //Lấy id bài để đăng tuyển
+  const { jobId } = route.params; 
   const user = useContext(MyUserContext);
   const applicantId = user.applicant.id;
 
@@ -47,14 +47,14 @@ const ApplyJob = () => {
 
     setLoading(true);
     try {
-      const authToken = await AsyncStorage.getItem("token");
-      let res = await authApi(authToken).post(
+      const token = await getToken();
+      let res = await authApi(token).post(
         endpoints["job-apply"](jobId, applicantId),
         form,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

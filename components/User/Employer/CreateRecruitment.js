@@ -19,7 +19,7 @@ import {
 	Text,
 	TextInput,
 } from "react-native-paper";
-import axiosInstance, { authAPI, endpoints } from "../../../configs/APIs";
+import axiosInstance, { authApi, endpoints } from "../../../configs/APIs";
 import { MyUserContext } from "../../../configs/Contexts";
 import { getToken } from "../../../utils/storage";
 
@@ -200,7 +200,7 @@ const CreateRecruitment = () => {
 		setLoading(true);
 		try {
 			const token = await getToken();
-			const res = await authAPI(token).post(
+			const res = await authApi(token).post(
 				endpoints["create-recruitment"],
 				form,
 				{

@@ -163,7 +163,7 @@ const HomeScreen = () => {
           onChangeText={(t) => search(t, setTitle)}
           style={styles.searchBar}
           inputStyle={styles.searchInput}
-          iconColor="#ff4500" // Change the color of the search icon
+          iconColor="#ff4500"
         />
       </View>
       <View style={{ flex: 1 }}>
@@ -210,9 +210,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   searchBar: {
-    borderRadius: 25, // Rounded corners
-    height: 50, // Specific height
-    backgroundColor: "#f0f0f0", // Gray background color
+    borderRadius: 25, 
+    height: 50,
+    backgroundColor: "#f0f0f0", 
   },
   searchInput: {
     fontSize: 16,

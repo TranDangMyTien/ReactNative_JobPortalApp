@@ -57,7 +57,7 @@ const Ratings = ({ jobId }) => {
   // };
 
   const handleSubmit = () => {
-    handleRating(rating); 
+    // handleRating(rating); 
   };
 
   return (
