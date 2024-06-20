@@ -15,10 +15,10 @@ const RegisterEmployer = ({ route }) => {
     const [employer, setEmployer] = useState({});
     const [err, setErr] = useState(false);
     const [companyTypeError, setCompanyTypeError] = useState(false); // Thêm state để lưu trữ lỗi loại hình công ty
-    const { userId } = route.params;
+    // const { userId } = route.params;
 
     // // TEST BẰNG TAY - Tạo EMPLOYER 
-    // const userId = 73;
+    const userId = 30;
 
     const fields = [{
         "label": "Tên công ty",
@@ -87,6 +87,7 @@ const RegisterEmployer = ({ route }) => {
         form.append('user', (userId));
 
         console.info(form);
+        console.info(userId);
         setLoading(true);
         try {
             let res = await APIs.post(endpoints['create-employer'](userId), form, {
@@ -96,7 +97,7 @@ const RegisterEmployer = ({ route }) => {
             });
 
             if (res.status === 201)
-                nav.navigate("Login");  //Đăng ký xong thì chuyển qua login 
+                nav.navigate("MyLogin");  //Đăng ký xong thì chuyển qua login 
         } catch (ex) {
             console.error(ex);
             setErr(true);  // Hiển thị lỗi nếu có lỗi xảy ra

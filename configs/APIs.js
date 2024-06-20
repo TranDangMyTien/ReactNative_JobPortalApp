@@ -1,5 +1,7 @@
 import axios from "axios";
-const BASE_URL = "https://tdmtien.pythonanywhere.com/";
+// const BASE_URL = "https://tdmtien.pythonanywhere.com/";
+const BASE_URL = "http://192.168.1.7:8000/";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from '../utils/storage';
 
@@ -28,7 +30,10 @@ export const endpoints = {
     // thông tin applicant
     'applicant-detail': (id) => `/applicants/${id}/`,
 
+    // Gợi ý 
+    'find-applicant-suggestions': (employerId) =>`/employers/${employerId}/find_applicants/`,
 
+    'search-applicant': '/applicants/search_applicant/',
     
     'all-jobs': (pageNum) => `/recruitments_post/newest/?page=${pageNum}`,
     'popular-jobs': (pageNum) => `/recruitments_post/popular/?page=${pageNum}`,
@@ -44,8 +49,8 @@ export const endpoints = {
     //Phần JobApply 
     "job-apply": (jobId, applicantId) => `/recruitments_post/${jobId}/applicant/${applicantId}/apply/`,
 
-    'list-comment': (id) => `/recruitments_post/${id}/read-comments/`,
-    'add-comments' : (id) => `/recruitments_post/${id}/comments/`,
+    'read-comment': (id) => `/recruitments_post/${id}/read-comments/`,
+    "add-comments" : (id,userId) => `/recruitments_post/${id}/comments/${userId}/user/`,
     'del-comment': (id, commentId) => `/recruitments_post/${id}/comments/${commentId}/delete/`,
     'patch-comment': (id, commentId) => `/recruitments_post/${id}/comments/${commentId}/partial-update/`,
     //
@@ -60,17 +65,6 @@ export const fetchApplyPost = (id) => {
     return axios.get(BASE_URL + endpoints['apply-job'](id));
   }
   
-  
-// // ds các bài tuyển dụng mới nhất
-// export const fetchJobList = async (pageNum = 1) => {
-//     try {
-//         const response = await axios.get(BASE_URL + endpoints['fetch-job-list'](pageNum));
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching job list:', error);
-//         throw error;
-//     }
-// };
   
 //Chi tiết danh sách công việc 
 export const fetchJobDetail = (id) => {
@@ -99,16 +93,6 @@ export const fetchPopularJobs = async (pageNum = 1) => {
     }
   };
   
-// DANH SÁCH CÁC CÔNG VIỆC MÀ APPLICANT ĐÃ APPLY
-// export const fetchListApplyJobs = async (id, pageNum = 1) => {
-//     try {
-//         const response = axios.get(BASE_URL + endpoints['list-apply'](id, pageNum));
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching apply job:', error);
-//         throw error;
-//     }
-// };
 export const fetchListApplyJobs = async (id, pageNum = 1) => {
     try {
         const authToken = await AsyncStorage.getItem("token");
@@ -155,11 +139,6 @@ export const authAPI = (token) => {
     return Promise.reject(error);
   });
 
-// export default axios.create({
-//     baseURL: BASE_URL,
-//   });
-
-// Tạo một axios instance mới
 
 
 export default axiosInstance;

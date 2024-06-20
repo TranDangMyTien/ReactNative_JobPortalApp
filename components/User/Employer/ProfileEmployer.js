@@ -5,7 +5,7 @@ import { MyUserContext } from '../../../configs/Contexts';
 import { useNavigation } from '@react-navigation/native';
 import Logout from '../Logout';
 import { IconButton, Surface, Divider, Appbar, Title } from 'react-native-paper';
-import { endpoints, authAPI, authApi } from '../../../configs/APIs';
+import { endpoints, authApi } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,18 +14,25 @@ import { Ionicons } from '@expo/vector-icons';
 const ProfileEmployer = () => {
     const navigation = useNavigation();
     const user = useContext(MyUserContext);
+    
     const [profileImage, setProfileImage] = useState(user.avatar);
     const [selectedImage, setSelectedImage] = useState(null);
+
     const [companyName, setCompanyName] = useState(user.employer.companyName || '');
     const [editingCompanyName, setEditingCompanyName] = useState(false);
+
     const [position, setPosition] = useState(user.employer.position || '');
     const [EditingPosition, setEditingPosition] = useState(false);
+
     const [address, setAddress] = useState(user.employer.address || '');
     const [EditingAddress, setEditingAdress] = useState(false);
+
     const [company_type, setCompanyType] = useState(user.employer.company_type || "");
     const [EditingCompanyType, setEditingCompanyType] = useState(false);
+
     const [company_website, setWebsite] = useState(user.employer.company_website || '');
     const [EditingWebsite, setEditingWebsite] = useState(false);
+    
     const [information, setInformation] = useState(user.employer.information || '');
     const [EditingInformation, setEditingInformation] = useState(false);
 
@@ -50,8 +57,10 @@ const ProfileEmployer = () => {
     ];
 
     const dataAccount = [
+        { id: 1, title: 'Cập nhật thông tin tài khoản', icon: 'update' },
         { id: 1, title: 'Xóa tài khoản', icon: 'delete' },
         { id: 2, title: 'Xóa thông tin NTD',  icon: 'clear' },
+
     ];
 
     const renderItem = ({ item }) => (
@@ -67,7 +76,7 @@ const ProfileEmployer = () => {
 
     const renderItemAcc = ({ item }) => (
         <TouchableOpacity
-           onPress={() => navigateToDetail(item)}
+           onPress={() => navigateToDetailAcc(item)}
            style={styles.itemAccount}
         >
           <Icon name={item.icon} size={24} color="#00b14f" />   
@@ -84,10 +93,22 @@ const ProfileEmployer = () => {
           navigation.navigate('CreateRecruitment'); 
         }
         else if (item.id === 3) {
-            navigation.navigate('DetailApply'); 
+            navigation.navigate('FindApplicant'); 
         }
         else if (item.id === 4) {
             navigation.navigate('ListJobPost'); 
+        }
+        
+      };
+
+      const navigateToDetailAcc = (item) => {
+        if (item.id === 1) {
+          navigation.navigate('UpdateUser'); 
+        } else if (item.id === 2) {
+          navigation.navigate(''); //xóa thông tin cá nhân
+        }
+        else if (item.id === 3) {
+            navigation.navigate(''); //xóa tài khoản
         }
         
       };
@@ -148,7 +169,7 @@ const ProfileEmployer = () => {
                     type: selectedImage.mimeType ||'image/jpeg'
                 });
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["patch-avatar"](user.id), 
                 form, 
                 {
@@ -175,7 +196,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('companyName', companyName);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -201,7 +222,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('position', position);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -228,7 +249,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('address', address);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -255,7 +276,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('company_type', company_type);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -282,7 +303,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('company_website', company_website);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -309,7 +330,7 @@ const ProfileEmployer = () => {
             let form = new FormData();
             form.append('information', information);
             const token = await getToken();
-            const res = await authAPI(token).patch(
+            const res = await authApi(token).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
@@ -662,7 +683,7 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 10,
         borderWidth: 1,
-        backgroundColor: "#a52a2a"
+        backgroundColor: "#2f4f4f"
       },
       itemTitle: {
         flex: 1,

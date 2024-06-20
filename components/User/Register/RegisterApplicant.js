@@ -189,7 +189,7 @@ import { LogBox } from "react-native";
           },
         });
         console.info(form);
-        if (res.status === 201) nav.navigate("Login"); // Đăng ký xong thì chuyển qua đăng nhập
+        if (res.status === 201) nav.navigate("MyLogin"); // Đăng ký xong thì chuyển qua đăng nhập
       } catch (ex) {
         console.error(ex);
         setErr(true);

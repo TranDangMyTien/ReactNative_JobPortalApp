@@ -35,6 +35,7 @@ import UpdateEmployer from './components/User/Employer/UpdateEmployer';
 import CreateRecruitment from './components/User/Employer/CreateRecruitment';
 import ListJobPost from './components/User/Employer/ListJobPost';
 import ListApply from './components/User/Applicant/ListApply';
+import FindApplicant from './components/User/Employer/FindApplicant';
 // Cài đặt stack
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ const MyHome = () => {
   return (
     <PaperProvider>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="JobDetail" component={PostDetail} />
         <Stack.Screen name="NewPost" component={NewPost} />
@@ -49,6 +51,7 @@ const MyHome = () => {
         <Stack.Screen name="FavoriteJobs" component={FavoriteJobs} />
         <Stack.Screen name="AllJobs" component={AllJobs} />
         <Stack.Screen name="PopularJobs" component={PopularJobs} />
+        
       </Stack.Navigator>
     </PaperProvider>
   );
@@ -58,9 +61,11 @@ const MyHome = () => {
 const MyRegister = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="RegisterRole" component={RegisterRole} />
-      <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
+    
+    <Stack.Screen name="Register" component={Register} />
+    <Stack.Screen name="RegisterRole" component={RegisterRole} />
+    <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
+
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
     
     </Stack.Navigator>
@@ -96,6 +101,7 @@ const MyProfileEmployer = () => {
       <Stack.Screen name="UpdateEmployer" component={UpdateEmployer} />
       <Stack.Screen name="CreateRecruitment" component={CreateRecruitment} />
       <Stack.Screen name="ListJobPost" component={ListJobPost} />
+      <Stack.Screen name="FindApplicant" component={FindApplicant} />
     </Stack.Navigator>
   )
 }

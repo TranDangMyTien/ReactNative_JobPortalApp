@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axiosInstance, { endpoints, authApi, authAPI } from '../../configs/APIs';
+import axiosInstance, { authAPI, authApi, endpoints } from '../../configs/APIs';
 import { MyUserContext } from '../../configs/Contexts';
 import { getToken } from '../../utils/storage';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Comments = ({ jobId, comments, setComments }) => {
   const [comment, setComment] = useState('');
   const [menuVisible, setMenuVisible] = useState(null);
@@ -13,14 +15,14 @@ const Comments = ({ jobId, comments, setComments }) => {
   const [editContent, setEditContent] = useState('');
   const user = useContext(MyUserContext);
   const navigation = useNavigation();
+  const userId = user ? user.id : null;
+
   // method GET comments
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axiosInstance.get(
-          endpoints['list-comment']
-          (jobId));
-        setComments(Array.isArray(response.data.results) ? response.data.results : []);
+        const response = await axiosInstance.get(endpoints['read-comment'](jobId));
+        setComments(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching comments:', error);
       }
@@ -28,7 +30,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     fetchComments();
   }, [jobId]);
 
-  //method POST comment
+  // method POST comment
   const handleAddComment = async () => {
     if (!comment) {
       Alert.alert('Thông báo', 'Hãy cho tôi 1 vài góp ý nhận xét của bạn về công việc này nhé!.');
@@ -41,7 +43,7 @@ const Comments = ({ jobId, comments, setComments }) => {
         [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Login'),
+            onPress: () => navigation.navigate('MyLogin'),
           },
         ],
         { cancelable: false }
@@ -51,19 +53,16 @@ const Comments = ({ jobId, comments, setComments }) => {
 
     let form = new FormData();
     form.append('content', comment);
+    form.append('user', user.id);
+
     try {
-      const token = await getToken();
-      const response = await authAPI(token).post(
-        endpoints['add-comments']
-        (jobId), 
-        form,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        }
-      );
-      console.log('Comment data:', response.data);
+      const authToken = await AsyncStorage.getItem("token");
+      let response = await authApi(authToken).post(endpoints["add-comments"](jobId, userId), form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
       setComments(prevComments => [...prevComments, response.data]);
       setComment('');
@@ -72,18 +71,28 @@ const Comments = ({ jobId, comments, setComments }) => {
     }
   };
 
-  //method DELETE comment
+  // method DELETE comment
   const handleDeleteComment = async (commentId) => {
-    console.log('ID Comment:', commentId);
-    try {
-      setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
-      const token = await getToken();
-      await authAPI(token).delete(
-        endpoints['del-comment']
-        (jobId, commentId));
-    } catch (error) {
-      console.error('Error deleting comment:', error);
-    }
+    Alert.alert(
+      'Xóa bình luận',
+      'Bạn có chắc chắn muốn xóa bình luận này?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Xóa',
+          onPress: async () => {
+            try {
+              setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+              const token = await getToken();
+              await authAPI(token).delete(endpoints['del-comment'](jobId, commentId));
+            } catch (error) {
+              console.error('Error deleting comment:', error);
+            }
+          },
+          style: 'destructive',
+        },
+      ]
+    );
   };
 
   const handleEditComment = (commentId, currentContent) => {
@@ -92,7 +101,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     setMenuVisible(null);
   };
 
-  //method EDIT comment
+  // method EDIT comment
   const handleSaveEditComment = async () => {
     if (!editContent) {
       Alert.alert('Thông báo', 'Nội dung bình luận không được để trống.');
@@ -100,9 +109,7 @@ const Comments = ({ jobId, comments, setComments }) => {
     }
     try {
       const token = await getToken();
-      const response = await authAPI(token).patch(
-        endpoints['patch-comment']
-        (jobId, editCommentId), {
+      const response = await authAPI(token).patch(endpoints['patch-comment'](jobId, editCommentId), {
         content: editContent,
       });
 
@@ -124,65 +131,69 @@ const Comments = ({ jobId, comments, setComments }) => {
 
   return (
     <View>
-      {comments.map((item, index) => (
-        <View key={index} style={styles.commentItem}>
-          <View style={styles.commentHeader}>
-            <Image
-              source={
-                item.user.avatar
-                ? { uri: item.user.avatar }
-                : require('../../assets/job.png')
-              }
-              style={styles.userAvatar}
-            />
-            <View style={styles.commentInfo}>
-              <Text style={styles.commentAuthor}>
-                By: {item.user.username}
-              </Text>
-              <Text style={styles.commentTimestamp}>{moment(item.created_date).format('DD/MM/YYYY HH:mm')}</Text>
-            </View>
-            
-            {user && user.username === item.user.username && (  
-              <View>
-                <TouchableOpacity onPress={() => setMenuVisible(menuVisible === index ? null : index)}>
-                  <Icon name="more-vert" size={24} color="#888" />
-                </TouchableOpacity>
-                {menuVisible === index && (
-                  <View style={styles.menu}>
-                    <TouchableOpacity onPress={() => handleEditComment(item.id, item.content)}>
-                      <Text style={styles.menuItem}>Sửa</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity onPress={() => handleDeleteComment(item.id)}>
-                      <Text style={styles.menuItem}>Xóa</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+      {comments.map((item, index) => {
+        const { user: commentUser } = item;
+        if (!commentUser) return null; // Nếu user null thì bỏ qua bình luận này
+        return (
+          <View key={item.id} style={styles.commentItem}>
+            <View style={styles.commentHeader}>
+              <Image
+                source={
+                  commentUser.avatar
+                    ? { uri: user.avatar }
+                    : require('../../assets/job.png')
+                }
+                style={styles.userAvatar}
+              />
+              <View style={styles.commentInfo}>
+                <Text style={styles.commentAuthor}>
+                  By: {user.username}
+                </Text>
+                <Text style={styles.commentTimestamp}>{moment(item.created_date).format('DD/MM/YYYY HH:mm')}</Text>
               </View>
+
+              {user && user.username === commentUser.username && (
+                <View>
+                  <TouchableOpacity onPress={() => setMenuVisible(menuVisible === index ? null : index)}>
+                    <Icon name="more-vert" size={24} color="#888" />
+                  </TouchableOpacity>
+                  {menuVisible === index && (
+                    <View style={styles.menu}>
+                      <TouchableOpacity onPress={() => handleEditComment(item.id, item.content)}>
+                        <Text style={styles.menuItem}>Sửa</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity onPress={() => handleDeleteComment(item.id)}>
+                        <Text style={styles.menuItem}>Xóa</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+            </View>
+            {editCommentId === item.id ? (
+              <View>
+                <TextInput
+                  style={styles.commentInput}
+                  value={editContent}
+                  onChangeText={setEditContent}
+                />
+                <View style={{ flexDirection: 'row', justifyContent: "flex-end" }}>
+                  <TouchableOpacity onPress={handleSaveEditComment} style={styles.sendSave}>
+                    <Text style={styles.sendButtonText}>Lưu</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { setEditCommentId(null); setEditContent(''); }} style={styles.cancelButton}>
+                    <Text style={styles.sendButtonText}>Hủy</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.content}</Text>
             )}
           </View>
-          {editCommentId === item.id ? (
-            <View>
-              <TextInput
-                style={styles.commentInput}
-                value={editContent}
-                onChangeText={setEditContent}
-              />
-              <View style={{flexDirection: 'row', justifyContent: "flex-end"}}> 
-                <TouchableOpacity onPress={handleSaveEditComment} style={styles.sendSave}>
-                  <Text style={styles.sendButtonText}>Lưu</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setEditCommentId(null); setEditContent(''); }} style={styles.cancelButton}>
-                  <Text style={styles.sendButtonText}>Hủy</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.content}</Text>
-          )}
-        </View>
-      ))}
-      <View style={{flexDirection: "row", justifyContent: "center", marginBottom: 50}}>
+        );
+      })}
+      <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 50 }}>
         <TextInput
           style={styles.commentInput}
           placeholder="Nhập bình luận của bạn"
