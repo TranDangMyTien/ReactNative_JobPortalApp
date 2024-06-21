@@ -1,6 +1,6 @@
 import axios from "axios";
 // const BASE_URL = "https://tdmtien.pythonanywhere.com/";
-const BASE_URL = "http://192.168.1.7:8000/";
+const BASE_URL = "http://192.168.1.6:8000/";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from '../utils/storage';
@@ -39,7 +39,7 @@ export const endpoints = {
     'popular-jobs': (pageNum) => `/recruitments_post/popular/?page=${pageNum}`,
     'job-detail': (id) => `/recruitments_post/${id}/`,  
     'apply-job': (id) => `/recruitments_post/${id}/apply/`, 
-    'create-recruitment': `/recruitments_post/`,
+    'create-recruitment': '/recruitments_post/',
     'list-createpost': (id, pageNum) => `/employers/${id}/recruitment_posts/?page=${pageNum}`,
     'delete-post': (id, post_id ) => `/employers/${id}/recruitment_posts/${post_id}/delete/`,
     'detail-apply': (id) => `/recruitments_post/${id}/list_apply/`,

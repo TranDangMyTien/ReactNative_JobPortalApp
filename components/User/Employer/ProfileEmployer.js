@@ -53,7 +53,7 @@ const ProfileEmployer = () => {
         { id: 1, title: 'Cập nhật nhà tuyển dụng', icon: 'update' },
         { id: 2, title: 'Đăng tin tuyển dụng',  icon: 'favorite' },
         { id: 3, title: 'Tìm kiếm ứng viên',  icon: 'search' },
-        { id: 4, title: 'Quản lý bài đăng tuyển dụng', icon: 'work'},
+        // { id: 4, title: 'Quản lý bài đăng tuyển dụng', icon: 'work'},
     ];
 
     const dataAccount = [

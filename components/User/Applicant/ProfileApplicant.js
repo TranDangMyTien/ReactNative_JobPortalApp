@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Career from './Career';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons  } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileApplicant = () => {
@@ -42,7 +43,7 @@ const ProfileApplicant = () => {
     };
 
     const dataList = [
-        { id: 1, title: 'Cập nhật thông tin cá nhân', icon: 'update' },
+        { id: 1, title: 'Cập nhật thông tin ứng viên', icon: 'update' },
         { id: 2, title: 'Việc làm yêu thích',  icon: 'favorite' },
         { id: 3, title: 'Việc làm phù hợp',  icon: 'check-circle' },
         { id: 4, title: 'Việc làm đã ứng tuyển', icon: 'work'},
@@ -281,13 +282,14 @@ const ProfileApplicant = () => {
                     name: selectedImage.fileName || 'avatar.jpg', 
                     type: selectedImage.mimeType ||'image/jpeg'
                 });
-            const token = await getToken();
-            const res = await authAPI(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["patch-avatar"](user.id), 
                 form, 
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -320,20 +322,22 @@ const ProfileApplicant = () => {
                 type: selectedCV.mimeType || 'image/jpeg' 
  
             });
-            const token = await getToken();
-            const res = await authAPI(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id),  
                 form, 
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
             if (res.status === 200 ) {
+                Alert.alert('Thông báo', 'Cập nhật ảnh CV thành công!');
                 setUploadCV(selectedCV.uri);
                 setSelectedCV(null); // Reset state sau khi cập nhật thành công
-                Alert.alert('Thông báo', 'Cập nhật ảnh CV thành công!');
+                
             } else {
                 console.error('Lỗi khi cập nhật ảnh CV');
             }

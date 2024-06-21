@@ -4,35 +4,32 @@ import { useNavigation } from '@react-navigation/native';
 import { Appbar, TouchableRipple } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import Experiences from './Experiences';
-import axiosInstance, {authAPI, endpoints } from '../../../configs/APIs'; 
+import axiosInstance, { authAPI, endpoints } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
-import { MyUserContext, MyDispatchContext  } from '../../../configs/Contexts';
+import { MyUserContext, MyDispatchContext } from '../../../configs/Contexts';
 import CV from './CV';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UpdateApplicant = () => {
     const navigation = useNavigation();
     const user = useContext(MyUserContext);
     const dispatch = useContext(MyDispatchContext);
 
-    const [experience, setExperience] = useState('');
-    const [salary_expectation, setSalary] = useState('');
+    const [experience, setExperience] = useState(user?.applicant?.experience || '');
+    const [salaryExpectation, setSalaryExpectation] = useState(user?.applicant?.salary_expectation || '');
+    const [selectedCareer, setSelectedCareer] = useState(user?.applicant?.career || null);
+    const [position, setPosition] = useState(user?.applicant?.position || '');
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const [isCareerModal, setCareerModal] = useState(false);
-    const [selectedCareer, setSelectedCareer] = useState(null);
     const [careers, setCareers] = useState([]);
     const [loading, setLoading] = useState(true);
-   
+
     const [isExperienceModal, setExperienceModal] = useState(false);
-    const [position, setPosition] = useState('');
     const [isCVModal, setCVModal] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);  
 
-    const handleGoBack = () => {
-        navigation.navigate("ProfileApplicant");
-    };
+    const applicantId = user?.applicant?.id;
 
-    // Lấy danh sách lĩnh vực công việc
     useEffect(() => {
         const fetchCareers = async () => {
             try {
@@ -51,16 +48,11 @@ const UpdateApplicant = () => {
         fetchCareers();
     }, []);
 
-
-    //lưu lĩnh vực công việc được chọn
     const handleCareerSave = (selectedCareer) => {
         setSelectedCareer(selectedCareer);
         setCareerModal(false);
     };
 
-    //console.log(selectedCareer);
-
-    //lưu kinh nghiệm được chọn
     const handleExperienceSave = (selectedExperience) => {
         setExperience(selectedExperience);
         setExperienceModal(false);
@@ -79,47 +71,54 @@ const UpdateApplicant = () => {
         });
 
         if (!result.canceled) {
-            setSelectedImage(result.assets[0].uri); 
+            setSelectedImage(result.assets[0].uri);
         }
     };
 
-    // update-PUT Info Applicant
     const updateApplicantInfo = async () => {
-        if (!experience || !selectedCareer || !position || !salary_expectation || !selectedImage) {
-            Alert.alert('Thông báo', 'Vui lòng điền đầy đủ thông tin!');
+        const applicantId = user?.applicant?.id; // Ensure applicantId is up-to-date
+
+        if (!experience && !selectedCareer && !position && !salaryExpectation && !selectedImage) {
+            Alert.alert('Thông báo', 'Vui lòng điền ít nhất một thông tin để cập nhật!');
             return;
         }
         try {
             let form = new FormData();
-            form.append('experience', experience);
-            form.append('career', selectedCareer.id); 
-            form.append('position', position);
-            form.append('salary_expectation', salary_expectation);
-            form.append('cv', {
-                uri: selectedImage,
-                name: 'cv.jpg',
-                type: 'image/jpg'
-            });
+            if (experience) form.append('experience', experience);
+            if (selectedCareer) form.append('career', selectedCareer.id);
+            if (position) form.append('position', position);
+            if (salaryExpectation) form.append('salary_expectation', salaryExpectation);
+            if (selectedImage) {
+                form.append('cv', {
+                    uri: selectedImage,
+                    name: 'cv.jpg',
+                    type: 'image/jpg',
+                });
+            }
 
-            const token = await getToken();
-            const res = await authAPI(token).put(
-                endpoints["update-applicant"](user.applicant.id), 
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
+                endpoints["update-applicant"](applicantId),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
 
             if (res.status === 200) {
                 Alert.alert('Thông báo', 'Cập nhật thông tin thành công!');
-                //
                 dispatch({
                     type: 'update_applicant',
-                    payload: res.data 
-                    
+                    payload: res.data,
                 });
+
+                // Cập nhật trạng thái user sau khi cập nhật thông tin thành công
+                const updatedUser = { ...user, applicant: res.data };
+                dispatch({ type: 'update_user', payload: updatedUser });
+
                 navigation.navigate("ProfileApplicant");
             } else {
                 console.error('Lỗi khi cập nhật thông tin');
@@ -129,16 +128,14 @@ const UpdateApplicant = () => {
         }
     };
 
-    // cập nhật
     const handleSubmit = () => {
         updateApplicantInfo();
     };
 
-
     return (
         <>
-            <Appbar.Header style={{backgroundColor: '#00b14f', height: 30, marginBottom: 7}}>
-                <Appbar.BackAction onPress={handleGoBack} />
+            <Appbar.Header style={{ backgroundColor: '#00b14f', height: 30, marginBottom: 7 }}>
+                <Appbar.BackAction onPress={() => navigation.navigate("ProfileApplicant")} />
                 <Appbar.Content title="Cài đặt gợi ý việc làm" style={{ alignItems: 'center', justifyContent: 'center', color: "#fff" }} />
             </Appbar.Header>
             <ScrollView>
@@ -146,10 +143,9 @@ const UpdateApplicant = () => {
                     <Text style={styles.heading}>CẬP NHẬT THÔNG TIN</Text>
                     <Text style={styles.subheading}>Bạn vui lòng hoàn thiện các thông tin dưới đây:</Text>
 
-                    {/* Lĩnh vực công việc - CAREER */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Lĩnh vực công việc *</Text>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.dropdown}
                             onPress={() => setCareerModal(true)}
                         >
@@ -158,7 +154,6 @@ const UpdateApplicant = () => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Vị trí muốn ứng tuyển */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Vị trí *</Text>
                         <TextInput
@@ -170,22 +165,20 @@ const UpdateApplicant = () => {
                         />
                     </View>
 
-                    {/* Mức lương mong muốn */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Mức lương mong muốn *</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Nhập mức lương mong muốn"
-                            value={salary_expectation}
-                            onChangeText={setSalary}
+                            value={salaryExpectation}
+                            onChangeText={setSalaryExpectation}
                             keyboardType="numeric"
                         />
                     </View>
 
-                    {/* Kinh nghiệm */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Kinh nghiệm *</Text>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.dropdown}
                             onPress={() => setExperienceModal(true)}
                         >
@@ -194,7 +187,6 @@ const UpdateApplicant = () => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Upload CV */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Upload CV *</Text>
                         <TouchableRipple onPress={pickImage}>
@@ -213,14 +205,12 @@ const UpdateApplicant = () => {
                 </View>
             </ScrollView>
 
-            {/* Modal kinh nghiệm */}
             <Experiences
                 visible={isExperienceModal}
                 onClose={() => setExperienceModal(false)}
                 onSave={handleExperienceSave}
             />
 
-            {/* Modal CHỌN lĩnh vực công việc */}
             <Modal
                 transparent={true}
                 visible={isCareerModal}
@@ -250,10 +240,10 @@ const UpdateApplicant = () => {
                                 ))}
                             </ScrollView>
                         )}
-                        <TouchableOpacity 
-                            style={styles.modalButton} 
-                            onPress={() => { 
-                                handleCareerSave(selectedCareer); 
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={() => {
+                                handleCareerSave(selectedCareer);
                             }}
                         >
                             <Text style={styles.modalButtonText}>Xong</Text>
@@ -262,7 +252,6 @@ const UpdateApplicant = () => {
                 </View>
             </Modal>
 
-            {/* Modal upload CV */}
             <Modal
                 transparent={true}
                 visible={isCVModal}

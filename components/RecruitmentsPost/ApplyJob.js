@@ -54,7 +54,7 @@ const ApplyJob = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
+            "Authorization": `Bearer ${authToken}`,
           },
         }
       );

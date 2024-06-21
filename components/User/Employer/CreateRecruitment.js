@@ -22,6 +22,7 @@ import {
 import axiosInstance, { authAPI, endpoints } from "../../../configs/APIs";
 import { MyUserContext } from "../../../configs/Contexts";
 import { getToken } from "../../../utils/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateRecruitment = () => {
 	const [job, setJob] = useState({});
@@ -42,6 +43,7 @@ const CreateRecruitment = () => {
 	const [date, setDate] = useState(new Date());
 	const [showDatePicker, setShowDatePicker] = useState(false);
 
+	const employerId = user ? user.employer.id : null;
 	const handleGoBack = () => {
 		nav.navigate("ProfileEmployer");
 	};
@@ -135,21 +137,21 @@ const CreateRecruitment = () => {
 	};
 
 	//kiểm tra trường null
-	const validateFields = () => {
-		for (let field of fields) {
-			if (!job[field.name]) {
-				console.log(`Trường ${field.name}: null`);
-				return false;
-			}
-		}
-		return true;
-	};
+	// const validateFields = () => {
+	// 	for (let field of fields) {
+	// 		if (!job[field.name]) {
+	// 			console.log(`Trường ${field.name}: null`);
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// };
 
 	useEffect(() => {
 		// GET AREA
 		const fetchAreas = async () => {
 			try {
-				const res = await axiosInstance.get(endpoints["areas"]);
+				let res = await axiosInstance.get(endpoints['areas']);
 				setAreas(res.data);
 			} catch (err) {
 				console.error(err);
@@ -158,8 +160,8 @@ const CreateRecruitment = () => {
 		// GET EmploymentType
 		const fetchEmploymentTypes = async () => {
 			try {
-				const res = await axiosInstance.get(
-					endpoints["employment-types"]
+				let res = await axiosInstance.get(
+					endpoints['employment-types']
 				);
 				setEmploymentTypes(res.data);
 			} catch (err) {
@@ -169,7 +171,7 @@ const CreateRecruitment = () => {
 		// GET CAREER
 		const fetchCareers = async () => {
 			try {
-				const res = await axiosInstance.get(endpoints["careers"]);
+				let res = await axiosInstance.get(endpoints['careers']);
 				setCareers(res.data);
 			} catch (err) {
 				console.error(err);
@@ -185,10 +187,10 @@ const CreateRecruitment = () => {
 	const postJob = async () => {
 		setErr(false);
 
-		if (!validateFields()) {
-			Alert.alert("Lỗi", "Vui lòng điền đầy đủ tất cả các trường.");
-			return;
-		}
+		// if (!validateFields()) {
+		// 	Alert.alert("Lỗi", "Vui lòng điền đầy đủ tất cả các trường.");
+		// 	return;
+		// }
 
 		let form = new FormData();
 		for (let key in job) {
@@ -196,16 +198,17 @@ const CreateRecruitment = () => {
 		}
 		form.append("reported", "False");
 		form.append("active", "True");
-		form.append("employer", user.employer.id);
+		form.append("employer", employerId);
 		setLoading(true);
 		try {
-			const token = await getToken();
-			const res = await authAPI(token).post(
-				endpoints["create-recruitment"],
+			const authToken = await AsyncStorage.getItem("token");
+			let res = await authAPI(authToken).post(
+				endpoints['create-recruitment'],
 				form,
 				{
 					headers: {
 						"Content-Type": "multipart/form-data",
+						"Authorization": `Bearer ${authToken}`,
 					},
 				}
 			);
@@ -216,7 +219,7 @@ const CreateRecruitment = () => {
 				setGender("");
 				setDate(new Date());
 				setSelectedImage(null);
-				nav.navigate("ListJobPost"); //Điều hướng tới Quản lý bài đăng tuyển dụng
+				nav.navigate("ProfileEmployer"); 
 			}
 		} catch (ex) {
 			console.error(ex.response);
@@ -336,19 +339,21 @@ const CreateRecruitment = () => {
 						})}
 
 						<Text style={styles.pickerLabel}>Chọn giới tính</Text>
-						<Picker
-							selectedValue={gender}
-							onValueChange={(value) => handleGender(value)}
-							style={styles.picker}>
-							<Picker.Item label="Chọn giới tính" value="" />
-							<Picker.Item label="Male" value="0" />
-							<Picker.Item label="Female" value="1" />
-							<Picker.Item
-								label="Both male and Female"
-								value="2"
-							/>
-							<Picker.Item label="Gender unknown" value="3" />
-						</Picker>
+						<View style={styles.pickerContainer}>
+							<Picker
+								selectedValue={gender}
+								onValueChange={(value) => handleGender(value)}
+								style={styles.picker}>
+								<Picker.Item label="Chọn giới tính" value="" />
+								<Picker.Item label="Male" value="0" />
+								<Picker.Item label="Female" value="1" />
+								<Picker.Item
+									label="Both male and Female"
+									value="2"
+								/>
+								<Picker.Item label="Gender unknown" value="3" />
+							</Picker>
+						</View>
 						{genderError && (
 							<HelperText type="error" visible={genderError}>
 								Vui lòng chọn giới tính hợp lệ.
@@ -358,52 +363,70 @@ const CreateRecruitment = () => {
 						<Text style={styles.pickerLabel}>
 							Chọn loại hình công việc
 						</Text>
-						<Picker
-							selectedValue={job.employmentType}
-							onValueChange={(value) =>
-								updateState("employmentType", value)
-							}
-							style={styles.picker}>
-							{employmentTypes.map((type) => (
-								<Picker.Item
-									key={type.id}
-									label={type.type}
-									value={type.id}
-								/>
-							))}
-						</Picker>
+						<View style={styles.pickerContainer}>
+							<Picker
+								selectedValue={job.employmentType}
+								onValueChange={(value) =>
+									updateState("employmentType", value)
+								}
+								style={styles.picker}>
+								{employmentTypes.length > 0 ? (
+									employmentTypes.map((type) => (
+										<Picker.Item
+											key={type.id}
+											label={type.type}
+											value={type.id}
+										/>
+									))
+								) : (
+									<Picker.Item label="Loading..." value="" />
+								)}
+							</Picker>
+						</View>
 
 						<Text style={styles.pickerLabel}>Chọn khu vực</Text>
-						<Picker
-							selectedValue={job.area}
-							onValueChange={(value) =>
-								updateState("area", value)
-							}
-							style={styles.picker}>
-							{areas.map((area) => (
-								<Picker.Item
-									key={area.id}
-									label={area.name}
-									value={area.id}
-								/>
-							))}
-						</Picker>
+						<View style={styles.pickerContainer}>
+							<Picker
+								selectedValue={job.area}
+								onValueChange={(value) =>
+									updateState("area", value)
+								}
+								style={styles.picker}>
+								{areas.length > 0 ? (
+									areas.map((area) => (
+										<Picker.Item
+											key={area.id}
+											label={area.name}
+											value={area.id}
+										/>
+									))
+								) : (
+									<Picker.Item label="Loading..." value="" />
+								)}
+							</Picker>
+						</View>
 
 						<Text style={styles.pickerLabel}>Chọn lĩnh vực</Text>
-						<Picker
-							selectedValue={job.career}
-							onValueChange={(value) =>
-								updateState("career", value)
-							}
-							style={styles.picker}>
-							{careers.map((career) => (
-								<Picker.Item
-									key={career.id}
-									label={career.name}
-									value={career.id}
-								/>
-							))}
-						</Picker>
+						<View style={styles.pickerContainer}>
+							<Picker
+								selectedValue={job.career}
+								onValueChange={(value) =>
+									updateState("career", value)
+								}
+								style={styles.picker}>
+								{careers.length > 0 ? (
+									careers.map((career) => (
+										<Picker.Item
+											key={career.id}
+											label={career.name}
+											value={career.id}
+										/>
+									))
+								) : (
+									<Picker.Item label="Loading..." value="" />
+								)}
+							</Picker>
+						</View>
 
 						<HelperText type="error" visible={err}>
 							Có lỗi xảy ra!
@@ -453,13 +476,16 @@ const styles = StyleSheet.create({
 	},
 	picker: {
 		height: 50,
-		marginVertical: 5,
-		backgroundColor: "white",
 	},
 	pickerLabel: {
 		marginTop: 15,
 		fontSize: 16,
 		fontWeight: "bold",
+	},
+	pickerContainer: {
+		backgroundColor: "white",
+		marginVertical: 5,
+		borderRadius: 8,
 	},
 });
 
