@@ -120,7 +120,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
-        <Image source={require("../Images/Job_Portal_Mtie.png")} style={styles.bannerImage} />
+        <Image source={require("../Images/Job_Portal_Mtie_fixSize.png")} style={styles.bannerImage} />
       </View>
       <Text style={styles.title}>OU Job đồng hành cùng bạn</Text>
       <View style={styles.chipContainer}>

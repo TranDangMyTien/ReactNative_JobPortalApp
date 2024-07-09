@@ -157,26 +157,26 @@ const MyTab = () => {
 
       {user === null ? (
         <>
-          <Tab.Screen name="MyRegister" component={MyRegister} options={{ title: 'Đăng ký' }} />
-          <Tab.Screen name="MyLogin" component={MyLogin} options={{ title: 'Đăng nhập' }} />
-          
+            <Tab.Screen name="MyRegister" component={MyRegister} options={{ title: 'Đăng ký' }} />
+            <Tab.Screen name="MyLogin" component={MyLogin} options={{ title: 'Đăng nhập' }} />
         </>
       ) : (
-        <>
-          {user.is_applicant && (
-            <Tab.Screen name="MyProfileApplicant" component={MyProfileApplicant} options={{ title: 'Ứng viên' }} />
+      <>
+          {user.applicant !== null && (
+              <Tab.Screen name="MyProfileApplicant" component={MyProfileApplicant} options={{ title: 'Ứng viên' }} />
           )}
-          {user.is_employer && (
-            <Tab.Screen name="MyProfileEmployer" component={MyProfileEmployer} options={{ title: 'Nhà tuyển dụng' }} />
+          {user.employer !== null && (
+              <Tab.Screen name="MyProfileEmployer" component={MyProfileEmployer} options={{ title: 'Nhà tuyển dụng' }} />
           )}
           {(user.is_staff || user.is_superuser) && (
-            <Tab.Screen name="Admin" component={ProfileAdmin} options={{ title: 'Quản trị viên' }} />
+              <Tab.Screen name="Admin" component={ProfileAdmin} options={{ title: 'Quản trị viên' }} />
           )}
-          {!user.is_applicant && !user.is_employer && !user.is_staff && !user.is_superuser && (
-            <Tab.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} />
+          {user.applicant === null && user.employer === null && !user.is_staff && !user.is_superuser && (
+              <Tab.Screen name="Profile" component={Profile} options={{ title: 'Profile' }} />
           )}
-        </>
-      )}
+      </>
+    )}
+
     </Tab.Navigator>
   );
 }
