@@ -6,8 +6,8 @@ import { fetchAllJobs } from '../../configs/APIs';
 const NewPost = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  // const [page, setPage] = useState(1);
+  // const [hasMore, setHasMore] = useState(true);
   const navigation = useNavigation();
 
   const fetchJobs = async () => {

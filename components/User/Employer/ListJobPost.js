@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
 import { Searchbar, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { endpoints } from '../../../configs/APIs';
-import axiosInstance from '../../../configs/APIs';
+import APIs, { endpoints } from '../../../configs/APIs';
 import { MyUserContext } from '../../../configs/Contexts';
 
 const ListJobPost = () => {
@@ -26,7 +25,7 @@ const ListJobPost = () => {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.get(endpoints['list-createpost'](user.employer.id, pageNum));
+      const response = await APIs.get(endpoints['list-createpost'](user.employer.id, pageNum));
       const data = response.data;
       if (data && Array.isArray(data.results)) {
         const newPosts = data.results;

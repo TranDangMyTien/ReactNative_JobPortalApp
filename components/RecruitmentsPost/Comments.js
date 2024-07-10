@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axiosInstance, { authAPI, authApi, endpoints } from '../../configs/APIs';
+import APIs, { authAPI, authApi, endpoints } from '../../configs/APIs';
 import { MyUserContext } from '../../configs/Contexts';
-import { getToken } from '../../utils/storage';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,7 +20,7 @@ const Comments = ({ jobId, comments, setComments }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axiosInstance.get(endpoints['read-comment'](jobId));
+        const response = await APIs.get(endpoints['read-comment'](jobId));
         setComments(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching comments:', error);
@@ -57,7 +56,7 @@ const Comments = ({ jobId, comments, setComments }) => {
 
     try {
       const authToken = await AsyncStorage.getItem("token");
-      let response = await authApi(authToken).post(endpoints["add-comments"](jobId, userId), form, {
+      let response = await authAPI(authToken).post(endpoints["add-comments"](jobId, userId), form, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${authToken}`,
@@ -83,8 +82,8 @@ const Comments = ({ jobId, comments, setComments }) => {
           onPress: async () => {
             try {
               setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
-              const token = await getToken();
-              await authAPI(token).delete(endpoints['del-comment'](jobId, commentId));
+              const authToken = await AsyncStorage.getItem("token");
+              await authAPI(authToken).delete(endpoints['del-comment'](jobId, commentId));
             } catch (error) {
               console.error('Error deleting comment:', error);
             }
@@ -108,8 +107,8 @@ const Comments = ({ jobId, comments, setComments }) => {
       return;
     }
     try {
-      const token = await getToken();
-      const response = await authAPI(token).patch(endpoints['patch-comment'](jobId, editCommentId), {
+      const authToken = await AsyncStorage.getItem("token");
+      let response = await authAPI(authToken).patch(endpoints['patch-comment'](jobId, editCommentId), {
         content: editContent,
       });
 

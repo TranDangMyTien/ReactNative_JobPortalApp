@@ -4,9 +4,8 @@ import { Checkbox, Snackbar } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyUserContext } from "../../configs/Contexts";
 import { RadioButton } from "react-native-paper";
-import APIs, { authApi, endpoints } from "../../configs/APIs";
+import { authAPI, endpoints } from "../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 const ApplyJob = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -48,7 +47,7 @@ const ApplyJob = () => {
     setLoading(true);
     try {
       const authToken = await AsyncStorage.getItem("token");
-      let res = await authApi(authToken).post(
+      let res = await authAPI(authToken).post(
         endpoints["job-apply"](jobId, applicantId),
         form,
         {

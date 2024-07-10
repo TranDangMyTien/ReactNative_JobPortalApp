@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Chip, List, ActivityIndicator, Searchbar } from "react-native-paper";
 import { View, Text, StyleSheet, TouchableOpacity, Image, RefreshControl, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { authApi, endpoints } from "../../../configs/APIs";
+import { authAPI, endpoints } from "../../../configs/APIs";
 import "moment/locale/vi";
 import Footer from "../../Footer/Footer";
 import { isCloseToBottom } from "../../../utils/utils";
@@ -27,7 +27,7 @@ const FindApplicant = () => {
 
       try {
         setLoading(true);
-        let res = await authApi(authToken).get(url);
+        let res = await authAPI(authToken).get(url);
 
         if (page === 1) setApplicant(res.data.results);
         else if (page > 1)

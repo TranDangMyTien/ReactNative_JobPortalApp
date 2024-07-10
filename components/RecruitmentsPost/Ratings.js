@@ -1,8 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Button, Text, FlatList } from 'react-native'; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
-import { getToken } from '../../utils/storage';
+import APIs, { authAPI, endpoints } from '../../configs/APIs';
 import { MyUserContext } from '../../configs/Contexts';
 
 const Ratings = ({ jobId }) => {

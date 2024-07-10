@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import Logout from '../Logout';
 import { IconButton, Surface, Divider, Appbar, Title, TextInput } from 'react-native-paper';
 import { endpoints, authApi, authAPI } from '../../../configs/APIs';
-import { getToken } from '../../../utils/storage';
 import Experiences from './Experiences';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Career from './Career';
@@ -119,13 +118,14 @@ const ProfileApplicant = () => {
         try {
             let form = new FormData();
             form.append('career', selectedCareer.id);
-            const token = await getToken();
-            const res = await authAPI(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id), 
                 form, 
             {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": 'multipart/form-data',
+                "Authorization": `Bearer ${authToken}`,
               },
             });
       
@@ -146,13 +146,14 @@ const ProfileApplicant = () => {
         try {
             let form = new FormData();
             form.append('experience', selectedExperience);
-            const token = await getToken();
-            const res = await authAPI(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id), 
                 form, 
             {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                    "Content-Type": 'multipart/form-data',
+                    "Authorization": `Bearer ${authToken}`,
               },
             });
       
@@ -174,13 +175,14 @@ const ProfileApplicant = () => {
             try {
                 let form = new FormData();
                 form.append('salary_expectation', salary_expectation);
-                const token = await getToken();
-                const res = await authAPI(token).patch(
+                const authToken = await AsyncStorage.getItem("token");
+                let res = await authAPI(authToken).patch(
                     endpoints["update-applicant"](user.applicant.id), 
                     form, 
                 {
                   headers: {
-                    'Content-Type': 'multipart/form-data',
+                    "Content-Type": 'multipart/form-data',
+                    "Authorization": `Bearer ${authToken}`,
                   },
                 });
           
@@ -201,13 +203,14 @@ const ProfileApplicant = () => {
             try {
                 let form = new FormData();
                 form.append('position', position);
-                const token = await getToken();
-                const res = await authAPI(token).patch(
+                const authToken = await AsyncStorage.getItem("token");
+                let res = await authAPI(authToken).patch(
                     endpoints["update-applicant"](user.applicant.id), 
                     form, 
                 {
                   headers: {
-                    'Content-Type': 'multipart/form-data',
+                    "Content-Type": 'multipart/form-data',
+                    "Authorization": `Bearer ${authToken}`,
                   },
                 });
           

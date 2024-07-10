@@ -66,7 +66,7 @@ const MyRegister = () => {
     <Stack.Screen name="RegisterRole" component={RegisterRole} />
     <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
 
-      <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
+    <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
     
     </Stack.Navigator>
   )

@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Chip, List, ActivityIndicator, Searchbar } from "react-native-paper";
+import { Chip, ActivityIndicator, Searchbar } from "react-native-paper";
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import NewPost from "../RecruitmentsPost/NewPost";
 import TopPopular from '../RecruitmentsPost/TopPopular';
 import APIs, { endpoints } from "../../configs/APIs";
 import "moment/locale/vi";
-import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Footer from "../Footer/Footer";
-const Stack = createStackNavigator();
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -20,17 +18,6 @@ const HomeScreen = () => {
   const [title, setTitle] = useState("");
   const [page, setPage] = useState(1);
 
-  const renderOption = (option, optionText) => (
-    <TouchableOpacity
-      style={[
-        styles.option,
-        selectedOption === option && styles.selectedOption,
-      ]}
-      onPress={() => setSelectedOption(option)}
-    >
-      <Text style={styles.optionText}>{optionText}</Text>
-    </TouchableOpacity>
-  );
 
   const renderHeader = () => (
     <View style={styles.sectionHeader}>
@@ -49,7 +36,6 @@ const HomeScreen = () => {
           <Text style={styles.viewAllButton}>All Jobs</Text>
         </TouchableOpacity>
       </View>
-      {/* component danh sách top công việc được apply nhiều nhất */}
       <TopPopular />
     </View>
   );
@@ -163,7 +149,7 @@ const HomeScreen = () => {
           onChangeText={(t) => search(t, setTitle)}
           style={styles.searchBar}
           inputStyle={styles.searchInput}
-          iconColor="#ff4500" // Change the color of the search icon
+          iconColor="#ff4500"
         />
       </View>
       <View style={{ flex: 1 }}>
@@ -210,9 +196,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   searchBar: {
-    borderRadius: 25, // Rounded corners
-    height: 50, // Specific height
-    backgroundColor: "#f0f0f0", // Gray background color
+    borderRadius: 25, 
+    height: 50, 
+    backgroundColor: "#f0f0f0", 
   },
   searchInput: {
     fontSize: 16,
@@ -226,7 +212,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     marginRight: 8,
-    borderRadius: 16, // More rounded corners
+    borderRadius: 16, 
     backgroundColor: "#f0f0f0",
     borderColor: "#00838f",
     borderWidth: 1,
@@ -236,10 +222,10 @@ const styles = StyleSheet.create({
     borderColor: "#4caf50",
   },
   chipText: {
-    color: "#000000", // Default color for all types
+    color: "#000000", 
   },
   chipTextSelected: {
-    color: "#FFFFFF", // Text color when selected
+    color: "#FFFFFF", 
   },
   row: {
     flexDirection: "row",

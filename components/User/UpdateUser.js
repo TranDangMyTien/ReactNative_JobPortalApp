@@ -124,9 +124,12 @@ const UpdateUser = () => {
             try {
                 const authToken = await AsyncStorage.getItem("token");
                 let res = await APIs.patch(endpoints['patch_current_user'](userId), form, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    Authorization: `Bearer ${authToken}`,
+                    headers: { 
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`, 
 
+                    },
+                   
                 });
 
                 if (res.status === 200 && res.data) {

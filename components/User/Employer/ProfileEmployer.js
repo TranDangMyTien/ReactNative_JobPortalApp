@@ -5,11 +5,12 @@ import { MyUserContext } from '../../../configs/Contexts';
 import { useNavigation } from '@react-navigation/native';
 import Logout from '../Logout';
 import { IconButton, Surface, Divider, Appbar, Title } from 'react-native-paper';
-import { endpoints, authApi } from '../../../configs/APIs';
+import { endpoints, authAPI } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileEmployer = () => {
     const navigation = useNavigation();
@@ -168,13 +169,14 @@ const ProfileEmployer = () => {
                     name: selectedImage.fileName || 'avatar.jpg', 
                     type: selectedImage.mimeType ||'image/jpeg'
                 });
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authApi(authToken).patch(
                 endpoints["patch-avatar"](user.id), 
                 form, 
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -195,13 +197,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('companyName', companyName);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -221,13 +224,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('position', position);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -248,13 +252,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('address', address);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -275,13 +280,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('company_type', company_type);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -302,13 +308,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('company_website', company_website);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );
@@ -329,13 +336,14 @@ const ProfileEmployer = () => {
         try {
             let form = new FormData();
             form.append('information', information);
-            const token = await getToken();
-            const res = await authApi(token).patch(
+            const authToken = await AsyncStorage.getItem("token");
+            const res = await authAPI(authToken).patch(
                 endpoints["update-employer"](user.employer.id),
                 form,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": 'multipart/form-data',
+                        "Authorization": `Bearer ${authToken}`,
                     },
                 }
             );

@@ -4,8 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Appbar, TouchableRipple } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import Experiences from './Experiences';
-import axiosInstance, { authAPI, endpoints } from '../../../configs/APIs';
-import { getToken } from '../../../utils/storage';
+import APIs, { authAPI, endpoints } from '../../../configs/APIs';
 import { MyUserContext, MyDispatchContext } from '../../../configs/Contexts';
 import CV from './CV';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -33,7 +32,7 @@ const UpdateApplicant = () => {
     useEffect(() => {
         const fetchCareers = async () => {
             try {
-                const response = await axiosInstance.get(endpoints["careers"]);
+                const response = await APIs.get(endpoints["careers"]);
                 if (response.status === 200) {
                     setCareers(response.data);
                 } else {

@@ -6,6 +6,7 @@ import { getToken } from '../../../utils/storage';
 import { MyUserContext, MyDispatchContext  } from '../../../configs/Contexts';
 import {authAPI, endpoints } from '../../../configs/APIs'; 
 import { LogBox } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 // Đóng warning
@@ -93,12 +94,13 @@ const UpdateEmployer = () => {
 
         setLoading(true);
         try {
-            const token = await getToken();
-            const res = await authAPI(token).put(endpoints['update-employer'](user.employer.id), 
+            const authToken = await AsyncStorage.getItem("token");
+            let res = await authAPI(authToken).patch(endpoints['update-employer'](user.employer.id), 
             form, 
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    "Content-Type": 'multipart/form-data',
+                    "Authorization": `Bearer ${authToken}`,
                 }
             });
             if (res.status === 200) {

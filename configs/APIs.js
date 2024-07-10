@@ -61,15 +61,6 @@ export const endpoints = {
 };
 
 
-export const fetchApplyPost = (id) => {
-    return axios.get(BASE_URL + endpoints['apply-job'](id));
-  }
-  
-  
-//Chi tiết danh sách công việc 
-export const fetchJobDetail = (id) => {
-    return axios.get(BASE_URL + endpoints['job-detail'](id));
-}
   
 // TẤT CẢ CÁC CÔNG VIỆC
 export const fetchAllJobs = async (pageNum = 1) => {
@@ -96,7 +87,7 @@ export const fetchPopularJobs = async (pageNum = 1) => {
 export const fetchListApplyJobs = async (id, pageNum = 1) => {
     try {
         const authToken = await AsyncStorage.getItem("token");
-        const response = authApi(authToken).get(endpoints['list-apply'](id, pageNum));
+        const response = authAPI(authToken).get(endpoints['list-apply'](id, pageNum));
         return response.data;
     } catch (error) {
         console.error('Error fetching apply job:', error);
@@ -115,31 +106,5 @@ export const authAPI = (token) => {
     });
   }
 
-  export const authApi = (token) => {
-    return axios.create({
-        baseURL: BASE_URL,
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-  }
-
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL
-  });
-
-  axiosInstance.interceptors.request.use(async (config) => {
-    const token = await getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  }, 
-    (error) => {
-    return Promise.reject(error);
-  });
-
-
-
-export default axiosInstance;
+  
 

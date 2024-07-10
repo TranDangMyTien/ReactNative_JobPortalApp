@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axiosInstance, { endpoints } from '../../../configs/APIs';
+import APIs, { endpoints } from '../../../configs/APIs';
 
 const Career = ({ visible, onClose, onSave }) => {
     const [selectedCareer, setSelectedCareer] = useState(null); 
@@ -13,7 +13,7 @@ const Career = ({ visible, onClose, onSave }) => {
     useEffect(() => {
         const fetchCareers = async () => {
             try {
-                const response = await axiosInstance.get(endpoints["careers"]);
+                let response = await APIs.get(endpoints["careers"]);
                 if (response.status === 200) {
                     setCareers(response.data);
                 } else {

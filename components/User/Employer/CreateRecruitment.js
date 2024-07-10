@@ -19,9 +19,8 @@ import {
 	Text,
 	TextInput,
 } from "react-native-paper";
-import axiosInstance, { authAPI, endpoints } from "../../../configs/APIs";
+import APIs, { authAPI, endpoints } from "../../../configs/APIs";
 import { MyUserContext } from "../../../configs/Contexts";
-import { getToken } from "../../../utils/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateRecruitment = () => {
@@ -151,7 +150,7 @@ const CreateRecruitment = () => {
 		// GET AREA
 		const fetchAreas = async () => {
 			try {
-				let res = await axiosInstance.get(endpoints['areas']);
+				const res = await APIs.get(endpoints['areas']);
 				setAreas(res.data);
 			} catch (err) {
 				console.error(err);
@@ -160,7 +159,7 @@ const CreateRecruitment = () => {
 		// GET EmploymentType
 		const fetchEmploymentTypes = async () => {
 			try {
-				let res = await axiosInstance.get(
+				const res = await APIs.get(
 					endpoints['employment-types']
 				);
 				setEmploymentTypes(res.data);
@@ -171,7 +170,7 @@ const CreateRecruitment = () => {
 		// GET CAREER
 		const fetchCareers = async () => {
 			try {
-				let res = await axiosInstance.get(endpoints['careers']);
+				let res = await APIs.get(endpoints['careers']);
 				setCareers(res.data);
 			} catch (err) {
 				console.error(err);

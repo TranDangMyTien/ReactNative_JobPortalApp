@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MyUserContext } from '../../configs/Contexts';
 import Comments from './Comments';
 import Ratings from './Ratings';
-import axiosInstance, { authAPI, endpoints } from '../../configs/APIs';
+import APIs, { authAPI, endpoints } from '../../configs/APIs';
 import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
 
@@ -120,7 +120,7 @@ const PostDetail = () => {
   useEffect(() => {
     const getJobDetails = async () => {
       try {
-        const response = await axiosInstance.get(endpoints['job-detail'](jobId));
+        const response = await APIs.get(endpoints['job-detail'](jobId));
         setJob(response.data);
 
         const favoriteJobs = JSON.parse(await AsyncStorage.getItem('favoriteJobs')) || [];
@@ -168,8 +168,8 @@ const PostDetail = () => {
   const handleDeleteJob = async (jobId, userId) => {
     try {
       const token = await getToken();
-      const res = await authAPI(token).delete(endpoints['delete-post'](jobId, userId));
-      if (res.status === 200) {
+      let res = await authAPI(token).delete(endpoints['delete-post'](jobId, userId));
+      if (res.status === 204) {
         Alert.alert('Thông báo', 'Xóa bài tuyển dụng thành công.');
         navigation.navigate('HomeScreen'); 
       } else {
@@ -181,8 +181,9 @@ const PostDetail = () => {
     }
   };
 
+  // XỬ LÝ PHẦN LIKE 
   const handleLikeJob = async () => {
-    // Implement logic to toggle like status and send to server if needed
+    
   };
 
   return (
