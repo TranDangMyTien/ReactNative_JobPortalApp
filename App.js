@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -36,10 +36,11 @@ import CreateRecruitment from './components/User/Employer/CreateRecruitment';
 import ListJobPost from './components/User/Employer/ListJobPost';
 import ListApply from './components/User/Applicant/ListApply';
 import FindApplicant from './components/User/Employer/FindApplicant';
+import Splash from './components/SplashScreen/Splash';
 // Cài đặt stack
 const Stack = createStackNavigator();
 
-const MyHome = () => {
+const MyHome = () => { 
   return (
     <PaperProvider>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
@@ -181,6 +182,16 @@ const MyTab = () => {
   );
 }
 
+//Phần Splash 
+const [isShowSplash, serIsShowSplash] = useState(true);
+useEffect(
+  () => {
+    const timeout = setTimeout(() => {
+      serIsShowSplash(false)
+    },1500);
+    return () => clearTimeout(timeout);
+  }, []);
+
 export default function App() {
   const [user, dispatch] = useReducer(MyUserReducer, null);
 
@@ -225,6 +236,8 @@ export default function App() {
   }, []);
 
   return (
+    
+    isShowSplash ? <Splash/> : 
     <NavigationContainer>
       <MyUserContext.Provider value={user}>
         <MyDispatchContext.Provider value={dispatch}>

@@ -63,6 +63,12 @@ const Login = () => {
     }
   };
 
+  const handleLoginWithGoogle = async () => {
+    
+  }
+  const handleLoginWithFacebook  = async () => {}
+
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
@@ -98,10 +104,10 @@ const Login = () => {
       </TouchableOpacity>
       <Text style={styles.registerText}>Hoặc đăng nhập bằng</Text>
       <View style={styles.socialLoginContainer}>
-        <TouchableOpacity style={styles.socialLoginButton}>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithFacebook}>
           <Image source={require('../Images/facebook.png')} style={styles.socialLoginImage} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton}>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithGoogle}>
           <Image source={require('../Images/google.png')} style={styles.socialLoginImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialLoginButton}>
@@ -111,7 +117,7 @@ const Login = () => {
       <Text style={styles.registerText}>
         Đăng nhập để trở thành thành viên của OU Job!
       </Text>
-      <TouchableOpacity style={styles.registerButton} onPress={() => nav.navigate("Register")}>
+      <TouchableOpacity style={styles.registerButton} onPress={() => nav.navigate("MyRegister")}>
         <Text style={styles.registerButtonText}>Bạn chưa có tài khoản? Đăng ký ngay</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.experienceButton} onPress={() => nav.navigate("HomeScreen")}>

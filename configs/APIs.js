@@ -106,5 +106,14 @@ export const authAPI = (token) => {
     });
   }
 
+const APIs = axios.create({
+    baseURL: BASE_URL
+  });
+  
+export default APIs;
+
+
+
+
   
 
