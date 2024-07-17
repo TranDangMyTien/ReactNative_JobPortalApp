@@ -1,0 +1,161 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/DejaVu Fonts License.txt",
+      "sha1": "a90262f3f77ab67b5b95f505ad1e09bdf8406b36"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif-Bold.ttf",
+      "sha1": "4d7c0436747ad282877ebdc907325f645e99243b"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif-BoldItalic.ttf",
+      "sha1": "7b61877534c33e8e707492d3b9e84f9b3a7052ac"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif-Italic.ttf",
+      "sha1": "30e506dc9496fdac0b1e8aa7b97d56862250c86e"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerif.ttf",
+      "sha1": "0c866a2c48156e29c8745d859decdf79abbc883a"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerifCondensed-Bold.ttf",
+      "sha1": "87fcec62ae63119187565580aaceda4f3e39d1ae"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerifCondensed-BoldItalic.ttf",
+      "sha1": "43e83b09019327c5c397fd719306d6618a039e77"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerifCondensed-Italic.ttf",
+      "sha1": "adb62ae35bc5472592f81e48e882c93d661ca206"
+    },
+    {
+      "path": "assets/fonts/DejaVuSerifCondensed.ttf",
+      "sha1": "b0591e3ca53408370428523e13b650e1308603aa"
+    },
+    {
+      "path": "assets/fonts/Faustina-Bold.ttf",
+      "sha1": "b6ae993b11309da33014342a112a6e7770a3dc45"
+    },
+    {
+      "path": "assets/fonts/Faustina-BoldItalic.ttf",
+      "sha1": "4347a8b83b988e4a99988cbab91fe99384710e86"
+    },
+    {
+      "path": "assets/fonts/Faustina-ExtraBold.ttf",
+      "sha1": "bc86eb1be7a66506398c01cec179bb9093d5b398"
+    },
+    {
+      "path": "assets/fonts/Faustina-ExtraBoldItalic.ttf",
+      "sha1": "0a72854021a24ceb4f85078f32011e21cdbff3e7"
+    },
+    {
+      "path": "assets/fonts/Faustina-Italic-VariableFont_wght.ttf",
+      "sha1": "cab47ee4a0c2739a380ab2e6aa02e40ac696e922"
+    },
+    {
+      "path": "assets/fonts/Faustina-Italic.ttf",
+      "sha1": "69b03bfd1273e9cb02e96c0db4d07ce05a536796"
+    },
+    {
+      "path": "assets/fonts/Faustina-Light.ttf",
+      "sha1": "aa3939a8e2c950d335b7d44702ecaa4cecabc582"
+    },
+    {
+      "path": "assets/fonts/Faustina-LightItalic.ttf",
+      "sha1": "b8f84a627f17c590cb41b2b379ce13a10810df7d"
+    },
+    {
+      "path": "assets/fonts/Faustina-Medium.ttf",
+      "sha1": "1854c1a95d8e31d486974149ce2b6b657efbfedd"
+    },
+    {
+      "path": "assets/fonts/Faustina-MediumItalic.ttf",
+      "sha1": "0ba594eb83678e404bbc6f5156401b475d75effb"
+    },
+    {
+      "path": "assets/fonts/Faustina-Regular.ttf",
+      "sha1": "64c94a96eb382a8b84a3c4e3bb2e7f924e1df4c8"
+    },
+    {
+      "path": "assets/fonts/Faustina-SemiBold.ttf",
+      "sha1": "80f3354b377d64f39624c21b7b7702d050c087a8"
+    },
+    {
+      "path": "assets/fonts/Faustina-SemiBoldItalic.ttf",
+      "sha1": "48ba9f8a9fc4ebfe002927a4773fa51a73580c22"
+    },
+    {
+      "path": "assets/fonts/Faustina-VariableFont_wght.ttf",
+      "sha1": "0268b228fa203c1126fc4a2b8f37040d192708f6"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-bd.otf",
+      "sha1": "ad5303a699648537e278aadd0c26e2e6402b2ed1"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-bdit.otf",
+      "sha1": "df9988095df7cf310677b17746fe6bba15dcda7c"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-it.otf",
+      "sha1": "98e5ea57d814e5594409474d10cc7aa048b57aa1"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-lt.otf",
+      "sha1": "6c5d9f5dfb5cb085d91e11f036986468b2cfd237"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-ltit.otf",
+      "sha1": "0376858cb306c85b83a17bfbf9478089bec69d60"
+    },
+    {
+      "path": "assets/fonts/Fontspring-DEMO-theseasons-reg.otf",
+      "sha1": "7b9e8f4fa2f7004f44ca4383ab73eb715d138763"
+    },
+    {
+      "path": "assets/fonts/OFL.txt",
+      "sha1": "d9fe8e058cfc3e4e8494c140bdb89ba24c73bc7c"
+    },
+    {
+      "path": "assets/fonts/README.txt",
+      "sha1": "6f53a4c298ca12cad2d9c43d08ba1725f8a8d8dd"
+    },
+    {
+      "path": "assets/fonts/Sansita-Black.ttf",
+      "sha1": "183fc9b248d7fe720f91b76b6018d68cc382be53"
+    },
+    {
+      "path": "assets/fonts/Sansita-BlackItalic.ttf",
+      "sha1": "78ce3a7480acac508349d1468b80820751d3a296"
+    },
+    {
+      "path": "assets/fonts/Sansita-Bold.ttf",
+      "sha1": "9d9810f8bccf70bc251886c24dbe31ba2f87725b"
+    },
+    {
+      "path": "assets/fonts/Sansita-BoldItalic.ttf",
+      "sha1": "3d0b4456741605ec44e06472570a35a7d70705c9"
+    },
+    {
+      "path": "assets/fonts/Sansita-ExtraBold.ttf",
+      "sha1": "a2c6ed0b847804610aca59fced94ce376d561377"
+    },
+    {
+      "path": "assets/fonts/Sansita-ExtraBoldItalic.ttf",
+      "sha1": "482580ff30fa031a16d9dab188cdb4f61182b2d6"
+    },
+    {
+      "path": "assets/fonts/Sansita-Italic.ttf",
+      "sha1": "7a2a77fe454cb5e432d3834bf195f6f775728ded"
+    },
+    {
+      "path": "assets/fonts/Sansita-Regular.ttf",
+      "sha1": "3c93adde784b9d22edad31ed159dc43afc53c27d"
+    }
+  ]
+}

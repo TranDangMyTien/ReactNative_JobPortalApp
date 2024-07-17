@@ -1,20 +1,24 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  SafeAreaView,
+} from "react-native";
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
-import Config from "react-native-config";
-import { CLIENT_ID, CLIENT_SECRET } from "../../utils/evn";
 import { Alert } from "react-native";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Login = () => {
-  const fields = [
-    { label: "Tên đăng nhập", icon: "email", field: "username" },
-    { label: "Nhập mật khẩu", icon: "lock", field: "password", secureTextEntry: true },
-  ];
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
@@ -34,183 +38,237 @@ const Login = () => {
         ...user,
         // "client_id": CLIENT_ID,
         // "client_secret": CLIENT_SECRET,
-        "client_id": process.env.CLIENT_ID,
-        "client_secret": process.env.CLIENT_SECRET,
-        "grant_type": "password",
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        grant_type: "password",
       });
       await AsyncStorage.setItem("token", res.data.access_token);
       setTimeout(async () => {
-        let user = await authAPI(res.data.access_token).get(endpoints["current-user"]);
+        let user = await authAPI(res.data.access_token).get(
+          endpoints["current-user"]
+        );
         console.info(user.data);
         dispatch({ type: "login", payload: user.data });
         nav.navigate("HomeScreen");
       }, 100);
     } catch (ex) {
       Alert.alert(
-        'Lỗi đăng nhập',
-        'Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!',
+        "Lỗi đăng nhập",
+        "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!",
         [
           {
-            text: 'Đóng',
-            style: 'cancel',
+            text: "Đóng",
+            style: "cancel",
           },
         ],
         { cancelable: false }
       );
-
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLoginWithGoogle = async () => {
-    
-  }
-  const handleLoginWithFacebook  = async () => {
-
-  }
-
+  const handleLoginWithGoogle = async () => {};
+  const handleLoginWithFacebook = async () => {};
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={[styles.headerText, { fontSize: 32, marginTop: -20 }]}>OU Job</Text>
-        <Text style={styles.welcomeText}>Chào mừng bạn đến với OU Job</Text>
-      </View>
-      {fields.map((f) => (
-        <TextInput
-          value={user[f.field]}
-          onChangeText={(t) => change(t, f.field)}
-          key={f.field}
-          style={styles.input}
-          label={f.label}
-          secureTextEntry={f.secureTextEntry}
-          left={<TextInput.Icon icon={f.icon} />}
-          theme={{
-            colors: {
-              background: '#f2f2f2',
-            },
-          }}
-        />
-      ))}
-      <TouchableOpacity style={styles.forgotPassword} onPress={() => nav.navigate("ForgotPassword")}>
-        <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={login}>
-        {loading ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Đăng nhập</Text>
-        )}
-      </TouchableOpacity>
-      {/* ../Images/facebook.png */}
-      <Text style={styles.registerText}>Hoặc đăng nhập bằng</Text>
-      <View style={styles.socialLoginContainer}>
-        <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithFacebook}>
-          <Image source={require('../../assets/Images/facebook_min.webp')} style={styles.socialLoginImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithGoogle}>
-          <Image source={require('../../assets/Images/google_min.webp')} style={styles.socialLoginImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton}>
-          <Image source={require('../../assets/Images/apple_min.webp')} style={styles.socialLoginImage} />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.registerText}>
-        Đăng nhập để trở thành thành viên của OU Job!
-      </Text>
-      <TouchableOpacity style={styles.registerButton} onPress={() => nav.navigate("MyRegister")}>
-        <Text style={styles.registerButtonText}>Bạn chưa có tài khoản? Đăng ký ngay</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.experienceButton} onPress={() => nav.navigate("HomeScreen")}>
-        <Text style={styles.experienceButtonText}>Trải nghiệm không cần đăng nhập</Text>
-      </TouchableOpacity>
-    </View>
-    </TouchableWithoutFeedback>
+    <SafeAreaView style={styles.container}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.content}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>OU Job</Text>
+            <Text style={styles.welcomeText}>Your path to great careers!</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={user.username}
+              onChangeText={(t) => change(t, "username")}
+              style={styles.input}
+              label="Username"
+              left={<TextInput.Icon icon="email" />}
+              theme={{ colors: { primary: "#00B14F" } }}
+            />
+            <TextInput
+              value={user.password}
+              onChangeText={(t) => change(t, "password")}
+              style={styles.input}
+              label="Password"
+              secureTextEntry
+              left={<TextInput.Icon icon="lock" />}
+              theme={{ colors: { primary: "#00B14F" } }}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => nav.navigate("ForgotPassword")}
+          >
+            <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={login}>
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Log in</Text>
+            )}
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View style={styles.socialLoginContainer}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleLoginWithFacebook}
+            >
+              <Icon name="facebook" size={20} color="#3b5998" />
+              <Text style={styles.socialButtonText}>Facebook</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleLoginWithGoogle}
+            >
+              <Icon name="google" size={20} color="#db4a39" />
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>
+              Don't have an account?{" "}
+              <Text
+                style={styles.registerLink}
+                onPress={() => nav.navigate("MyRegister")}
+              >
+                Register now
+              </Text>
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.experienceButton}
+            onPress={() => nav.navigate("HomeScreen")}
+          >
+            <Text style={styles.experienceButtonText}>
+              Experience without logging in
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#fff",
-    padding: 16,
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
   },
   headerContainer: {
-    flexDirection: "column",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 40,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
     color: "#00B14F",
   },
   welcomeText: {
-    fontSize: 16,
+    fontSize: 18,
+    color: "#333",
+    marginTop: 10,
+  },
+  inputContainer: {
+    marginBottom: 20,
   },
   input: {
-    width: "100%",
-    marginBottom: 16,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 30, // Rounded corners
+    marginBottom: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 30,
     elevation: 2,
   },
   forgotPassword: {
     alignSelf: "flex-end",
-    marginBottom: 16,
+    marginBottom: 20,
   },
   forgotPasswordText: {
+    fontSize: 15,
     color: "#00B14F",
   },
   button: {
     backgroundColor: "#00B14F",
     paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 4,
-    marginBottom: 16,
+    borderRadius: 25,
+    alignItems: "center",
   },
   buttonText: {
     color: "#fff",
+    fontSize: 18,
     fontWeight: "bold",
   },
-  registerText: {
-    marginBottom: 16,
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 30,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E0E0E0",
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: "#757575",
   },
   socialLoginContainer: {
     flexDirection: "row",
-    marginBottom: 16,
+    justifyContent: "space-between",
+    marginBottom: 30,
   },
-  socialLoginButton: {
-    backgroundColor: "#f2f2f2",
-    padding: 12,
-    borderRadius: 50,
-    marginHorizontal: 8,
-    elevation: 2,
+  socialButton: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#f5f5f5",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    width: "48%",
   },
-  socialLoginImage: {
-    width: 24,
-    height: 24,
+  socialButtonText: {
+    marginLeft: 10,
+    fontSize: 16,
   },
-  registerButton: {
-    marginBottom: 16,
+  registerContainer: {
+    alignItems: "center",
+    marginBottom: 20,
   },
-  registerButtonText: {
+  registerText: {
+    fontSize: 16,
+  },
+  registerLink: {
     color: "#00B14F",
+    fontWeight: "bold",
   },
   experienceButton: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f5f5f5",
     paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 4,
+    borderRadius: 25,
+    alignItems: "center",
   },
   experienceButtonText: {
     color: "#333",
+    fontSize: 16,
   },
 });
 

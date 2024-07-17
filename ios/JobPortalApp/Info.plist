@@ -47,5 +47,44 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fontspring-DEMO-theseasons-bd.otf</string>
+		<string>Fontspring-DEMO-theseasons-bdit.otf</string>
+		<string>Fontspring-DEMO-theseasons-it.otf</string>
+		<string>Fontspring-DEMO-theseasons-lt.otf</string>
+		<string>Fontspring-DEMO-theseasons-ltit.otf</string>
+		<string>Fontspring-DEMO-theseasons-reg.otf</string>
+		<string>DejaVuSerif-Bold.ttf</string>
+		<string>DejaVuSerif-BoldItalic.ttf</string>
+		<string>DejaVuSerif-Italic.ttf</string>
+		<string>DejaVuSerif.ttf</string>
+		<string>DejaVuSerifCondensed-Bold.ttf</string>
+		<string>DejaVuSerifCondensed-BoldItalic.ttf</string>
+		<string>DejaVuSerifCondensed-Italic.ttf</string>
+		<string>DejaVuSerifCondensed.ttf</string>
+		<string>Faustina-Bold.ttf</string>
+		<string>Faustina-BoldItalic.ttf</string>
+		<string>Faustina-ExtraBold.ttf</string>
+		<string>Faustina-ExtraBoldItalic.ttf</string>
+		<string>Faustina-Italic-VariableFont_wght.ttf</string>
+		<string>Faustina-Italic.ttf</string>
+		<string>Faustina-Light.ttf</string>
+		<string>Faustina-LightItalic.ttf</string>
+		<string>Faustina-Medium.ttf</string>
+		<string>Faustina-MediumItalic.ttf</string>
+		<string>Faustina-Regular.ttf</string>
+		<string>Faustina-SemiBold.ttf</string>
+		<string>Faustina-SemiBoldItalic.ttf</string>
+		<string>Faustina-VariableFont_wght.ttf</string>
+		<string>Sansita-Black.ttf</string>
+		<string>Sansita-BlackItalic.ttf</string>
+		<string>Sansita-Bold.ttf</string>
+		<string>Sansita-BoldItalic.ttf</string>
+		<string>Sansita-ExtraBold.ttf</string>
+		<string>Sansita-ExtraBoldItalic.ttf</string>
+		<string>Sansita-Italic.ttf</string>
+		<string>Sansita-Regular.ttf</string>
+	</array>
 </dict>
 </plist>
