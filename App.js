@@ -4,9 +4,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MyDispatchContext, MyUserContext } from "./configs/Contexts";
-import { useContext, useReducer, useEffect, useState } from "react";
+import {
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import MyUserReducer from "./configs/Reducers";
-import { authApi, endpoints } from "./configs/APIs";
+import { authAPI, endpoints } from "./configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HomeScreen from "./components/Home/HomeScreen";
 import ProfileApplicant from "./components/User/Applicant/ProfileApplicant";
@@ -37,6 +43,8 @@ import ListJobPost from "./components/User/Employer/ListJobPost";
 import ListApply from "./components/User/Applicant/ListApply";
 import FindApplicant from "./components/User/Employer/FindApplicant";
 import Splash from "./components/SplashScreen/Splash";
+import Onbroading from "./components/SplashScreen/Onbroading";
+import { getToken, getOnboarded, storeOnboarded } from "./utils/storage";
 // Cài đặt stack
 const Stack = createStackNavigator();
 
@@ -244,27 +252,52 @@ export default function App() {
   const [user, dispatch] = useReducer(MyUserReducer, null);
   //Phần Splash
   const [isShowSplash, serIsShowSplash] = useState(true);
+  const [hasOnboarded, setHasOnboarded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkOnboardingAndLogin = async () => {
+      const onboarded = await getOnboarded();
+      const token = await getToken();
+      setHasOnboarded(onboarded);
+      setIsLoggedIn(!!token);
+    };
+
+    checkOnboardingAndLogin();
+  }, []);
+
+  // Set up thời gian chạy cho Splash
   useEffect(() => {
     const timeout = setTimeout(() => {
       serIsShowSplash(false);
-    }, 50000);
+    }, 3000);
     return () => clearTimeout(timeout);
   }, []);
 
+  // Kiểm tra người dùng đăng nhập hay chưa
+  //- Kiểm tra bằng cách xem token từ AsyncStorage
+  //- Nếu có token thì gọi API để lấy thông tin người dùng
+  //- Nếu không có token, nó sẽ đăng xuất bằng cách gọi dispatch({ type: "logout" })
   const alreadyLogin = async (retryCount = 0) => {
     try {
+      // AsyncStorage.getItem để lấy giá trị của authToken từ bộ nhớ cục bộ của thiết bị
+      // => Xác thực người dùng sau khi họ đăng nhập thành công
       const authToken = await AsyncStorage.getItem("authToken");
 
+      // Kiểm tra sự tồn tại của authToken
+      // Nếu authToken không tồn tại (false): Người dùng chưa đăng nhập/ authToken đã hết hạn
+      //=> dispatch({ type: "logout" }) để đăng xuất người dùng và trả về ngay sau đó.
       if (!authToken) {
         dispatch({ type: "logout" });
         return;
       }
-
+      // Gọi API để lấy thông tin người dùng hiện tại
       try {
-        const currentUser = await authApi(authToken).get(
+        const currentUser = await authAPI(authToken).get(
           endpoints["current-user"]
         );
         dispatch({ type: "login", payload: currentUser.data });
+        // Xử lý các trường hợp lỗi khi gọi API
       } catch (error) {
         let errorStatus;
         if (error.response) {
@@ -279,6 +312,7 @@ export default function App() {
           console.error(`Error message: ${error.message}`);
         }
       }
+      // Xử lý lỗi của AsyncStorage
     } catch (error) {
       console.error(`AsyncStorage error: ${error.message}`);
     }
@@ -286,6 +320,12 @@ export default function App() {
 
   useEffect(() => {
     alreadyLogin();
+  }, []);
+
+  // Hàm này được gọi khi người dùng hoàn thành Onboarding và sẽ lưu trạng thái đã onboarded vào AsyncStorage và state của ứng dụng.
+  const completeOnboarding = useCallback(async () => {
+    await storeOnboarded();
+    setHasOnboarded(true);
   }, []);
 
   return (
@@ -297,12 +337,40 @@ export default function App() {
         translucent
       />
       {isShowSplash ? (
-        <Splash/>
+        <Splash />
       ) : (
         <NavigationContainer>
           <MyUserContext.Provider value={user}>
             <MyDispatchContext.Provider value={dispatch}>
-              <MyTab />
+              {!hasOnboarded && !isLoggedIn ? (
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                  <Stack.Screen
+                    name="Onbroading"
+                    options={{ headerShown: false }}
+                  >
+                    {(props) => (
+                      <Onbroading {...props} onComplete={completeOnboarding} />
+                    )}
+                  </Stack.Screen>
+                </Stack.Navigator>
+              ) : (
+                <MyTab />
+              )}
+
+              {/* DEMO PHẦN ONBROADING */}
+
+              {/* <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen
+                  name="Onbroading"
+                  options={{ headerShown: false }}
+                >
+                  {(props) => (
+                    <Onbroading {...props} onComplete={completeOnboarding} />
+                  )}
+                </Stack.Screen>
+              </Stack.Navigator> */}
+
+
             </MyDispatchContext.Provider>
           </MyUserContext.Provider>
         </NavigationContainer>

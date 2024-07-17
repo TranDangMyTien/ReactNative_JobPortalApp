@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, Tou
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import APIs, { authApi, endpoints } from "../../configs/APIs";
+import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import Config from "react-native-config";
 import { CLIENT_ID, CLIENT_SECRET } from "../../utils/evn";
@@ -40,7 +40,7 @@ const Login = () => {
       });
       await AsyncStorage.setItem("token", res.data.access_token);
       setTimeout(async () => {
-        let user = await authApi(res.data.access_token).get(endpoints["current-user"]);
+        let user = await authAPI(res.data.access_token).get(endpoints["current-user"]);
         console.info(user.data);
         dispatch({ type: "login", payload: user.data });
         nav.navigate("HomeScreen");
@@ -66,7 +66,9 @@ const Login = () => {
   const handleLoginWithGoogle = async () => {
     
   }
-  const handleLoginWithFacebook  = async () => {}
+  const handleLoginWithFacebook  = async () => {
+
+  }
 
 
   return (
@@ -102,16 +104,17 @@ const Login = () => {
           <Text style={styles.buttonText}>Đăng nhập</Text>
         )}
       </TouchableOpacity>
+      {/* ../Images/facebook.png */}
       <Text style={styles.registerText}>Hoặc đăng nhập bằng</Text>
       <View style={styles.socialLoginContainer}>
         <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithFacebook}>
-          <Image source={require('../Images/facebook.png')} style={styles.socialLoginImage} />
+          <Image source={require('../../assets/Images/facebook_min.webp')} style={styles.socialLoginImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialLoginButton} onPress={handleLoginWithGoogle}>
-          <Image source={require('../Images/google.png')} style={styles.socialLoginImage} />
+          <Image source={require('../../assets/Images/google_min.webp')} style={styles.socialLoginImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialLoginButton}>
-          <Image source={require('../Images/apple.png')} style={styles.socialLoginImage} />
+          <Image source={require('../../assets/Images/apple_min.webp')} style={styles.socialLoginImage} />
         </TouchableOpacity>
       </View>
       <Text style={styles.registerText}>

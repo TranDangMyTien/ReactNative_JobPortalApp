@@ -25,3 +25,23 @@ export const removeToken = async () => {
     console.error('Error removing the auth token', error);
   }
 };
+
+// Lưu trạng thái rằng người dùng đã hoàn thành Onboarding
+export const storeOnboarded = async () => {
+  try {
+    await AsyncStorage.setItem('hasOnboarded', 'true');
+  } catch (error) {
+    console.error('Error storing onboarding status', error);
+  }
+};
+
+// Lấy trạng thái rằng người dùng đã hoàn thành Onboarding hay chưa.
+export const getOnboarded = async () => {
+  try {
+    const onboarded = await AsyncStorage.getItem('hasOnboarded');
+    return onboarded === 'true';
+  } catch (error) {
+    console.error('Error retrieving onboarding status', error);
+    return false;
+  }
+};
