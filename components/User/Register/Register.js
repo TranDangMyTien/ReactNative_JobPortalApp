@@ -19,24 +19,20 @@ const Register = () => {
     const nav = useNavigation();
 
     const fields = [{
-        "label": "Tên",
-        "icon": "account",
-        "name": "first_name"
-    }, {
-        "label": "Họ và tên lót",
-        "icon": "account",
-        "name": "last_name"
-    }, {
-        "label": "Tên đăng nhập",
+        "label": "ou@gmail.com",
+        "icon": "email",
+        "name": "email"
+      }, {
+        "label": "Username",
         "icon": "account",
         "name": "username"
     }, {
-        "label": "Mật khẩu",
+        "label": "Password",
         "icon": "lock",
         "name": "password",
         "secureTextEntry": true // Secure entry for password fields
     }, {
-        "label": "Xác nhận mật khẩu",
+        "label": "Confirm Password",
         "icon": "lock",
         "name": "confirm",
         "secureTextEntry": true
