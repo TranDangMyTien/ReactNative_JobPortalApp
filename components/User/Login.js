@@ -185,7 +185,7 @@ const Login = () => {
 
           <TouchableOpacity style={styles.button} onPress={login}>
             {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
+              <ActivityIndicator size={24} color="#fff" />
             ) : (
               <Text style={styles.buttonText}>Log in</Text>
             )}
@@ -290,6 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#00B14F",
     paddingVertical: 12,
     borderRadius: 25,
+    height: 45, // Fixed height
     alignItems: "center",
     // Thêm shadow
     shadowColor: "#000",

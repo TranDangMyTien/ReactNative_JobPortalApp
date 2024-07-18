@@ -69,7 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 5,
     paddingVertical: 14,
-
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   retryButton: {
     backgroundColor: '#31CE22', 
