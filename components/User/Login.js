@@ -264,11 +264,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
+    // Thêm shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    
   },
   divider: {
     flexDirection: "row",
@@ -298,6 +308,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 25,
     width: "48%",
+     // Thêm shadow
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+       height: 0.15,
+     },
+     shadowOpacity: 0.15,
+    //  shadowRadius: 3.84,
+     elevation: 5,
   },
   socialButtonText: {
     marginLeft: 10,
