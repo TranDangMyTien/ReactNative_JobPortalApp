@@ -12,14 +12,14 @@ const AlertModal = ({ isVisible, title, message, onClose, onRetry, onForgotPassw
         <Text style={styles.message}>{message}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.button, styles.retryButton]} onPress={onRetry}>
-            <Text style={styles.buttonText}>Thử lại</Text>
+            <Text style={styles.buttonText}>Retry</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.forgotButton]} onPress={onForgotPassword}>
-            <Text style={styles.buttonText}>Quên mật khẩu?</Text>
+            <Text style={styles.buttonText}>Forgot password?</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>Đóng</Text>
+          <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </View>
     </Modal>
@@ -65,10 +65,11 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginHorizontal: 5,
+    paddingVertical: 14,
+
   },
   retryButton: {
     backgroundColor: '#31CE22', 

@@ -116,7 +116,7 @@ const Login = () => {
 
   const handleRetry = () => {
     setIsAlertVisible(false);
-    // Có thể thêm logic để reset form đăng nhập
+    setUser({ username: "", password: "" });
   };
 
   const handleForgotPassword = () => {
@@ -238,8 +238,8 @@ const Login = () => {
       </TouchableWithoutFeedback>
       <AlertModal
         isVisible={isAlertVisible}
-        title="Oops! Đăng nhập không thành công"
-        message="Có vẻ như có vấn đề với thông tin đăng nhập của bạn. Hãy kiểm tra lại tên đăng nhập và mật khẩu nhé!"
+        title="Oops! Login unsuccessful ###"
+        message="It looks like there's a problem with your login information. Please check your username and password again!"
         onClose={() => setIsAlertVisible(false)}
         onRetry={handleRetry}
         onForgotPassword={handleForgotPassword}
