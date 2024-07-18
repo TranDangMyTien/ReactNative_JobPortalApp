@@ -24,6 +24,8 @@ const Login = () => {
   const nav = useNavigation();
   const dispatch = useContext(MyDispatchContext);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  // Thêm state mới để quản lý việc hiển thị mật khẩu
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -105,13 +107,20 @@ const Login = () => {
               left={<TextInput.Icon icon="email" />}
               theme={{ colors: { primary: "#00B14F" } }}
             />
+            {/* Cập nhật TextInput cho mật khẩu */}
             <TextInput
               value={user.password}
               onChangeText={(t) => change(t, "password")}
               style={styles.input}
               label="Password"
-              secureTextEntry
+              secureTextEntry={!passwordVisible}
               left={<TextInput.Icon icon="lock" />}
+              right={
+                <TextInput.Icon
+                  icon={passwordVisible ? "eye-off" : "eye"}
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                />
+              }
               theme={{ colors: { primary: "#00B14F" } }}
             />
           </View>
