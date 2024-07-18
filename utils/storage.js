@@ -45,3 +45,30 @@ export const getOnboarded = async () => {
     return false;
   }
 };
+
+// Phần thực hiện Remember me 
+export const storeRememberedToken = async (token) => {
+  try {
+    await AsyncStorage.setItem('rememberedToken', token);
+  } catch (error) {
+    console.error('Error storing the remembered token', error);
+  }
+};
+
+export const getRememberedToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem('rememberedToken');
+    return token;
+  } catch (error) {
+    console.error('Error retrieving the remembered token', error);
+    return null;
+  }
+};
+
+export const removeRememberedToken = async () => {
+  try {
+    await AsyncStorage.removeItem('rememberedToken');
+  } catch (error) {
+    console.error('Error removing the remembered token', error);
+  }
+};

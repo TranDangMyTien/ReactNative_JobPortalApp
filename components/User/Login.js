@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  Switch,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +18,7 @@ import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import { storeRememberedToken, getRememberedToken, removeRememberedToken } from "../../utils/storage";
 const Login = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ const Login = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   // Thêm state mới để quản lý việc hiển thị mật khẩu
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -36,7 +38,16 @@ const Login = () => {
 
   useEffect(() => {
     loadFonts();
+    checkRememberedUser();
   }, []);
+
+  const checkRememberedUser = async () => {
+    const rememberedToken = await getRememberedToken();
+    if (rememberedToken) {
+      setRememberMe(true);
+      // Khi nhấn vào remember thì lần đăng nhập sau chỉ cần đúng trường username/email thì nó tự nhớ mật khẩu
+    }
+  };
 
   const change = (value, field) => {
     setUser((current) => {
@@ -56,7 +67,15 @@ const Login = () => {
         client_secret: process.env.CLIENT_SECRET,
         grant_type: "password",
       });
+      // Luôn lưu token cho phiên hiện tại
       await AsyncStorage.setItem("token", res.data.access_token);
+      // Nếu rememberMe được bật, lưu token riêng để sử dụng cho các lần đăng nhập sau
+      if (rememberMe) {
+        await storeRememberedToken(res.data.access_token);
+      } else {
+        await removeRememberedToken();
+      }
+
       setTimeout(async () => {
         let user = await authAPI(res.data.access_token).get(
           endpoints["current-user"]
@@ -116,8 +135,8 @@ const Login = () => {
               secureTextEntry={!passwordVisible}
               left={<TextInput.Icon icon="lock" />}
               right={
-                <TextInput.Icon
-                  icon={passwordVisible ? "eye-off" : "eye"}
+                <TextInput.Icon 
+                  icon={passwordVisible ? "eye" : "eye-off"}
                   onPress={() => setPasswordVisible(!passwordVisible)}
                 />
               }
@@ -125,12 +144,24 @@ const Login = () => {
             />
           </View>
 
-          <TouchableOpacity
-            style={styles.forgotPassword}
-            onPress={() => nav.navigate("ForgotPassword")}
-          >
-            <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-          </TouchableOpacity>
+          <View style={styles.rememberForgotContainer}>
+            <View style={styles.rememberMeContainer}>
+              <Switch
+                value={rememberMe}
+                onValueChange={setRememberMe}
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={rememberMe ? "#00B14F" : "#f4f3f4"}
+                style={styles.switch}
+              />
+              <Text style={styles.rememberMeText}>Remember me</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.forgotPassword}
+              onPress={() => nav.navigate("ForgotPassword")}
+            >
+              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity style={styles.button} onPress={login}>
             {loading ? (
@@ -225,11 +256,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: "flex-end",
-    marginBottom: 20,
-  },
-  forgotPasswordText: {
-    fontSize: 15,
-    color: "#00B14F",
+    // marginBottom: 20,
   },
   button: {
     backgroundColor: "#00B14F",
@@ -295,6 +322,35 @@ const styles = StyleSheet.create({
   experienceButtonText: {
     color: "#333",
     fontSize: 16,
+  },
+  rememberForgotContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 30,
+    marginTop: -30,
+    height: 40, // Đặt chiều cao cố định cho container
+  },
+  rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: '100%', // Đảm bảo chiều cao bằng với container cha
+  },
+  switch: {
+    transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], // Làm nhỏ Switch
+    marginRight: 8, // Thêm khoảng cách giữa switch và text
+  },
+  rememberMeText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#333",
+    textAlignVertical: 'center', // Căn giữa theo chiều dọc  
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: "#00B14F",
+    textAlignVertical: 'center', // Căn giữa theo chiều dọc
+    marginBottom: 12,
   },
 });
 
