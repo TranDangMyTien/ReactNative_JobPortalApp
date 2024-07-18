@@ -193,7 +193,7 @@ const MyTab = () => {
       <Tab.Screen
         name="MyHome"
         component={MyHome}
-        options={{ title: "Trang chủ" }}
+        options={{ title: "Home" }}
       />
 
       {user === null ? (
@@ -201,12 +201,12 @@ const MyTab = () => {
           <Tab.Screen
             name="MyRegister"
             component={MyRegister}
-            options={{ title: "Đăng ký" }}
+            options={{ title: "Register" }}
           />
           <Tab.Screen
             name="MyLogin"
             component={MyLogin}
-            options={{ title: "Đăng nhập" }}
+            options={{ title: "Log in" }}
           />
         </>
       ) : (

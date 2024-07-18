@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import * as Font from "expo-font";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
@@ -23,6 +23,18 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
   const dispatch = useContext(MyDispatchContext);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
+    });
+    setFontsLoaded(true);
+  };
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
 
   const change = (value, field) => {
     setUser((current) => {
@@ -70,6 +82,10 @@ const Login = () => {
 
   const handleLoginWithGoogle = async () => {};
   const handleLoginWithFacebook = async () => {};
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#00B14F" />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,6 +196,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
+    fontFamily: "Faustina",
     fontWeight: "bold",
     color: "#00B14F",
   },
