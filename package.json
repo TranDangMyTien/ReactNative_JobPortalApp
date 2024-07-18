@@ -42,6 +42,7 @@
     "react-native-gesture-handler": "^2.17.1",
     "react-native-image-picker": "^7.1.2",
     "react-native-loading-spinner-overlay": "^3.0.1",
+    "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.12.3",
     "react-native-reanimated": "^3.14.0",
     "react-native-render-html": "^6.3.4",

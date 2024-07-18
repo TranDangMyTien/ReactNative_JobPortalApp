@@ -18,7 +18,13 @@ import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { storeRememberedToken, getRememberedToken, removeRememberedToken } from "../../utils/storage";
+import AlertModal from '../constants/AlertModal';
+import {
+  storeRememberedToken,
+  getRememberedToken,
+  removeRememberedToken,
+} from "../../utils/storage";
+import Modal from "react-native-modal";
 const Login = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -28,10 +34,12 @@ const Login = () => {
   // Thêm state mới để quản lý việc hiển thị mật khẩu
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   const loadFonts = async () => {
     await Font.loadAsync({
       Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
+      FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
       DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
     });
     setFontsLoaded(true);
@@ -86,17 +94,18 @@ const Login = () => {
         nav.navigate("HomeScreen");
       }, 100);
     } catch (ex) {
-      Alert.alert(
-        "Lỗi đăng nhập",
-        "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!",
-        [
-          {
-            text: "Đóng",
-            style: "cancel",
-          },
-        ],
-        { cancelable: false }
-      );
+      // Alert.alert(
+      //   "Lỗi đăng nhập",
+      //   "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!",
+      //   [
+      //     {
+      //       text: "Đóng",
+      //       style: "cancel",
+      //     },
+      //   ],
+      //   { cancelable: false }
+      // );
+      setIsAlertVisible(true);
     } finally {
       setLoading(false);
     }
@@ -104,6 +113,16 @@ const Login = () => {
 
   const handleLoginWithGoogle = async () => {};
   const handleLoginWithFacebook = async () => {};
+
+  const handleRetry = () => {
+    setIsAlertVisible(false);
+    // Có thể thêm logic để reset form đăng nhập
+  };
+
+  const handleForgotPassword = () => {
+    setIsAlertVisible(false);
+    nav.navigate("ForgotPassword");
+  };
 
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#00B14F" />;
@@ -136,7 +155,7 @@ const Login = () => {
               secureTextEntry={!passwordVisible}
               left={<TextInput.Icon icon="lock" />}
               right={
-                <TextInput.Icon 
+                <TextInput.Icon
                   icon={passwordVisible ? "eye" : "eye-off"}
                   onPress={() => setPasswordVisible(!passwordVisible)}
                 />
@@ -212,11 +231,19 @@ const Login = () => {
             onPress={() => nav.navigate("HomeScreen")}
           >
             <Text style={styles.experienceButtonText}>
-              Experience without logging in
+              EXPERIENCE WITHOUT LOOGING IN
             </Text>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
+      <AlertModal
+        isVisible={isAlertVisible}
+        title="Oops! Đăng nhập không thành công"
+        message="Có vẻ như có vấn đề với thông tin đăng nhập của bạn. Hãy kiểm tra lại tên đăng nhập và mật khẩu nhé!"
+        onClose={() => setIsAlertVisible(false)}
+        onRetry={handleRetry}
+        onForgotPassword={handleForgotPassword}
+      />
     </SafeAreaView>
   );
 };
@@ -242,7 +269,7 @@ const styles = StyleSheet.create({
     color: "#00B14F",
   },
   welcomeText: {
-    fontSize: 18,
+    fontSize: 20,
     color: "#333",
     marginTop: 10,
   },
@@ -278,7 +305,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-    
   },
   divider: {
     flexDirection: "row",
@@ -308,15 +334,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 25,
     width: "48%",
-     // Thêm shadow
-     shadowColor: "#000",
-     shadowOffset: {
-       width: 0,
-       height: 0.15,
-     },
-     shadowOpacity: 0.15,
+    // Thêm shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0.15,
+    },
+    shadowOpacity: 0.15,
     //  shadowRadius: 3.84,
-     elevation: 5,
+    elevation: 5,
   },
   socialButtonText: {
     marginLeft: 10,
@@ -334,14 +360,15 @@ const styles = StyleSheet.create({
     fontFamily: "DejaVu",
   },
   experienceButton: {
-    backgroundColor: "#f5f5f5",
+    // backgroundColor: "#f5f5f5",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
   },
   experienceButtonText: {
-    color: "#333",
+    color: "#B5AFB3",
     fontSize: 16,
+    fontFamily: "FaustinaMd",
   },
   rememberForgotContainer: {
     flexDirection: "row",
@@ -354,7 +381,7 @@ const styles = StyleSheet.create({
   rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    height: '100%', // Đảm bảo chiều cao bằng với container cha
+    height: "100%", // Đảm bảo chiều cao bằng với container cha
   },
   switch: {
     transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], // Làm nhỏ Switch
@@ -364,13 +391,13 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 14,
     color: "#00B14F",
-    textAlignVertical: 'center', // Căn giữa theo chiều dọc  
+    textAlignVertical: "center", // Căn giữa theo chiều dọc
     fontFamily: "DejaVu",
   },
   forgotPasswordText: {
     fontSize: 14,
     color: "#d35bb9",
-    textAlignVertical: 'center', // Căn giữa theo chiều dọc
+    textAlignVertical: "center", // Căn giữa theo chiều dọc
     marginBottom: 12,
     fontFamily: "DejaVu",
   },
