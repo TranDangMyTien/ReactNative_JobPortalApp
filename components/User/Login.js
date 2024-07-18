@@ -32,6 +32,7 @@ const Login = () => {
   const loadFonts = async () => {
     await Font.loadAsync({
       Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
+      DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
     });
     setFontsLoaded(true);
   };
@@ -311,7 +312,7 @@ const styles = StyleSheet.create({
   },
   registerLink: {
     color: "#00B14F",
-    fontWeight: "bold",
+    fontFamily: "DejaVu",
   },
   experienceButton: {
     backgroundColor: "#f5f5f5",
@@ -343,14 +344,16 @@ const styles = StyleSheet.create({
   rememberMeText: {
     marginLeft: 8,
     fontSize: 14,
-    color: "#333",
+    color: "#00B14F",
     textAlignVertical: 'center', // Căn giữa theo chiều dọc  
+    fontFamily: "DejaVu",
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: "#00B14F",
+    color: "#d35bb9",
     textAlignVertical: 'center', // Căn giữa theo chiều dọc
     marginBottom: 12,
+    fontFamily: "DejaVu",
   },
 });
 
