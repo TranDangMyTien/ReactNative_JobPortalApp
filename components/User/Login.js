@@ -18,7 +18,7 @@ import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import AlertModal from '../constants/AlertModal';
+import AlertModal from "../constants/AlertModal";
 import {
   storeRememberedToken,
   getRememberedToken,
@@ -30,25 +30,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
   const dispatch = useContext(MyDispatchContext);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-  // Thêm state mới để quản lý việc hiển thị mật khẩu
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadFonts = async () => {
-    await Font.loadAsync({
-      Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
-      FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
-      DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
-    });
-    setFontsLoaded(true);
+    try {
+      await Font.loadAsync({
+        Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
+        FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
+        DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
+      });
+    } catch (error) {
+      console.error("Error loading fonts:", error);
+    } finally {
+      setIsLoading(false); //Khi fonts loading xong đồng nghĩa với form loading xong 
+    }
   };
-
-  useEffect(() => {
-    loadFonts();
-    checkRememberedUser();
-  }, []);
 
   const checkRememberedUser = async () => {
     const rememberedToken = await getRememberedToken();
@@ -57,6 +56,20 @@ const Login = () => {
       // Khi nhấn vào remember thì lần đăng nhập sau chỉ cần đúng trường username/email thì nó tự nhớ mật khẩu
     }
   };
+
+  useEffect(() => {
+    loadFonts();
+    checkRememberedUser();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#00B14F" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   const change = (value, field) => {
     setUser((current) => {
@@ -124,9 +137,6 @@ const Login = () => {
     nav.navigate("ForgotPassword");
   };
 
-  if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#00B14F" />;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -401,6 +411,18 @@ const styles = StyleSheet.create({
     textAlignVertical: "center", // Căn giữa theo chiều dọc
     marginBottom: 12,
     fontFamily: "DejaVu",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#00B14F",
+    fontFamily: "FaustinaMd",
   },
 });
 
