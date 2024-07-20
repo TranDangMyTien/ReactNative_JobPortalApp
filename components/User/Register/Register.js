@@ -18,6 +18,7 @@ import {
   TextInput,
   TouchableRipple,
   Checkbox,
+  IconButton
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
@@ -30,39 +31,13 @@ LogBox.ignoreLogs([
 ]);
 
 const Register = () => {
-    const [user, setUser] = useState({});
-    const [err, setErr] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [checked, setChecked] = useState(false);
-    const nav = useNavigation();
-    const [passwordVisible, setPasswordVisible] = useState(false);
-    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-
-
-//   const fields = [
-//     {
-//       label: "ou@gmail.com",
-//       icon: "email",
-//       name: "email",
-//     },
-//     {
-//       label: "Username",
-//       icon: "account",
-//       name: "username",
-//     },
-//     {
-//       label: "Password",
-//       icon: "lock",
-//       name: "password",
-//       secureTextEntry: true, // Secure entry for password fields
-//     },
-//     {
-//       label: "Confirm Password",
-//       icon: "lock",
-//       name: "confirm",
-//       secureTextEntry: true,
-//     },
-//   ];
+  const [user, setUser] = useState({});
+  const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const nav = useNavigation();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const picker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -116,7 +91,6 @@ const Register = () => {
               is_employer: res.data.is_employer,
             });
           }, 3000);
-          // Show success alert
           Alert.alert("Success", "Đăng ký thành công!");
         } else {
           Alert.alert("Error", res.data?.message || "Something went wrong");
@@ -138,6 +112,19 @@ const Register = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.innerContainer}>
             <Text style={styles.subject}>ĐĂNG KÝ TÀI KHOẢN</Text>
+            <TouchableOpacity style={styles.avatarContainer} onPress={picker}>
+              {user.avatar ? (
+                <Image
+                  source={{ uri: user.avatar.uri }}
+                  style={styles.avatar}
+                />
+              ) : (
+                <Image
+                  source={require("../../../assets/Images/avatar_df.webp")}
+                  style={styles.avatar}
+                />
+              )}
+            </TouchableOpacity>
             <View style={styles.inputContainer}>
               <TextInput
                 value={user.email}
@@ -145,7 +132,9 @@ const Register = () => {
                 style={styles.input}
                 label="Email"
                 left={<TextInput.Icon icon="email" />}
-                theme={{ colors: { primary: "#00B14F" } }}
+                theme={{
+                  colors: { primary: "#00B14F" },
+                }}
               />
             </View>
 
@@ -163,7 +152,7 @@ const Register = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 secureTextEntry={!passwordVisible}
-                value={user.password || ""}
+                value={user.password}
                 onChangeText={(t) => updateState("password", t)}
                 style={styles.input}
                 label="Password"
@@ -181,11 +170,11 @@ const Register = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 secureTextEntry={!confirmPasswordVisible}
-                value={user.confirm || ""}
+                value={user.confirm}
                 onChangeText={(t) => updateState("confirm", t)}
                 style={styles.input}
                 label="Confirm Password"
-                left={<TextInput.Icon icon="lock" />}
+                left={<TextInput.Icon icon="lock-check" />}
                 right={
                   <TextInput.Icon
                     icon={confirmPasswordVisible ? "eye" : "eye-off"}
@@ -201,13 +190,13 @@ const Register = () => {
               Mật khẩu không khớp!
             </HelperText>
 
-            <TouchableRipple style={styles.avatarPicker} onPress={picker}>
+            {/* <TouchableRipple style={styles.avatarPicker} onPress={picker}>
               <Text style={styles.avatarPickerText}>Chọn ảnh đại diện...</Text>
             </TouchableRipple>
 
             {user.avatar && (
               <Image source={{ uri: user.avatar.uri }} style={styles.avatar} />
-            )}
+            )} */}
 
             <TouchableOpacity
               style={styles.checkboxContainer}
@@ -259,7 +248,7 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#FFFFFF",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -288,9 +277,13 @@ const styles = StyleSheet.create({
     // height: 50, // Slightly increased height
     // fontSize: 16, // Slightly increased font size
     marginBottom: 15,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#F5F5F5",
     borderRadius: 30,
-    elevation: 2,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   avatarPicker: {
     marginVertical: 10,
@@ -304,11 +297,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignSelf: "center",
-    marginVertical: 10,
+    // width: 100,
+    // height: 100,
+    // borderRadius: 50,
+    // alignSelf: "center",
+    // marginVertical: 10,
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -331,6 +327,19 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#28A745",
     marginVertical: 10,
+  },
+  avatarContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignSelf: 'center',
+    marginBottom: 20,
+    position: 'relative',
+    borderWidth: 2,
+    // borderColor: '#00B14F',
+  },
+  plusIcon: {
+    margin: 0,
   },
 });
 
