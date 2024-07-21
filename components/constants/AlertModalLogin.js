@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const AlertModal = ({ isVisible, title, message, onClose, onRetry, onForgotPassword }) => {
+const AlertModalLogin = ({ isVisible, title, message, onClose, onRetry, onForgotPassword }) => {
   return (
     <Modal isVisible={isVisible} backdropOpacity={0.5}>
       <View style={styles.modalContent}>
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AlertModal;
+export default AlertModalLogin;

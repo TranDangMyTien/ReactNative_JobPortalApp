@@ -26,7 +26,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import APIs, { endpoints } from "../../../configs/APIs";
 import { FontAwesome6 } from "@expo/vector-icons";
-
+import AlertModalRegister from "../../constants/AlertModalRegister";
 // Ignore specific warning
 LogBox.ignoreLogs([
   "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
@@ -41,9 +41,33 @@ const Register = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const nav = useNavigation();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [registrationData, setRegistrationData] = useState(null);
+  const handleClose = useCallback(() => {
+    setIsAlertVisible(false);
+    resetForm();
+  }, []);
 
+  const handleLogin = useCallback(() => {
+    setIsAlertVisible(false);
+    resetForm();
+    nav.navigate("Login");
+  }, [nav, resetForm]);
+
+  const handleRegisterRole = useCallback(() => {
+    setIsAlertVisible(false);
+    resetForm();
+    if (registrationData) {
+      nav.navigate("RegisterRole", {
+        userId: registrationData.id,
+        is_employer: registrationData.is_employer,
+      });
+    } else {
+      console.error("Registration data is not available");
+      // Có thể hiển thị một thông báo lỗi cho người dùng ở đây
+    }
+  }, [nav, registrationData, resetForm]);
   useEffect(() => {
-    // Preload the default avatar image
     Image.prefetch(
       Image.resolveAssetSource(require("../../../assets/Images/avatar_df.webp"))
         .uri
@@ -51,33 +75,16 @@ const Register = () => {
       .then(() => setIsImageLoaded(true))
       .catch((error) => {
         console.error("Error loading default avatar:", error);
-        setIsImageLoaded(true); // Set to true even on error to allow the app to proceed
+        setIsImageLoaded(true);
       });
   }, []);
 
-  // Add this useFocusEffect
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     setUser({
-  //       email: '',
-  //       username: '',
-  //       password: '',
-  //       confirm: '',
-  //       avatar: null,
-  //     });
-  //     setErr(false);
-  //     setChecked(false);
-  //     setPasswordVisible(false);
-  //     setConfirmPasswordVisible(false);
-  //   }, [])
-  // );
   const resetForm = useCallback(() => {
     setUser({
       email: "",
       username: "",
       password: "",
       confirm: "",
-      
     });
     setErr(false);
     setChecked(false);
@@ -86,6 +93,11 @@ const Register = () => {
   }, []);
 
   useFocusEffect(resetForm);
+  useEffect(() => {
+    return () => {
+      setRegistrationData(null);
+    };
+  }, []);
 
   const picker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -130,15 +142,17 @@ const Register = () => {
         });
 
         if (res.status === 201 && res.data) {
+          setRegistrationData(res.data); // Lưu dữ liệu đăng ký
           resetForm();
           setUser({});
-          setTimeout(() => {
-            nav.navigate("RegisterRole", {
-              userId: res.data.id,
-              is_employer: res.data.is_employer,
-            });
-          }, 3000);
-          Alert.alert("Success", "Đăng ký thành công!");
+          // setTimeout(() => {
+          //   nav.navigate("RegisterRole", {
+          //     userId: res.data.id,
+          //     is_employer: res.data.is_employer,
+          //   });
+          // }, 3000);
+          // Alert.alert("Success", "Đăng ký thành công!");
+          setIsAlertVisible(true);
         } else {
           Alert.alert("Error", res.data?.message || "Something went wrong");
         }
@@ -158,6 +172,11 @@ const Register = () => {
       </View>
     );
   }
+  //   const handleLogin = useCallback(() => {
+  //   setIsAlertVisible(false);
+  //   resetForm();
+  //   nav.navigate("Login");
+  // }, [nav, resetForm]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -169,7 +188,7 @@ const Register = () => {
           <View style={styles.innerContainer}>
             <Text style={styles.subject}>ĐĂNG KÝ TÀI KHOẢN</Text>
             <TouchableOpacity style={styles.avatarContainer} onPress={picker}>
-              {user.avatar ? (
+              {/* {user.avatar ? (
                 <Image
                   source={{ uri: user.avatar.uri }}
                   style={styles.avatar}
@@ -178,9 +197,20 @@ const Register = () => {
                 <Image
                   source={require("../../../assets/Images/avatar_df.webp")}
                   style={styles.avatar}
-                  onLoad={() => setDefaultAvatarLoading(false)}
+                  // onLoad={() => setDefaultAvatarLoading(false)}
                 />
-              )}
+              )} */}
+              <Image
+                source={
+                  user.avatar
+                    ? { uri: user.avatar.uri }
+                    : require("../../../assets/Images/avatar_df.webp")
+                }
+                style={styles.avatar}
+                onError={(error) =>
+                  console.error("Error loading avatar:", error)
+                }
+              />
               <TouchableOpacity
                 style={styles.addIconContainer}
                 onPress={picker}
@@ -296,6 +326,14 @@ const Register = () => {
             </TouchableRipple>
           </View>
         </ScrollView>
+        <AlertModalRegister
+          isVisible={isAlertVisible}
+          title="Registration Successful!"
+          message="Congratulations! Your registration was successful. You can now proceed to set up your profile or explore the app."
+          onClose={handleClose}
+          onLogin={handleLogin}
+          onRegisterRole={handleRegisterRole}
+        />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

@@ -18,7 +18,7 @@ import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { MyDispatchContext } from "../../configs/Contexts";
 import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import AlertModal from "../constants/AlertModal";
+import AlertModalLogin from "../constants/AlertModalLogin";
 import {
   storeRememberedToken,
   getRememberedToken,
@@ -134,6 +134,7 @@ const Login = () => {
 
   const handleForgotPassword = () => {
     setIsAlertVisible(false);
+    setUser({ username: "", password: "" });
     nav.navigate("ForgotPassword");
   };
 
@@ -246,7 +247,7 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
-      <AlertModal
+      <AlertModalLogin
         isVisible={isAlertVisible}
         title="Oops! Login unsuccessful ###"
         message="It looks like there's a problem with your login information. Please check your username and password again!"
