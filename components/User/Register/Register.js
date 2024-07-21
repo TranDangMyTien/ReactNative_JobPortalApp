@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -11,6 +12,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import {
   Button,
@@ -18,12 +20,12 @@ import {
   TextInput,
   TouchableRipple,
   Checkbox,
-  IconButton
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import APIs, { endpoints } from "../../../configs/APIs";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 // Ignore specific warning
 LogBox.ignoreLogs([
@@ -35,9 +37,55 @@ const Register = () => {
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  const nav = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const nav = useNavigation();
+
+  useEffect(() => {
+    // Preload the default avatar image
+    Image.prefetch(
+      Image.resolveAssetSource(require("../../../assets/Images/avatar_df.webp"))
+        .uri
+    )
+      .then(() => setIsImageLoaded(true))
+      .catch((error) => {
+        console.error("Error loading default avatar:", error);
+        setIsImageLoaded(true); // Set to true even on error to allow the app to proceed
+      });
+  }, []);
+
+  // Add this useFocusEffect
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     setUser({
+  //       email: '',
+  //       username: '',
+  //       password: '',
+  //       confirm: '',
+  //       avatar: null,
+  //     });
+  //     setErr(false);
+  //     setChecked(false);
+  //     setPasswordVisible(false);
+  //     setConfirmPasswordVisible(false);
+  //   }, [])
+  // );
+  const resetForm = useCallback(() => {
+    setUser({
+      email: "",
+      username: "",
+      password: "",
+      confirm: "",
+      
+    });
+    setErr(false);
+    setChecked(false);
+    setPasswordVisible(false);
+    setConfirmPasswordVisible(false);
+  }, []);
+
+  useFocusEffect(resetForm);
 
   const picker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -82,9 +130,8 @@ const Register = () => {
         });
 
         if (res.status === 201 && res.data) {
-          // Clear user state to reset input fields
+          resetForm();
           setUser({});
-          // Navigate to next screen after a delay
           setTimeout(() => {
             nav.navigate("RegisterRole", {
               userId: res.data.id,
@@ -102,6 +149,15 @@ const Register = () => {
       }
     }
   };
+
+  if (!isImageLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#00B14F" />
+        <Text style={styles.loadingText}>Đang tải...</Text>
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -122,9 +178,17 @@ const Register = () => {
                 <Image
                   source={require("../../../assets/Images/avatar_df.webp")}
                   style={styles.avatar}
+                  onLoad={() => setDefaultAvatarLoading(false)}
                 />
               )}
+              <TouchableOpacity
+                style={styles.addIconContainer}
+                onPress={picker}
+              >
+                <FontAwesome6 name="plus" size={16} color="white" />
+              </TouchableOpacity>
             </TouchableOpacity>
+
             <View style={styles.inputContainer}>
               <TextInput
                 value={user.email}
@@ -189,14 +253,6 @@ const Register = () => {
             <HelperText type="error" visible={err}>
               Mật khẩu không khớp!
             </HelperText>
-
-            {/* <TouchableRipple style={styles.avatarPicker} onPress={picker}>
-              <Text style={styles.avatarPickerText}>Chọn ảnh đại diện...</Text>
-            </TouchableRipple>
-
-            {user.avatar && (
-              <Image source={{ uri: user.avatar.uri }} style={styles.avatar} />
-            )} */}
 
             <TouchableOpacity
               style={styles.checkboxContainer}
@@ -270,12 +326,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    // marginVertical: 10, // Slightly increased margin
-    // backgroundColor: "white",
-    // borderRadius: 8,
-    // paddingHorizontal: 15, // Slightly increased padding
-    // height: 50, // Slightly increased height
-    // fontSize: 16, // Slightly increased font size
     marginBottom: 15,
     backgroundColor: "#F5F5F5",
     borderRadius: 30,
@@ -285,25 +335,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  avatarPicker: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  avatarPickerText: {
-    color: "#333",
-    fontSize: 16,
-  },
   avatar: {
-    // width: 100,
-    // height: 100,
-    // borderRadius: 50,
-    // alignSelf: "center",
-    // marginVertical: 10,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 60,
   },
   checkboxContainer: {
@@ -332,14 +366,33 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 20,
-    position: 'relative',
+    position: "relative",
     borderWidth: 2,
-    // borderColor: '#00B14F',
   },
-  plusIcon: {
-    margin: 0,
+  addIconContainer: {
+    position: "absolute",
+    bottom: 10,
+    right: 0,
+    width: 30,
+    height: 30,
+    backgroundColor: "#757474",
+    borderRadius: 15,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#00B14F",
   },
 });
 
