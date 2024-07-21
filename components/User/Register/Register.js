@@ -43,6 +43,9 @@ const Register = () => {
   const nav = useNavigation();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [registrationData, setRegistrationData] = useState(null);
+
+  const handleService = async () => {};
+  const handleRules = async () => {};
   const handleClose = useCallback(() => {
     setIsAlertVisible(false);
     resetForm();
@@ -186,7 +189,7 @@ const Register = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.innerContainer}>
-            <Text style={styles.subject}>ĐĂNG KÝ TÀI KHOẢN</Text>
+            <Text style={styles.subject}>REGISTER AN ACCOUNT</Text>
             <TouchableOpacity style={styles.avatarContainer} onPress={picker}>
               {/* {user.avatar ? (
                 <Image
@@ -284,23 +287,31 @@ const Register = () => {
               Mật khẩu không khớp!
             </HelperText>
 
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={() => setChecked(!checked)}
-            >
-              <Checkbox
-                status={checked ? "checked" : "unchecked"}
+            <View style={styles.termsOuterContainer}>
+              <TouchableOpacity
+                style={styles.checkboxContainer}
                 onPress={() => setChecked(!checked)}
-              />
-              <View style={{ flex: 1 }}>
-                <Text>
-                  Tôi đã đọc và đồng ý với{" "}
-                  <Text style={styles.linkText}>Điều khoản dịch vụ</Text> và{" "}
-                  <Text style={styles.linkText}>Chính sách bảo mật</Text> của OU
-                  Job!
-                </Text>
-              </View>
-            </TouchableOpacity>
+              >
+                <Checkbox
+                  status={checked ? "checked" : "unchecked"}
+                  onPress={() => setChecked(!checked)}
+                  color="#00B14F"
+                />
+                <View style={styles.termsTextContainer}>
+                  <Text style={styles.termsText}>
+                    I agree with the{" "}
+                    <Text style={styles.linkText} onPress={handleService}>
+                      Terms of Service
+                    </Text>{" "}
+                    and{" "}
+                    <Text style={styles.linkText} onPress={handleRules}>
+                      Privacy Policy
+                    </Text>{" "}
+                    of <Text style={styles.ouJobText}>OU Job</Text>
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
 
             <Button
               icon="account"
@@ -353,6 +364,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  ouJobText: {
+    color: "#00B14F",
+    fontWeight: "bold",
+    fontSize: 16,
+    textShadowColor: "rgba(0, 177, 79, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
   subject: {
     fontSize: 24,
     fontWeight: "bold",
@@ -381,15 +400,19 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 15,
     padding: 10,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 10,
   },
   linkText: {
-    color: "green",
+    // color: "#00B14F",
+    fontWeight: "bold",
     textDecorationLine: "underline",
+  },
+  termsOuterContainer: {
+    marginTop: -25,
+    marginBottom: 5,
   },
   linkTextCentered: {
     color: "green",
@@ -431,6 +454,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: "#00B14F",
+  },
+  termsTextContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  termsText: {
+    fontSize: 14,
+    color: "#333",
+    lineHeight: 20,
   },
 });
 
