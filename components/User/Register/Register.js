@@ -27,6 +27,8 @@ import { LogBox } from "react-native";
 import APIs, { endpoints } from "../../../configs/APIs";
 import { FontAwesome6 } from "@expo/vector-icons";
 import AlertModalRegister from "../../constants/AlertModalRegister";
+import ImageView from "react-native-image-zoom-viewer";
+import Modal from "react-native-modal";
 // Ignore specific warning
 LogBox.ignoreLogs([
   "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
@@ -44,7 +46,7 @@ const Register = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [registrationData, setRegistrationData] = useState(null);
   const [errorMessages, setErrorMessages] = useState({});
-
+  const [isImageViewVisible, setIsImageViewVisible] = useState(false);
   const handleService = async () => {};
   const handleRules = async () => {};
   const handleClose = useCallback(() => {
@@ -71,6 +73,11 @@ const Register = () => {
       // Có thể hiển thị một thông báo lỗi cho người dùng ở đây
     }
   }, [nav, registrationData, resetForm]);
+
+  const handleImagePress = () => {
+    setIsImageViewVisible(true);
+  };
+
   useEffect(() => {
     Image.prefetch(
       Image.resolveAssetSource(require("../../../assets/Images/avatar_df.webp"))
@@ -235,7 +242,10 @@ const Register = () => {
               <Text style={styles.titleMain}>REGISTER</Text>
               <Text style={styles.titleSub}>Become an OU JOB member</Text>
             </View>
-            <TouchableOpacity style={styles.avatarContainer} onPress={picker}>
+            <TouchableOpacity
+              style={styles.avatarContainer}
+              onPress={handleImagePress}
+            >
               <Image
                 source={
                   user.avatar
@@ -422,6 +432,35 @@ const Register = () => {
           onLogin={handleLogin}
           onRegisterRole={handleRegisterRole}
         />
+        <Modal
+          isVisible={isImageViewVisible}
+          onBackdropPress={() => setIsImageViewVisible(false)}
+          onBackButtonPress={() => setIsImageViewVisible(false)}
+          style={{ margin: 0 }}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setIsImageViewVisible(false)}
+            >
+              <FontAwesome6 name="xmark" size={24} color="white" />
+            </TouchableOpacity>
+            <ImageView
+              imageUrls={[
+                {
+                  url: user.avatar
+                    ? user.avatar.uri
+                    : Image.resolveAssetSource(
+                        require("../../../assets/Images/avatar_df.webp")
+                      ).uri,
+                },
+              ]}
+              enableSwipeDown={true}
+              onSwipeDown={() => setIsImageViewVisible(false)}
+              renderHeader={() => <View />} // This removes the default header
+            />
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -591,6 +630,19 @@ const styles = StyleSheet.create({
     marginTop: -5,
     marginBottom: 10,
     textAlign: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1,
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 20,
   },
 });
 
