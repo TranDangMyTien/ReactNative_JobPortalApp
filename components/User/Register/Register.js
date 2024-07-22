@@ -43,6 +43,7 @@ const Register = () => {
   const nav = useNavigation();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [registrationData, setRegistrationData] = useState(null);
+  const [errorMessages, setErrorMessages] = useState({});
 
   const handleService = async () => {};
   const handleRules = async () => {};
@@ -93,6 +94,7 @@ const Register = () => {
     setChecked(false);
     setPasswordVisible(false);
     setConfirmPasswordVisible(false);
+    setErrorMessages({});
   }, []);
 
   useFocusEffect(resetForm);
@@ -119,51 +121,76 @@ const Register = () => {
   };
 
   const register = async () => {
-    if (user["password"] !== user["confirm"]) {
-      setErr(true);
-    } else {
-      setErr(false);
-      let form = new FormData();
-      for (let key in user) {
-        if (key !== "confirm") {
-          if (key === "avatar") {
-            form.append(key, {
-              uri: user.avatar.uri,
-              name: user.avatar.fileName,
-              type: user.avatar.type,
-            });
-          } else {
-            form.append(key, user[key]);
-          }
-        }
-      }
+    let errors = {};
+    // Kiểm tra xem tất cả các trường đã được điền chưa
+    if (!user.email)
+      errors.email = "Oops! It looks like you forgot to enter an email.";
+    if (!user.username)
+      errors.username = "Oops! It looks like you forgot to enter a username.";
+    if (!user.password)
+      errors.password = "Oops! It looks like you forgot to enter a password.";
+    if (!user.confirm)
+      errors.confirm =
+        "Oops! It looks like you forgot to confirm your password.";
+    // Kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (user.email && !emailRegex.test(user.email)) {
+      errors.email = "Oops! Please enter a valid email address.";
+    }
 
-      setLoading(true);
-      try {
-        let res = await APIs.post(endpoints["register"], form, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+    // Kiểm tra xem mật khẩu có khớp không
+    if (user.password !== user.confirm) {
+      errors.confirm = "Oops! The passwords don't match. Please try again.";
+    }
 
-        if (res.status === 201 && res.data) {
-          setRegistrationData(res.data); // Lưu dữ liệu đăng ký
-          resetForm();
-          setUser({});
-          // setTimeout(() => {
-          //   nav.navigate("RegisterRole", {
-          //     userId: res.data.id,
-          //     is_employer: res.data.is_employer,
-          //   });
-          // }, 3000);
-          // Alert.alert("Success", "Đăng ký thành công!");
-          setIsAlertVisible(true);
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors);
+      return;
+    }
+
+    setErrorMessages({});
+    setErr(false);
+
+    let form = new FormData();
+    for (let key in user) {
+      if (key !== "confirm") {
+        if (key === "avatar") {
+          form.append(key, {
+            uri: user.avatar.uri,
+            name: user.avatar.fileName,
+            type: user.avatar.type,
+          });
         } else {
-          Alert.alert("Error", res.data?.message || "Something went wrong");
+          form.append(key, user[key]);
         }
-      } catch (ex) {
-        console.error(ex);
-      } finally {
-        setLoading(false);
       }
+    }
+
+    setLoading(true);
+    try {
+      let res = await APIs.post(endpoints["register"], form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.status === 201 && res.data) {
+        setRegistrationData(res.data); // Lưu dữ liệu đăng ký
+        resetForm();
+        setUser({});
+        // setTimeout(() => {
+        //   nav.navigate("RegisterRole", {
+        //     userId: res.data.id,
+        //     is_employer: res.data.is_employer,
+        //   });
+        // }, 3000);
+        // Alert.alert("Success", "Đăng ký thành công!");
+        setIsAlertVisible(true);
+      } else {
+        Alert.alert("Error", res.data?.message || "Something went wrong");
+      }
+    } catch (ex) {
+      console.error(ex);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,7 +198,7 @@ const Register = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#00B14F" />
-        <Text style={styles.loadingText}>Đang tải...</Text>
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -189,20 +216,12 @@ const Register = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.innerContainer}>
-            <Text style={styles.subject}>REGISTER AN ACCOUNT</Text>
+            {/* <Text style={styles.subject}>REGISTER AN ACCOUNT</Text> */}
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleMain}>REGISTER</Text>
+              <Text style={styles.titleSub}>Become an OU JOB member</Text>
+            </View>
             <TouchableOpacity style={styles.avatarContainer} onPress={picker}>
-              {/* {user.avatar ? (
-                <Image
-                  source={{ uri: user.avatar.uri }}
-                  style={styles.avatar}
-                />
-              ) : (
-                <Image
-                  source={require("../../../assets/Images/avatar_df.webp")}
-                  style={styles.avatar}
-                  // onLoad={() => setDefaultAvatarLoading(false)}
-                />
-              )} */}
               <Image
                 source={
                   user.avatar
@@ -233,6 +252,15 @@ const Register = () => {
                   colors: { primary: "#00B14F" },
                 }}
               />
+              {errorMessages.email && (
+                <HelperText
+                  type="error"
+                  visible={true}
+                  style={styles.errorText}
+                >
+                  {errorMessages.email}
+                </HelperText>
+              )}
             </View>
 
             <View style={styles.inputContainer}>
@@ -244,6 +272,15 @@ const Register = () => {
                 left={<TextInput.Icon icon="account" />}
                 theme={{ colors: { primary: "#00B14F" } }}
               />
+              {errorMessages.username && (
+                <HelperText
+                  type="error"
+                  visible={true}
+                  style={styles.errorText}
+                >
+                  {errorMessages.username}
+                </HelperText>
+              )}
             </View>
 
             <View style={styles.inputContainer}>
@@ -262,6 +299,15 @@ const Register = () => {
                 }
                 theme={{ colors: { primary: "#00B14F" } }}
               />
+              {errorMessages.password && (
+                <HelperText
+                  type="error"
+                  visible={true}
+                  style={styles.errorText}
+                >
+                  {errorMessages.password}
+                </HelperText>
+              )}
             </View>
 
             <View style={styles.inputContainer}>
@@ -282,10 +328,21 @@ const Register = () => {
                 }
                 theme={{ colors: { primary: "#00B14F" } }}
               />
+              {errorMessages.confirm && (
+                <HelperText
+                  type="error"
+                  visible={true}
+                  style={styles.errorText}
+                >
+                  {errorMessages.confirm}
+                </HelperText>
+              )}
             </View>
-            <HelperText type="error" visible={err}>
-              Mật khẩu không khớp!
-            </HelperText>
+            {/* {err && (
+              <HelperText type="error" visible={err} style={styles.errorText}>
+                Oops! The passwords don't match. Please try again.
+              </HelperText>
+            )} */}
 
             <View style={styles.termsOuterContainer}>
               <TouchableOpacity
@@ -320,21 +377,32 @@ const Register = () => {
               onPress={register}
               disabled={!checked}
               style={styles.button}
+              labelStyle={styles.registerButtonLabel}
             >
-              ĐĂNG KÝ
+              Register
             </Button>
 
-            <TouchableRipple onPress={() => nav.navigate("Login")}>
-              <Text style={styles.linkTextCentered}>
-                Bạn đã có tài khoản? Đăng nhập ngay
-              </Text>
-            </TouchableRipple>
+            <View style={styles.navigationOptionsContainer}>
+              <TouchableOpacity
+                style={styles.navigationOption}
+                onPress={() => nav.navigate("MyLogin")}
+              >
+                <Text style={styles.navigationOptionText}>
+                  Already have an account?{" "}
+                  <Text style={styles.navigationOptionHighlight}>Log in</Text>
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableRipple onPress={() => nav.navigate("HomeScreen")}>
-              <Text style={styles.linkTextCentered}>
-                Trải nghiệm không cần đăng nhập
-              </Text>
-            </TouchableRipple>
+              <TouchableOpacity
+                style={styles.navigationOption}
+                onPress={() => nav.navigate("HomeScreen")}
+              >
+                <Text style={styles.navigationOptionText}>
+                  Explore without logging in{" "}
+                  <Text style={styles.navigationOptionHighlight}>Try now</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
         <AlertModalRegister
@@ -363,6 +431,9 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     justifyContent: "center",
+  },
+  registerButtonLabel: {
+    fontSize: 16,
   },
   ouJobText: {
     color: "#00B14F",
@@ -411,7 +482,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   termsOuterContainer: {
-    marginTop: -25,
+    marginTop: 5,
     marginBottom: 5,
   },
   linkTextCentered: {
@@ -463,6 +534,54 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
     lineHeight: 20,
+  },
+  titleContainer: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  titleMain: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#00B14F",
+    textTransform: "uppercase",
+    letterSpacing: 2,
+    textShadowColor: "rgba(0, 177, 79, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  titleSub: {
+    fontSize: 18,
+    color: "#333",
+    marginTop: 5,
+    letterSpacing: 1,
+  },
+  navigationOptionsContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  navigationOption: {
+    marginVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    backgroundColor: "#F5F5F5",
+    width: "100%",
+  },
+  navigationOptionText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#333",
+  },
+  navigationOptionHighlight: {
+    color: "#00B14F",
+    fontWeight: "bold",
+  },
+  errorText: {
+    color: "#ff3333",
+    fontSize: 14,
+    marginTop: -5,
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
 
