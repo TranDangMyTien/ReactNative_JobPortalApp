@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import * as Font from 'expo-font';
+import * as Font from "expo-font";
 import {
   View,
   Text,
@@ -48,7 +48,6 @@ const Register = () => {
   const [registrationData, setRegistrationData] = useState(null);
   const [errorMessages, setErrorMessages] = useState({});
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
-  
 
   const handleService = useCallback(() => {
     nav.navigate("TermsOfService");
@@ -57,7 +56,6 @@ const Register = () => {
   const handleTermsOfService = useCallback(() => {
     nav.navigate("PrivacyPolicy");
   }, []);
-
 
   const handleClose = useCallback(() => {
     setIsAlertVisible(false);
@@ -131,7 +129,21 @@ const Register = () => {
   const picker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("JobPortalApp", "Quyền truy cập bị từ chối!");
+      Alert.alert(
+        "Photo Permission",
+        "OU Job needs access to your photos to set your profile picture. Would you like to grant permission?",
+        [
+          {
+            text: "Not Now",
+            style: "cancel",
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+        { cancelable: false }
+      );
     } else {
       let res = await ImagePicker.launchImageLibraryAsync();
       if (!res.canceled) {
@@ -397,7 +409,10 @@ const Register = () => {
                       Terms of Service
                     </Text>{" "}
                     and{" "}
-                    <Text style={styles.linkText} onPress={handleTermsOfService}>
+                    <Text
+                      style={styles.linkText}
+                      onPress={handleTermsOfService}
+                    >
                       Privacy Policy
                     </Text>{" "}
                     of <Text style={styles.ouJobText}>OU Job</Text>

@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   heading: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
     marginBottom: 24,
     textAlign: "center",
