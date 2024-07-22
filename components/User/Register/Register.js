@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Font from 'expo-font';
 import {
   View,
   Text,
@@ -88,6 +89,7 @@ const Register = () => {
         console.error("Error loading default avatar:", error);
         setIsImageLoaded(true);
       });
+    loadFonts();
   }, []);
 
   const resetForm = useCallback(() => {
@@ -110,6 +112,12 @@ const Register = () => {
       setRegistrationData(null);
     };
   }, []);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
+    });
+  };
 
   const picker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -482,6 +490,7 @@ const styles = StyleSheet.create({
   },
   registerButtonLabel: {
     fontSize: 16,
+    fontWeight: "bold",
   },
   ouJobText: {
     color: "#00B14F",
@@ -541,6 +550,17 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#28A745",
     marginVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Optional: add some padding and adjust border radius for better appearance
+    padding: 2,
+    borderRadius: 30,
   },
   avatarContainer: {
     width: 120,
@@ -590,8 +610,9 @@ const styles = StyleSheet.create({
   titleMain: {
     fontSize: 32,
     fontWeight: "bold",
+    fontFamily: "Faustina",
     color: "#00B14F",
-    textTransform: "uppercase",
+
     letterSpacing: 2,
     textShadowColor: "rgba(0, 177, 79, 0.3)",
     textShadowOffset: { width: 1, height: 1 },
@@ -633,15 +654,15 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: "black",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     right: 20,
     zIndex: 1,
     padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderRadius: 20,
   },
 });
