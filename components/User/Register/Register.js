@@ -48,8 +48,17 @@ const Register = () => {
   const [registrationData, setRegistrationData] = useState(null);
   const [errorMessages, setErrorMessages] = useState({});
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
-  const handleService = async () => {};
-  const handleRules = async () => {};
+  
+
+  const handleService = useCallback(() => {
+    nav.navigate("TermsOfService");
+  }, []);
+
+  const handleTermsOfService = useCallback(() => {
+    nav.navigate("PrivacyPolicy");
+  }, []);
+
+
   const handleClose = useCallback(() => {
     setIsAlertVisible(false);
     resetForm();
@@ -388,7 +397,7 @@ const Register = () => {
                       Terms of Service
                     </Text>{" "}
                     and{" "}
-                    <Text style={styles.linkText} onPress={handleRules}>
+                    <Text style={styles.linkText} onPress={handleTermsOfService}>
                       Privacy Policy
                     </Text>{" "}
                     of <Text style={styles.ouJobText}>OU Job</Text>

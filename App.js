@@ -45,6 +45,8 @@ import FindApplicant from "./components/User/Employer/FindApplicant";
 import Splash from "./components/SplashScreen/Splash";
 import Onbroading from "./components/SplashScreen/Onbroading";
 import { getToken, getOnboarded, storeOnboarded } from "./utils/storage";
+import TermsOfService from "./components/Rules/TermsOfService";
+import PrivacyPolicy from "./components/Rules/PrivacyPolicy";
 // Cài đặt stack
 const Stack = createStackNavigator();
 
@@ -109,6 +111,19 @@ const MyProfileEmployer = () => {
       <Stack.Screen name="CreateRecruitment" component={CreateRecruitment} />
       <Stack.Screen name="ListJobPost" component={ListJobPost} />
       <Stack.Screen name="FindApplicant" component={FindApplicant} />
+    </Stack.Navigator>
+  );
+};
+
+const MainStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="MyTab"
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="MyTab" component={MyTab} />
+      <Stack.Screen name="TermsOfService" component={TermsOfService} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
     </Stack.Navigator>
   );
 };
@@ -208,6 +223,7 @@ const MyTab = () => {
             component={MyLogin}
             options={{ title: "Log in" }}
           />
+          
         </>
       ) : (
         <>
@@ -354,7 +370,7 @@ export default function App() {
                   </Stack.Screen>
                 </Stack.Navigator>
               ) : (
-                <MyTab />
+                <MainStack />
               )}
 
               {/* DEMO PHẦN ONBROADING */}
@@ -369,7 +385,6 @@ export default function App() {
                   )}
                 </Stack.Screen>
               </Stack.Navigator> */}
-
 
             </MyDispatchContext.Provider>
           </MyUserContext.Provider>
