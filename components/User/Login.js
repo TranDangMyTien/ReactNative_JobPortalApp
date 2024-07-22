@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   Switch,
 } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, HelperText } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
@@ -34,6 +34,10 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+  });
 
   const loadFonts = async () => {
     try {
@@ -45,7 +49,7 @@ const Login = () => {
     } catch (error) {
       console.error("Error loading fonts:", error);
     } finally {
-      setIsLoading(false); //Khi fonts loading xong đồng nghĩa với form loading xong 
+      setIsLoading(false); //Khi fonts loading xong đồng nghĩa với form loading xong
     }
   };
 
@@ -75,9 +79,37 @@ const Login = () => {
     setUser((current) => {
       return { ...current, [field]: value };
     });
+    setErrors((current) => ({ ...current, [field]: "" }));
   };
+
+  const validate = () => {
+    let isValid = true;
+    let newErrors = {};
+
+    if (!user.username) {
+      newErrors.username = "Oops! It looks like you forgot to enter your username.";
+      isValid = false;
+    }
+
+    if (!user.password) {
+      newErrors.password = "Please provide a password to secure your account.";
+      isValid = false;
+    } else if (user.password.length < 6) {
+      newErrors.password = "Your password should be at least 6 characters long for better security.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const login = async () => {
+    if (!validate()) {
+      return;
+    }
+
     setLoading(true);
+
     // console.log("Client ID: ", Config.process.env.CLIENT_ID); // Kiểm tra giá trị
     // console.log("Client Secret: ", Config.process.env.CLIENT_SECRET); // Kiểm tra giá trị
     try {
@@ -138,7 +170,6 @@ const Login = () => {
     nav.navigate("ForgotPassword");
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -157,6 +188,13 @@ const Login = () => {
               left={<TextInput.Icon icon="email" />}
               theme={{ colors: { primary: "#00B14F" } }}
             />
+            <HelperText
+              type="error"
+              visible={!!errors.username}
+              style={styles.errorText}
+            >
+              {errors.username}
+            </HelperText>
             {/* Cập nhật TextInput cho mật khẩu */}
             <TextInput
               value={user.password}
@@ -173,6 +211,9 @@ const Login = () => {
               }
               theme={{ colors: { primary: "#00B14F" } }}
             />
+            <HelperText type="error" visible={!!errors.password} style={styles.errorText}>
+              {errors.password}
+            </HelperText>
           </View>
 
           <View style={styles.rememberForgotContainer}>
@@ -424,6 +465,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#00B14F",
     fontFamily: "FaustinaMd",
+  },
+   errorText: {
+    color: "#ff3333",
+    fontSize: 14,
+    marginTop: -5,
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
 

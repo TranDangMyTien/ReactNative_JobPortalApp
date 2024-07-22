@@ -118,28 +118,42 @@ const Register = () => {
 
   const updateState = (field, value) => {
     setUser((current) => ({ ...current, [field]: value }));
+    setErrorMessages((current) => ({ ...current, [field]: "" }));
   };
 
   const register = async () => {
     let errors = {};
-    // Kiểm tra xem tất cả các trường đã được điền chưa
-    if (!user.email)
+    // Kiểm tra email
+    if (!user.email) {
       errors.email = "Oops! It looks like you forgot to enter an email.";
-    if (!user.username)
-      errors.username = "Oops! It looks like you forgot to enter a username.";
-    if (!user.password)
-      errors.password = "Oops! It looks like you forgot to enter a password.";
-    if (!user.confirm)
-      errors.confirm =
-        "Oops! It looks like you forgot to confirm your password.";
-    // Kiểm tra định dạng email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (user.email && !emailRegex.test(user.email)) {
-      errors.email = "Oops! Please enter a valid email address.";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(user.email)) {
+        errors.email = "Oops! Please enter a valid email address.";
+      }
     }
 
-    // Kiểm tra xem mật khẩu có khớp không
-    if (user.password !== user.confirm) {
+    // Kiểm tra username
+    if (!user.username) {
+      errors.username = "Oops! It looks like you forgot to enter a username.";
+    } else if (user.username.length < 3) {
+      errors.username = "Username must be at least 3 characters long.";
+    }
+
+    // Kiểm tra password
+    if (!user.password) {
+      errors.password = "Oops! It looks like you forgot to enter a password.";
+    } else if (user.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long.";
+    } else if (!/\d/.test(user.password) || !/[a-zA-Z]/.test(user.password)) {
+      errors.password = "Password must contain both letters and numbers.";
+    }
+
+    // Kiểm tra confirm password
+    if (!user.confirm) {
+      errors.confirm =
+        "Oops! It looks like you forgot to confirm your password.";
+    } else if (user.password !== user.confirm) {
       errors.confirm = "Oops! The passwords don't match. Please try again.";
     }
 
@@ -338,11 +352,6 @@ const Register = () => {
                 </HelperText>
               )}
             </View>
-            {/* {err && (
-              <HelperText type="error" visible={err} style={styles.errorText}>
-                Oops! The passwords don't match. Please try again.
-              </HelperText>
-            )} */}
 
             <View style={styles.termsOuterContainer}>
               <TouchableOpacity
