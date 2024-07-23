@@ -35,8 +35,8 @@ const RegisterRole = ({ route }) => {
     }).start(() => {
       setTimeout(() => {
         setLoading(false);
-        // navigation.goBack(); Register
-        navigation.navigate("HomeScreen");
+        navigation.goBack(); // Register
+        // navigation.navigate("HomeScreen");
       }, 1000);
     });
   };
@@ -80,7 +80,7 @@ const RegisterRole = ({ route }) => {
 
   return (
     <Animated.View style={[{ flex: 1 }, { opacity: fadeAnim }]}>
-      <LinearGradient colors={["#000000", "#0E3353"]} style={styles.headerBar}>
+      <View style={styles.headerBar}>
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Image
             source={require("../../../assets/icons/left.png")}
@@ -88,7 +88,7 @@ const RegisterRole = ({ route }) => {
           />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Choose Your Path</Text>
-      </LinearGradient>
+      </View>
 
       <View style={styles.progressIndicator}>
         <View style={styles.progressStep}></View>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     width: "80%",
-    backgroundColor: "#38F426",
+    backgroundColor: "#4FB9ED",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     width: "80%",
-    backgroundColor: "#26F4E7",
+    backgroundColor: "#D04FED",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeStep: {
-    backgroundColor: "#000000",
+    backgroundColor: "#28A745",
     width: 20,
     height: 20,
     borderRadius: 10,
