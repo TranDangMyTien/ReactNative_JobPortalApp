@@ -1,478 +1,666 @@
-import {View,Text,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,Modal, StyleSheet, TouchableWithoutFeedback, Keyboard} from "react-native";
-import {Button,HelperText,TextInput,TouchableRipple,List,Card,} from "react-native-paper";
-import MyStyles from "../../../styles/MyStyles";
-import * as ImagePicker from "expo-image-picker";
 import React, { useState, useEffect } from "react";
-import APIs, { endpoints } from "../../../configs/APIs";
+import {
+  View,
+  Text,
+  Alert,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Modal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ActivityIndicator,
+} from "react-native";
+import {
+  Button,
+  TextInput,
+  TouchableRipple,
+  Snackbar,
+  IconButton,
+  useTheme,
+} from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import { LogBox } from "react-native";
-  
-  // Đóng warning
-  LogBox.ignoreLogs([
-    "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
-  ]);
-  
-  const RegisterApplicant = ({ route }) => {
-    const [applicant, setApplicant] = useState({});
-    const [err, setErr] = useState(false);
-    const { userId } = route.params;
-    // const userId = 100;
-    const fields = [
-      {
-        label: "Vị trí ứng tuyển",
-        icon: "briefcase",
-        name: "position",
-      },
-      {
-        label: "Mức lương mong muốn",
-        icon: "currency-usd",
-        name: "salary_expectation",
-        keyboardType: "numeric",
-      },
-      {
-        label: "Kinh nghiệm",
-        icon: "account-hard-hat",
-        name: "experience",
-        multiline: true,
-      },
-    ];
-    const nav = useNavigation();
-    const [loading, setLoading] = useState(false);
-  
-    const [skillsModalVisible, setSkillsModalVisible] = useState(false);
-    const [selectedSkills, setSelectedSkills] = useState([]);
-    const [skills, setSkills] = useState([]);
-  
-    const [areasModalVisible, setAreasModalVisible] = useState(false);
-    const [selectedAreas, setSelectedAreas] = useState([]);
-    const [areas, setAreas] = useState([]);
-  
-    const [careersModalVisible, setCareersModalVisible] = useState(false);
-    const [selectedCareer, setSelectedCareer] = useState(null);
-    const [careers, setCareers] = useState([]);
-  
-    useEffect(() => {
-      const fetchSkills = async () => {
-        try {
-          const res = await APIs.get(endpoints["skills"]);
-          setSkills(res.data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchSkills();
-  
-      const fetchAreas = async () => {
-        try {
-          const res = await APIs.get(endpoints["areas"]);
-          setAreas(res.data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchAreas();
-  
-      const fetchCareers = async () => {
-        try {
-          const res = await APIs.get(endpoints["careers"]);
-          setCareers(res.data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchCareers();
-    }, []);
-  
-    const toggleSkill = (skill) => {
-      if (selectedSkills.includes(skill)) {
-        setSelectedSkills((prevSelectedSkills) =>
-          prevSelectedSkills.filter((s) => s !== skill)
-        );
-      } else if (selectedSkills.length < 5) {
-        setSelectedSkills((prevSelectedSkills) => [...prevSelectedSkills, skill]);
-      } else {
-        Alert.alert("Lưu ý", "Bạn chỉ có thể chọn tối đa 5 kỹ năng");
-      }
-    };
-  
-    const toggleArea = (area) => {
-      if (selectedAreas.includes(area)) {
-        setSelectedAreas((prevSelectedAreas) =>
-          prevSelectedAreas.filter((a) => a !== area)
-        );
-      } else if (selectedAreas.length < 3) {
-        setSelectedAreas((prevSelectedAreas) => [...prevSelectedAreas, area]);
-      } else {
-        Alert.alert("Lưu ý", "Bạn chỉ có thể chọn tối đa 3 vùng làm việc");
-      }
-    };
-  
-    const toggleCareer = (career) => {
-      if (selectedCareer === career) {
-        setSelectedCareer(null);
-      } else {
-        setSelectedCareer(career);
-      }
-    };
-  
-    const picker = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted")
-        Alert.alert("JobPortalApp", "Permissions Denied!");
-      else {
-        let res = await ImagePicker.launchImageLibraryAsync();
-        if (!res.canceled) {
-          updateState("cv", res.assets[0]);
-        }
-      }
-    };
-  
-    const updateState = (field, value) => {
-      setApplicant((current) => {
-        return { ...current, [field]: value };
-      });
-    };
-  
-    const register = async () => {
-      setErr(false);
-  
-      let form = new FormData();
-      form.append("position", applicant.position || "Nhân viên");
-      form.append("salary_expectation", applicant.salary_expectation || "");
-      form.append("experience", applicant.experience || "");
-  
-    //   selectedSkills.forEach((skill, index) => {
-    //     form.append(`skills[${index}]`, skill.id);
-    //   });
-  
-    //   selectedAreas.forEach((area, index) => {
-    //     form.append(`areas[${index}]`, area.id);
-    //   });
-  
-    //   if (selectedCareer) {
-    //     form.append("career", selectedCareer.id);
-    //   } else {
-    //     form.append("career", "");
-    //   }
+import APIs, { endpoints } from "../../../configs/APIs";
+import LottieView from "lottie-react-native";
 
-    selectedSkills.forEach((skill, index) => {
-      form.append(`skills`, skill.id);
-    });
+// Thêm component RoundedTextInput mới
+const RoundedTextInput = ({ style, ...props }) => {
+  const theme = useTheme();
+  return (
+    <View style={[styles.inputContainer, style]}>
+      <TextInput
+        {...props}
+        style={styles.input}
+        theme={{ roundness: 30, colors: { primary: "#4CAF50"  } }}
+      />
+    </View>
+  );
+};
 
-    selectedAreas.forEach((area, index) => {
-      form.append(`areas`, area.id);
-    });
+const RegisterApplicant = ({ route }) => {
+  const [applicant, setApplicant] = useState({});
+  const [error, setError] = useState(null);
+  // const { userId } = route.params;
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
-    if (selectedCareer) {
-      form.append("career", selectedCareer.id);
-    } else {
-      form.append("career", "");
-    }
-  
-      if (applicant.cv) {
-        form.append("cv", {
-          uri: applicant.cv.uri,
-          name: applicant.cv.fileName || "cv.jpg",
-          type: applicant.cv.type || "image/jpeg",
-        });
-      } else {
-        form.append("cv", null); // Gửi null nếu không có file CV
-      }
-  
-      form.append("user", userId);
-  
-      setLoading(true);
+  const [skills, setSkills] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [skillsModalVisible, setSkillsModalVisible] = useState(false);
+
+  const [areas, setAreas] = useState([]);
+  const [selectedAreas, setSelectedAreas] = useState([]);
+  const [areasModalVisible, setAreasModalVisible] = useState(false);
+
+  const [careers, setCareers] = useState([]);
+  const [selectedCareer, setSelectedCareer] = useState(null);
+  const [careersModalVisible, setCareersModalVisible] = useState(false);
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [jsonLoading, setJsonLoading] = useState(false);
+
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const theme = useTheme();
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        let res = await APIs.post(endpoints["create-applicant"](userId), form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.info(form);
-        if (res.status === 201) nav.navigate("MyLogin"); // Đăng ký xong thì chuyển qua đăng nhập
-      } catch (ex) {
-        console.error(ex);
-        setErr(true);
-      } finally {
-        setLoading(false);
+        const [skillsRes, areasRes, careersRes] = await Promise.all([
+          APIs.get(endpoints["skills"]),
+          APIs.get(endpoints["areas"]),
+          APIs.get(endpoints["careers"]),
+        ]);
+        setSkills(skillsRes.data);
+        setAreas(areasRes.data);
+        setCareers(careersRes.data);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load necessary data. Please try again.");
       }
     };
-  
-    return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[MyStyles.container, MyStyles.margin]}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ScrollView>
-            <Text style={styles.subject}>ĐĂNG KÝ</Text>
-            {fields.map((f) => (
-              <TextInput
-                key={f.name}
-                label={f.label}
-                left={<TextInput.Icon name={f.icon} />}
-                onChangeText={(txt) => updateState(f.name, txt)}
-                style={styles.input}
-                multiline={f.multiline}
-                keyboardType={f.keyboardType}
-              />
-            ))}
-  
-            {/* Chọn kỹ năng */}
-            <TouchableRipple
-              style={MyStyles.margin}
-              onPress={() => setSkillsModalVisible(true)}
-            >
-              <Card>
-                <Card.Content>
-                  <Text>Chọn kỹ năng...</Text>
-                </Card.Content>
-              </Card>
-            </TouchableRipple>
-            <Modal
-              visible={skillsModalVisible}
-              onRequestClose={() => setSkillsModalVisible(false)}
-            >
-              <ScrollView>
-                <List.Section>
-                  <List.Accordion
-                    title="Chọn kỹ năng"
-                    left={(props) => <List.Icon {...props} icon="star" />}
-                  >
-                    {skills.map((skill) => (
-                      <List.Item
-                        key={skill.id}
-                        title={skill.name}
-                        onPress={() => toggleSkill(skill)}
-                      />
-                    ))}
-                  </List.Accordion>
-                </List.Section>
-  
-                {selectedSkills.length > 0 && (
-                  <List.Section title="Kỹ năng đã chọn">
-                    {selectedSkills.map((skill) => (
-                      <List.Item
-                        key={skill.id}
-                        title={skill.name}
-                        onPress={() => toggleSkill(skill)}
-                      />
-                    ))}
-                  </List.Section>
-                )}
-              </ScrollView>
-  
-              <Button onPress={() => setSkillsModalVisible(false)}>Đóng</Button>
-            </Modal>
-  
-            {/* Chọn vùng làm việc */}
-            <TouchableRipple
-              style={MyStyles.margin}
-              onPress={() => setAreasModalVisible(true)}
-            >
-              <Card>
-                <Card.Content>
-                  <Text>Chọn vùng làm việc...</Text>
-                </Card.Content>
-              </Card>
-            </TouchableRipple>
-            <Modal
-              visible={areasModalVisible}
-              onRequestClose={() => setAreasModalVisible(false)}
-            >
-              <ScrollView>
-                <List.Section>
-                  <List.Accordion
-                    title="Chọn vùng làm việc"
-                    left={(props) => <List.Icon {...props} icon="map-marker" />}
-                  >
-                    {areas.map((area) => (
-                      <List.Item
-                        key={area.id}
-                        title={area.name}
-                        onPress={() => toggleArea(area)}
-                      />
-                    ))}
-                  </List.Accordion>
-                </List.Section>
-  
-                {selectedAreas.length > 0 && (
-                  <List.Section title="Vùng làm việc đã chọn">
-                    {selectedAreas.map((area) => (
-                      <List.Item
-                        key={area.id}
-                        title={area.name}
-                        onPress={() => toggleArea(area)}
-                      />
-                    ))}
-                  </List.Section>
-                )}
-              </ScrollView>
-  
-              <Button onPress={() => setAreasModalVisible(false)}>Đóng</Button>
-            </Modal>
-  
-            {/* Chọn nghề nghiệp */}
-            <TouchableRipple
-              style={MyStyles.margin}
-              onPress={() => setCareersModalVisible(true)}
-            >
-              <Card>
-                <Card.Content>
-                  <Text>Chọn nghề nghiệp...</Text>
-                </Card.Content>
-              </Card>
-            </TouchableRipple>
-            <Modal
-              visible={careersModalVisible}
-              onRequestClose={() => setCareersModalVisible(false)}
-            >
-              <ScrollView>
-                <List.Section>
-                  <List.Accordion
-                    title="Chọn nghề nghiệp"
-                    left={(props) => <List.Icon {...props} icon="briefcase" />}
-                  >
-                    {careers.map((career) => (
-                      <List.Item
-                        key={career.id}
-                        title={career.name}
-                        onPress={() => toggleCareer(career)}
-                      />
-                    ))}
-                  </List.Accordion>
-                </List.Section>
-  
-                {selectedCareer && (
-                  <List.Section title="Nghề nghiệp đã chọn">
-                    <List.Item
-                      key={selectedCareer.id}
-                      title={selectedCareer.name}
-                      onPress={() => toggleCareer(selectedCareer)}
-                    />
-                  </List.Section>
-                )}
-              </ScrollView>
-  
-              <Button  onPress={() => setCareersModalVisible(false)}>Đóng</Button>
-            </Modal>
-  
-            <HelperText type="error" visible={err}>
-              Có lỗi xảy ra!
-            </HelperText>
-  
-            {/* Chọn CV */}
-            <TouchableRipple style={styles.avatarPicker} onPress={picker}>
-                  <Text>Tải lên CV...</Text>
-               
-            </TouchableRipple>
-  
-            {applicant.cv && (
-                  <View style={styles.cancelCVContainer}>
-                    <Text style={styles.cancelCVText} onPress={() => updateState("cv", null)}>
-                        Hủy tải CV
-                    </Text>
-                </View>
-            )}
+    fetchData();
+  }, []);
 
-            {applicant.cv && (
-              <Image source={{ uri: applicant.cv.uri }} style={MyStyles.avatar} />
-            )}
-  
-            <Button
-              icon="account-plus"
-              loading={loading}
-              mode="contained"
-              onPress={register}
-              style={styles.button}
-            >
-              ĐĂNG KÝ
-            </Button>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
-      </TouchableWithoutFeedback>
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission Denied",
+        "Sorry, we need camera roll permissions to upload your CV."
+      );
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      updateApplicant("cv", result.assets[0]);
+    }
+  };
+
+  const updateApplicant = (field, value) => {
+    setApplicant((current) => ({ ...current, [field]: value }));
+  };
+
+  const toggleSkill = (skill) => {
+    if (selectedSkills.includes(skill)) {
+      setSelectedSkills((prevSelectedSkills) =>
+        prevSelectedSkills.filter((s) => s.id !== skill.id)
+      );
+    } else if (selectedSkills.length < 5) {
+      setSelectedSkills((prevSelectedSkills) => [...prevSelectedSkills, skill]);
+    } else {
+      Alert.alert("Note", "You can only select up to 5 skills");
+    }
+  };
+
+  const toggleArea = (area) => {
+    if (selectedAreas.includes(area)) {
+      setSelectedAreas((prevSelectedAreas) =>
+        prevSelectedAreas.filter((a) => a.id !== area.id)
+      );
+    } else if (selectedAreas.length < 3) {
+      setSelectedAreas((prevSelectedAreas) => [...prevSelectedAreas, area]);
+    } else {
+      Alert.alert("Note", "You can only select up to 3 work areas");
+    }
+  };
+
+  const toggleCareer = (career) => {
+    setSelectedCareer((prevSelectedCareer) =>
+      prevSelectedCareer && prevSelectedCareer.id === career.id ? null : career
     );
   };
-  
-  const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        padding: 20,
-    },
-    innerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    subject: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 20,
-        color: '#333',
-    },
-    input: {
-        marginVertical: 10, // Slightly increased margin
-        backgroundColor: 'white',
-        borderRadius: 8,
-        paddingHorizontal: 15, // Slightly increased padding
-        height: 50, // Slightly increased height
-        fontSize: 16, // Slightly increased font size
-    },
-    avatarPicker: {
-        marginVertical: 10,
-        padding: 10,
-        backgroundColor: '#E0E0E0',
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    avatarPickerText: {
-        color: '#333',
-        fontSize: 16,
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        alignSelf: 'center',
-        marginVertical: 10,
-    },
-    checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 10,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 5,
-    },
-    linkText: {
-        color: 'green',
-        textDecorationLine: 'underline',
-    },
-    linkTextCentered: {
-        color: 'green',
-        textAlign: 'center',
-        marginTop: 10,
-    },
-    button: {
-        backgroundColor: '#28A745',
-        marginVertical: 10,
-    },cancelCVContainer: {
-      alignItems: 'center',
-      marginTop: 10,
-    },
-    cancelCVText: {
-        color: 'red',
-        fontSize: 16,
-        textDecorationLine: 'underline',
-    },
 
+  const handleRegister = async () => {
+    setError(null);
+    setLoading(true);
+    setJsonLoading(true);
+
+    const formData = new FormData();
+    formData.append("position", applicant.position || "Employee");
+    formData.append("salary_expectation", applicant.salary_expectation || "");
+    formData.append("experience", applicant.experience || "");
+
+    selectedSkills.forEach((skill) => formData.append("skills", skill.id));
+    selectedAreas.forEach((area) => formData.append("areas", area.id));
+    if (selectedCareer) formData.append("career", selectedCareer.id);
+
+    if (applicant.cv) {
+      formData.append("cv", {
+        uri: applicant.cv.uri,
+        name: applicant.cv.fileName || "cv.jpg",
+        type: applicant.cv.type || "image/jpeg",
+      });
+    }
+
+    formData.append("user", userId);
+
+    try {
+      const res = await APIs.post(
+        endpoints["create-applicant"](userId),
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      if (res.status === 201) {
+        console.log(JSON.stringify(res.data, null, 2));
+
+        setApplicant({});
+        setSelectedSkills([]);
+        setSelectedAreas([]);
+        setSelectedCareer(null);
+
+        setSnackbarVisible(true);
+        setRegistrationSuccess(true);
+
+        // setTimeout(() => {
+        //   navigation.navigate("Home");
+        // }, 2000);
+      }
+    } catch (ex) {
+      console.error(ex);
+      setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+      // setJsonLoading(false);
+    }
+  };
+  const navigateToLogin = () => {
+    navigation.navigate("Login");
+  };
+
+  const navigateToHome = () => {
+    navigation.navigate("Home");
+  };
+
+  // const renderField = (label, icon, name, options = {}) => (
+  //   <TextInput
+  //     label={label}
+  //     left={<TextInput.Icon icon={icon} color={theme.colors.primary} />}
+  //     onChangeText={(text) => updateApplicant(name, text)}
+  //     style={styles.input}
+  //     mode="outlined"
+  //     outlineColor={theme.colors.primary}
+  //     activeOutlineColor={theme.colors.primary}
+  //     {...options}
+  //   />
+  // );
+
+  const renderField = (label, icon, name, options = {}) => (
+    <RoundedTextInput
+      label={label}
+      left={<TextInput.Icon icon={icon} color={theme.colors.primary} />}
+      onChangeText={(text) => updateApplicant(name, text)}
+      mode="outlined"
+      outlineColor={theme.colors.primary}
+      activeOutlineColor={theme.colors.primary}
+      {...options}
+    />
+  );
+
+  const renderModal = (
+    title,
+    items,
+    selectedItems,
+    toggleItem,
+    visible,
+    setModalVisible
+  ) => (
+    <Modal
+      visible={visible}
+      onRequestClose={() => setModalVisible(false)}
+      animationType="slide"
+    >
+      <View style={styles.modalContainer}>
+        <Text style={styles.modalTitle}>{title}</Text>
+        <ScrollView>
+          {items.map((item) => (
+            <TouchableRipple
+              key={item.id}
+              onPress={() => toggleItem(item)}
+              style={[
+                styles.modalItem,
+                selectedItems.includes(item) && styles.selectedModalItem,
+              ]}
+            >
+              <Text>{item.name}</Text>
+            </TouchableRipple>
+          ))}
+        </ScrollView>
+        <Button
+          mode="contained"
+          onPress={() => setModalVisible(false)}
+          style={styles.modalButton}
+        >
+          Done
+        </Button>
+      </View>
+    </Modal>
+  );
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Join Our Team</Text>
+          </View>
+
+          {renderField(
+            "What position are you looking for?",
+            "briefcase",
+            "position"
+          )}
+          {renderField(
+            "What's your expected salary?",
+            "currency-usd",
+            "salary_expectation",
+            { keyboardType: "numeric" }
+          )}
+          {renderField(
+            "Tell us about your experience",
+            "account-hard-hat",
+            "experience",
+            {
+              multiline: true,
+              numberOfLines: 3,
+            }
+          )}
+
+          <TouchableRipple
+            onPress={() => setSkillsModalVisible(true)}
+            style={styles.selectionButton}
+          >
+            <View style={styles.selectionButtonContent}>
+              <IconButton icon="star" size={24} color={theme.colors.primary} />
+              <Text style={styles.selectionButtonText}>
+                Your top skills ({selectedSkills.length}/5)
+              </Text>
+            </View>
+          </TouchableRipple>
+          {renderModal(
+            "Select Your Top Skills",
+            skills,
+            selectedSkills,
+            toggleSkill,
+            skillsModalVisible,
+            setSkillsModalVisible
+          )}
+
+          <TouchableRipple
+            onPress={() => setAreasModalVisible(true)}
+            style={styles.selectionButton}
+          >
+            <View style={styles.selectionButtonContent}>
+              <IconButton
+                icon="map-marker"
+                size={24}
+                color={theme.colors.primary}
+              />
+              <Text style={styles.selectionButtonText}>
+                Preferred work areas ({selectedAreas.length}/3)
+              </Text>
+            </View>
+          </TouchableRipple>
+          {renderModal(
+            "Select Work Areas",
+            areas,
+            selectedAreas,
+            toggleArea,
+            areasModalVisible,
+            setAreasModalVisible
+          )}
+
+          <TouchableRipple
+            onPress={() => setCareersModalVisible(true)}
+            style={styles.selectionButton}
+          >
+            <View style={styles.selectionButtonContent}>
+              <IconButton
+                icon="briefcase-outline"
+                size={24}
+                color={theme.colors.primary}
+              />
+              <Text style={styles.selectionButtonText}>
+                Career path {selectedCareer ? `(${selectedCareer.name})` : ""}
+              </Text>
+            </View>
+          </TouchableRipple>
+          {renderModal(
+            "Choose Your Career Path",
+            careers,
+            [selectedCareer],
+            toggleCareer,
+            careersModalVisible,
+            setCareersModalVisible
+          )}
+
+          <TouchableRipple onPress={pickImage} style={styles.uploadButton}>
+            <View style={styles.uploadButtonContent}>
+              <IconButton icon="file-upload" size={24} color="white" />
+              <Text style={styles.uploadButtonText}>
+                {applicant.cv ? "Change CV" : "Upload Your CV"}
+              </Text>
+            </View>
+          </TouchableRipple>
+
+          {applicant.cv && (
+            <View style={styles.cvPreview}>
+              <Image
+                source={{ uri: applicant.cv.uri }}
+                style={styles.cvImage}
+              />
+              <TouchableRipple
+                onPress={() => updateApplicant("cv", null)}
+                style={styles.removeCvButton}
+              >
+                <Text style={styles.removeCvText}>Remove CV</Text>
+              </TouchableRipple>
+            </View>
+          )}
+
+          {error && <Text style={styles.errorText}>{error}</Text>}
+
+          <Button
+            mode="contained"
+            onPress={handleRegister}
+            // loading={loading}
+            disabled={loading}
+            style={styles.registerButton}
+            labelStyle={styles.registerButtonLabel}
+          >
+            Join Now
+          </Button>
+
+          {/* {jsonLoading && (
+            <View style={styles.loadingContainer}>
+              <LottieView
+                source={require("../../../assets/animations/loading.json")}
+                autoPlay
+                loop
+                style={styles.lottieAnimation}
+              />
+              <Text style={styles.loadingText}>
+                Processing your application...
+              </Text>
+            </View>
+          )} */}
+
+          <Modal
+            visible={registrationSuccess}
+            transparent={true}
+            animationType="fade"
+          >
+            <View style={styles.successModalContainer}>
+              <View style={styles.successModalContent}>
+                <LottieView
+                  source={require("../../../assets/animations/success.json")}
+                  autoPlay
+                  loop={false}
+                  style={styles.successAnimation}
+                />
+                <Text style={styles.successText}>Welcome aboard!</Text>
+                <Text style={styles.successSubText}>
+                  Your application has been submitted successfully.
+                </Text>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    mode="contained"
+                    onPress={navigateToLogin}
+                    style={styles.modalButton}
+                  >
+                    Go to Login
+                  </Button>
+                  <Button
+                    mode="outlined"
+                    onPress={navigateToHome}
+                    style={styles.modalButton}
+                  >
+                    Back to Home
+                  </Button>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    marginBottom: 20,
+    borderRadius: 30,
+    overflow: "hidden",
+    // backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  selectionButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    // backgroundColor: "#E6F2FF",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  uploadButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+  },
+  lottieAnimation: {
+    width: 200,
+    height: 200,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 0,
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 18,
+    color: "#1E3A8A",
+    textAlign: "center",
+  },
+  successModalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  successModalContent: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  successAnimation: {
+    width: 150,
+    height: 150,
+  },
+  successText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#10B981",
+    marginVertical: 20,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#F7F9FC",
+    // backgroundColor: "#FFF8E1", // Màu nền ấm áp hơn
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 30,
+    color: "#1E3A8A",
+  },
+  input: {
+    marginBottom: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    borderRadius: 60, // Tăng độ bo tròn
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Thêm đổ bóng
+    
+  },
+  selectionButton: {
+    backgroundColor: "#E0E7FF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  selectionButtonText: {
+    color: "#1E3A8A",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  uploadButton: {
+    backgroundColor: "#10B981",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  uploadButtonText: {
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  cvPreview: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  cvImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  removeCvButton: {
+    padding: 10,
+    backgroundColor: "#FEE2E2",
+    borderRadius: 5,
+  },
+  removeCvText: {
+    color: "#DC2626",
+    fontWeight: "bold",
+  },
+  registerButtonLabel: {
+    fontSize: 16,
+    color: "white",
+  },
+  errorText: {
+    color: "#DC2626",
+    marginBottom: 20,
+    textAlign: "center",
+    fontSize: 16,
+  },
+  registerButton: {
+    backgroundColor: "#1E3A8A",
+    marginTop: 10,
+    borderRadius: 10,
+    paddingVertical: 8,
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "white",
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#1E3A8A",
+  },
+  modalItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E7FF",
+  },
+  selectedModalItem: {
+    backgroundColor: "#E0E7FF",
+  },
+  modalButton: {
+    marginTop: 20,
+    backgroundColor: "#1E3A8A",
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#1E3A8A",
+  },
+  snackbar: {
+    backgroundColor: "#10B981",
+  },
 });
-  export default RegisterApplicant;
-  
+
+export default RegisterApplicant;
