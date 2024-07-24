@@ -228,28 +228,37 @@ const RegisterApplicant = ({ route }) => {
       animationType="slide"
     >
       <View style={styles.modalContainer}>
-        <Text style={styles.modalTitle}>{title}</Text>
-        <ScrollView>
-          {items.map((item) => (
-            <TouchableRipple
-              key={item.id}
-              onPress={() => toggleItem(item)}
-              style={[
-                styles.modalItem,
-                selectedItems.includes(item) && styles.selectedModalItem,
-              ]}
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>{title}</Text>
+          <ScrollView style={styles.modalScrollView}>
+            {items.map((item) => (
+              <TouchableRipple
+                key={item.id}
+                onPress={() => toggleItem(item)}
+                style={[
+                  styles.modalItem,
+                  selectedItems.includes(item) && styles.selectedModalItem,
+                ]}
+              >
+                <View style={styles.modalItemContent}>
+                  <Text style={styles.modalItemText}>{item.name}</Text>
+                  {selectedItems.includes(item) && (
+                    <IconButton icon="check" size={20} color="#4CAF50" />
+                  )}
+                </View>
+              </TouchableRipple>
+            ))}
+          </ScrollView>
+          <View style={styles.modalFooter}>
+            <Button
+              mode="contained"
+              onPress={() => setModalVisible(false)}
+              style={styles.modalButton}
             >
-              <Text>{item.name}</Text>
-            </TouchableRipple>
-          ))}
-        </ScrollView>
-        <Button
-          mode="contained"
-          onPress={() => setModalVisible(false)}
-          style={styles.modalButton}
-        >
-          Done
-        </Button>
+              Done
+            </Button>
+          </View>
+        </View>
       </View>
     </Modal>
   );
@@ -633,22 +642,55 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: "white",
   },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#1E3A8A",
-  },
-  modalItem: {
+  modalHeader: {
+    alignItems: "center",
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#E0E7FF",
   },
+
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    marginTop: 20,
+    color: "#1E3A8A",
+    alignItems: "center",
+    textAlign: 'center',
+  },
+  modalScrollView: {
+    flex: 1,
+  },
+  modalItem: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E7FF",
+    height: 60,
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1, 
+    textAlignVertical: 'center',
+  },
+  modalItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '100%',
+    paddingHorizontal: 16, // Thêm padding ngang
+  },
+
   selectedModalItem: {
     backgroundColor: "#E0E7FF",
+  },
+  modalFooter: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E7FF',
   },
   modalButton: {
     marginTop: 20,
