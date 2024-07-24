@@ -25,7 +25,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import APIs, { endpoints } from "../../../configs/APIs";
 import LottieView from "lottie-react-native";
-
+import * as Animatable from "react-native-animatable";
 // Thêm component RoundedTextInput mới
 const RoundedTextInput = ({ style, ...props }) => {
   const theme = useTheme();
@@ -34,7 +34,7 @@ const RoundedTextInput = ({ style, ...props }) => {
       <TextInput
         {...props}
         style={styles.input}
-        theme={{ roundness: 30, colors: { primary: "#4CAF50"  } }}
+        theme={{ roundness: 30, colors: { primary: "#4CAF50" } }}
       />
     </View>
   );
@@ -202,27 +202,14 @@ const RegisterApplicant = ({ route }) => {
     navigation.navigate("Home");
   };
 
-  // const renderField = (label, icon, name, options = {}) => (
-  //   <TextInput
-  //     label={label}
-  //     left={<TextInput.Icon icon={icon} color={theme.colors.primary} />}
-  //     onChangeText={(text) => updateApplicant(name, text)}
-  //     style={styles.input}
-  //     mode="outlined"
-  //     outlineColor={theme.colors.primary}
-  //     activeOutlineColor={theme.colors.primary}
-  //     {...options}
-  //   />
-  // );
-
   const renderField = (label, icon, name, options = {}) => (
     <RoundedTextInput
       label={label}
-      left={<TextInput.Icon icon={icon} color={theme.colors.primary} />}
+      left={<TextInput.Icon icon={icon} color={"#1E3A8A"} />}
       onChangeText={(text) => updateApplicant(name, text)}
       mode="outlined"
-      outlineColor={theme.colors.primary}
-      activeOutlineColor={theme.colors.primary}
+      outlineColor={"#1E3A8A"}
+      activeOutlineColor={"#1E3A8A"}
       {...options}
     />
   );
@@ -392,18 +379,22 @@ const RegisterApplicant = ({ route }) => {
           )}
 
           {error && <Text style={styles.errorText}>{error}</Text>}
-
-          <Button
-            mode="contained"
-            onPress={handleRegister}
-            // loading={loading}
-            disabled={loading}
-            style={styles.registerButton}
-            labelStyle={styles.registerButtonLabel}
+          <Animatable.View
+            animation="pulse"
+            iterationCount="infinite"
+            duration={2000}
           >
-            Join Now
-          </Button>
-
+            <Button
+              mode="contained"
+              onPress={handleRegister}
+              // loading={loading}
+              disabled={loading}
+              style={styles.registerButton}
+              labelStyle={styles.registerButtonLabel}
+            >
+              Join Now
+            </Button>
+          </Animatable.View>
           {/* {jsonLoading && (
             <View style={styles.loadingContainer}>
               <LottieView
@@ -462,12 +453,12 @@ const RegisterApplicant = ({ route }) => {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginBottom: 20,
-    borderRadius: 30,
+    marginBottom: 10,
+    borderRadius: 20,
     overflow: "hidden",
     // backgroundColor: "white",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -475,7 +466,7 @@ const styles = StyleSheet.create({
   selectionButtonContent: {
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "#E6F2FF",
+    padding: -10,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -544,11 +535,19 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
+    // fontSize: 28,
+    // fontWeight: "bold",
+    // textAlign: "center",
+    // marginBottom: 30,
+    // color: "#1E3A8A",
+    fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
     color: "#1E3A8A",
+    textShadowColor: "rgba(0, 0, 0, 0.1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   input: {
     marginBottom: 20,
@@ -560,23 +559,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3, // Thêm đổ bóng
-    
   },
   selectionButton: {
     backgroundColor: "#E0E7FF",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 20,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   selectionButtonText: {
     color: "#1E3A8A",
-    fontSize: 16,
+    fontSize: 17,
     textAlign: "center",
   },
   uploadButton: {
     backgroundColor: "#10B981",
-    padding: 15,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 20,
     marginBottom: 20,
   },
   uploadButtonText: {
@@ -605,7 +608,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   registerButtonLabel: {
-    fontSize: 16,
+    fontSize: 17,
     color: "white",
   },
   errorText: {
@@ -619,6 +622,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 10,
     paddingVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8, // Cho Android
   },
   modalContainer: {
     flex: 1,
