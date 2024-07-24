@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as Font from "expo-font";
 import {
   View,
   Text,
@@ -12,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import {
   Button,
@@ -43,7 +45,7 @@ const RoundedTextInput = ({ style, ...props }) => {
 const RegisterApplicant = ({ route }) => {
   const [applicant, setApplicant] = useState({});
   const [error, setError] = useState(null);
-  // const { userId } = route.params;
+  const { userId } = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +66,15 @@ const RegisterApplicant = ({ route }) => {
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const theme = useTheme();
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
+      // FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
+      // DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,6 +92,7 @@ const RegisterApplicant = ({ route }) => {
       }
     };
     fetchData();
+    loadFonts();
   }, []);
 
   const pickImage = async () => {
@@ -195,11 +207,11 @@ const RegisterApplicant = ({ route }) => {
     }
   };
   const navigateToLogin = () => {
-    navigation.navigate("Login");
+    navigation.navigate("MyLogin");
   };
 
   const navigateToHome = () => {
-    navigation.navigate("Home");
+    navigation.navigate("HomeScreen");
   };
 
   const renderField = (label, icon, name, options = {}) => (
@@ -404,7 +416,7 @@ const RegisterApplicant = ({ route }) => {
               Join Now
             </Button>
           </Animatable.View>
-          {/* {jsonLoading && (
+          {jsonLoading && (
             <View style={styles.loadingContainer}>
               <LottieView
                 source={require("../../../assets/animations/loading.json")}
@@ -416,7 +428,7 @@ const RegisterApplicant = ({ route }) => {
                 Processing your application...
               </Text>
             </View>
-          )} */}
+          )}
 
           <Modal
             visible={registrationSuccess}
@@ -431,25 +443,24 @@ const RegisterApplicant = ({ route }) => {
                   loop={false}
                   style={styles.successAnimation}
                 />
-                <Text style={styles.successText}>Welcome aboard!</Text>
+                <Text style={styles.successText}>Congratulations!</Text>
                 <Text style={styles.successSubText}>
-                  Your application has been submitted successfully.
+                  Your application has been successfully submitted. Welcome to
+                  our team!
                 </Text>
                 <View style={styles.buttonContainer}>
-                  <Button
-                    mode="contained"
+                  <TouchableOpacity
+                    style={styles.primaryButton}
                     onPress={navigateToLogin}
-                    style={styles.modalButton}
                   >
-                    Go to Login
-                  </Button>
-                  <Button
-                    mode="outlined"
+                    <Text style={styles.primaryButtonText}>Go to Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.secondaryButton}
                     onPress={navigateToHome}
-                    style={styles.modalButton}
                   >
-                    Back to Home
-                  </Button>
+                    <Text style={styles.secondaryButtonText}>Back to Home</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -478,9 +489,37 @@ const styles = StyleSheet.create({
     padding: -10,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    width: '100%',
+    marginTop: 20,
+  },
+  primaryButton: {
+    backgroundColor: "#1E3A8A",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom: 10,
     width: "100%",
+  },
+  secondaryButtonText: {
+    color: "#1E3A8A",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  secondaryButton: {
+    backgroundColor: "transparent",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#1E3A8A",
+    width: "100%",
+  },
+  primaryButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   uploadButtonContent: {
     flexDirection: "row",
@@ -508,7 +547,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 20,
     color: "#1E3A8A",
     textAlign: "center",
   },
@@ -523,16 +562,26 @@ const styles = StyleSheet.create({
     padding: 30,
     borderRadius: 20,
     alignItems: "center",
+    width: "90%",
+    maxWidth: 400,
   },
   successAnimation: {
     width: 150,
     height: 150,
   },
   successText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#10B981",
     marginVertical: 20,
+    textAlign: "center",
+    marginTop: -18,
+  },
+  successSubText: {
+    fontSize: 16,
+    color: "#4B5563",
+    textAlign: "center",
+    marginBottom: 30,
   },
   container: {
     flex: 1,
@@ -544,11 +593,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    // fontSize: 28,
-    // fontWeight: "bold",
-    // textAlign: "center",
-    // marginBottom: 30,
-    // color: "#1E3A8A",
+    fontFamily: "Faustina",
     fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
@@ -659,7 +704,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#1E3A8A",
     alignItems: "center",
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalScrollView: {
     flex: 1,
@@ -672,15 +717,15 @@ const styles = StyleSheet.create({
   },
   modalItemText: {
     fontSize: 16,
-    color: '#333',
-    flex: 1, 
-    textAlignVertical: 'center',
+    color: "#333",
+    flex: 1,
+    textAlignVertical: "center",
   },
   modalItemContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
     paddingHorizontal: 16, // Thêm padding ngang
   },
 
@@ -690,7 +735,7 @@ const styles = StyleSheet.create({
   modalFooter: {
     padding: 15,
     borderTopWidth: 1,
-    borderTopColor: '#E0E7FF',
+    borderTopColor: "#E0E7FF",
   },
   modalButton: {
     marginTop: 20,

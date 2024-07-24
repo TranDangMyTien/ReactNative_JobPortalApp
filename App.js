@@ -73,8 +73,8 @@ const MyHome = () => {
 const MyRegister = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="RegisterRole" component={RegisterRole} /> */}
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="RegisterRole" component={RegisterRole} />
       <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
 
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
