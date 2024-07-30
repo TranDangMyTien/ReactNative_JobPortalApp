@@ -53,8 +53,14 @@
 		<string>DejaVuSerifCondensed_Bold.ttf</string>
 		<string>Fontspring_DEMO_theseasons_lt.otf</string>
 		<string>Faustina_ExtraBold.ttf</string>
-		<string>Faustina_Light.ttf</string>
 		<string>Sansita_Bold.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Faustina_Medium.ttf</string>
+		<string>Feather.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Zocial.ttf</string>
 	</array>
 </dict>
 </plist>

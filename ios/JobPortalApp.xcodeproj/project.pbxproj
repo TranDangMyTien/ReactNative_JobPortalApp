@@ -18,8 +18,14 @@
 		DABD298CAD514DCD929A917F /* DejaVuSerifCondensed_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47E55F47F39A4EF19AEE1E1B /* DejaVuSerifCondensed_Bold.ttf */; };
 		0725596F49DB49378F46D0CF /* Fontspring_DEMO_theseasons_lt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3FB46FFF4415463096E56A46 /* Fontspring_DEMO_theseasons_lt.otf */; };
 		E6482B5DFD6B465CB4EF5945 /* Faustina_ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8490F04A75F041D78751A97E /* Faustina_ExtraBold.ttf */; };
-		6A270258CE80479C8A629137 /* Faustina_Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47B9352E40DC4CC3BF87E549 /* Faustina_Light.ttf */; };
 		BB026FD284B0441BBA927712 /* Sansita_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C87922FAF584E7B9E997D61 /* Sansita_Bold.ttf */; };
+		449B68F4A57546819364B8D3 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38FF9AE48906478DAD9C889A /* Entypo.ttf */; };
+		E3FC0D3F4ADE4789B9BFA038 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EA58949B7C3499389ED9050 /* EvilIcons.ttf */; };
+		653B91D769EE448685542EB4 /* Faustina_Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 274BD0010593402381000C0F /* Faustina_Medium.ttf */; };
+		FD47E9B3A5E24EEE93D98E93 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B3B9435BBADF40A9B348B842 /* Feather.ttf */; };
+		56B2DC96691641E98DD60C7F /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED8028595F2D414ABD446215 /* Fontisto.ttf */; };
+		4554AFD03CE949AB98A0F676 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB2B5F03EAF148AE86C665CF /* Foundation.ttf */; };
+		EE6D0646636343DDAF307E60 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB17522576024BE48E7B494A /* Zocial.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,8 +46,14 @@
 		47E55F47F39A4EF19AEE1E1B /* DejaVuSerifCondensed_Bold.ttf */ = {isa = PBXFileReference; name = "DejaVuSerifCondensed_Bold.ttf"; path = "../assets/fonts/DejaVuSerifCondensed_Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		3FB46FFF4415463096E56A46 /* Fontspring_DEMO_theseasons_lt.otf */ = {isa = PBXFileReference; name = "Fontspring_DEMO_theseasons_lt.otf"; path = "../assets/fonts/Fontspring_DEMO_theseasons_lt.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		8490F04A75F041D78751A97E /* Faustina_ExtraBold.ttf */ = {isa = PBXFileReference; name = "Faustina_ExtraBold.ttf"; path = "../assets/fonts/Faustina_ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		47B9352E40DC4CC3BF87E549 /* Faustina_Light.ttf */ = {isa = PBXFileReference; name = "Faustina_Light.ttf"; path = "../assets/fonts/Faustina_Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		2C87922FAF584E7B9E997D61 /* Sansita_Bold.ttf */ = {isa = PBXFileReference; name = "Sansita_Bold.ttf"; path = "../assets/fonts/Sansita_Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		38FF9AE48906478DAD9C889A /* Entypo.ttf */ = {isa = PBXFileReference; name = "Entypo.ttf"; path = "../assets/fonts/Entypo.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3EA58949B7C3499389ED9050 /* EvilIcons.ttf */ = {isa = PBXFileReference; name = "EvilIcons.ttf"; path = "../assets/fonts/EvilIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		274BD0010593402381000C0F /* Faustina_Medium.ttf */ = {isa = PBXFileReference; name = "Faustina_Medium.ttf"; path = "../assets/fonts/Faustina_Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B3B9435BBADF40A9B348B842 /* Feather.ttf */ = {isa = PBXFileReference; name = "Feather.ttf"; path = "../assets/fonts/Feather.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		ED8028595F2D414ABD446215 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../assets/fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EB2B5F03EAF148AE86C665CF /* Foundation.ttf */ = {isa = PBXFileReference; name = "Foundation.ttf"; path = "../assets/fonts/Foundation.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FB17522576024BE48E7B494A /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../assets/fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,8 +163,14 @@
 				47E55F47F39A4EF19AEE1E1B /* DejaVuSerifCondensed_Bold.ttf */,
 				3FB46FFF4415463096E56A46 /* Fontspring_DEMO_theseasons_lt.otf */,
 				8490F04A75F041D78751A97E /* Faustina_ExtraBold.ttf */,
-				47B9352E40DC4CC3BF87E549 /* Faustina_Light.ttf */,
 				2C87922FAF584E7B9E997D61 /* Sansita_Bold.ttf */,
+				38FF9AE48906478DAD9C889A /* Entypo.ttf */,
+				3EA58949B7C3499389ED9050 /* EvilIcons.ttf */,
+				274BD0010593402381000C0F /* Faustina_Medium.ttf */,
+				B3B9435BBADF40A9B348B842 /* Feather.ttf */,
+				ED8028595F2D414ABD446215 /* Fontisto.ttf */,
+				EB2B5F03EAF148AE86C665CF /* Foundation.ttf */,
+				FB17522576024BE48E7B494A /* Zocial.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -224,8 +242,14 @@
 				DABD298CAD514DCD929A917F /* DejaVuSerifCondensed_Bold.ttf in Resources */,
 				0725596F49DB49378F46D0CF /* Fontspring_DEMO_theseasons_lt.otf in Resources */,
 				E6482B5DFD6B465CB4EF5945 /* Faustina_ExtraBold.ttf in Resources */,
-				6A270258CE80479C8A629137 /* Faustina_Light.ttf in Resources */,
 				BB026FD284B0441BBA927712 /* Sansita_Bold.ttf in Resources */,
+				449B68F4A57546819364B8D3 /* Entypo.ttf in Resources */,
+				E3FC0D3F4ADE4789B9BFA038 /* EvilIcons.ttf in Resources */,
+				653B91D769EE448685542EB4 /* Faustina_Medium.ttf in Resources */,
+				FD47E9B3A5E24EEE93D98E93 /* Feather.ttf in Resources */,
+				56B2DC96691641E98DD60C7F /* Fontisto.ttf in Resources */,
+				4554AFD03CE949AB98A0F676 /* Foundation.ttf in Resources */,
+				EE6D0646636343DDAF307E60 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
