@@ -34,6 +34,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [fontLoaded, setFontLoaded] = useState(false);
   const [errors, setErrors] = useState({
     username: "",
     password: "",
@@ -42,10 +43,11 @@ const Login = () => {
   const loadFonts = async () => {
     try {
       await Font.loadAsync({
-        Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
+        Faustina: require("../../assets/fonts/FaustinaBOLD.ttf"),
         FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
         DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
       });
+      setFontLoaded(true);
     } catch (error) {
       console.error("Error loading fonts:", error);
     } finally {
@@ -63,10 +65,15 @@ const Login = () => {
 
   useEffect(() => {
     loadFonts();
-    checkRememberedUser();
   }, []);
+  
+  useEffect(() => {
+    if (fontLoaded) {
+      checkRememberedUser();
+    }
+  }, [fontLoaded]);
 
-  if (isLoading) {
+  if (isLoading || !fontLoaded) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#00B14F" />
