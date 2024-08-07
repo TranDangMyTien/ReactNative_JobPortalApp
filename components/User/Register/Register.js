@@ -123,6 +123,7 @@ const Register = () => {
   const loadFonts = async () => {
     await Font.loadAsync({
       Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
+      FaustinaMd: require("../../../assets/fonts/Faustina_Medium.ttf"),
     });
   };
 
@@ -617,6 +618,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: "#00B14F",
+    fontFamily: "FaustinaMd",
   },
   termsTextContainer: {
     flex: 1,

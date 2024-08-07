@@ -24,7 +24,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import APIs, { endpoints } from "../../../configs/APIs";
 import LottieView from "lottie-react-native";
 import * as Animatable from "react-native-animatable";
@@ -94,6 +94,18 @@ const RegisterApplicant = ({ route }) => {
     fetchData();
     loadFonts();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      setRegistrationSuccess(false);
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setRegistrationSuccess(false);
+    }, [])
+  );
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -207,10 +219,12 @@ const RegisterApplicant = ({ route }) => {
     }
   };
   const navigateToLogin = () => {
+    setRegistrationSuccess(false);
     navigation.navigate("MyLogin");
   };
 
   const navigateToHome = () => {
+    setRegistrationSuccess(false);
     navigation.navigate("HomeScreen");
   };
 
@@ -434,6 +448,7 @@ const RegisterApplicant = ({ route }) => {
             visible={registrationSuccess}
             transparent={true}
             animationType="fade"
+            onRequestClose={() => setRegistrationSuccess(false)}
           >
             <View style={styles.successModalContainer}>
               <View style={styles.successModalContent}>

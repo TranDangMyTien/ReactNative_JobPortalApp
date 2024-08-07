@@ -43,7 +43,7 @@ const Login = () => {
   const loadFonts = async () => {
     try {
       await Font.loadAsync({
-        Faustina: require("../../assets/fonts/FaustinaBOLD.ttf"),
+        Faustina: require("../../assets/fonts/Faustina_ExtraBold.ttf"),
         FaustinaMd: require("../../assets/fonts/Faustina_Medium.ttf"),
         DejaVu: require("../../assets/fonts/DejaVuSerifCondensed_Bold.ttf"),
       });
