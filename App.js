@@ -72,7 +72,10 @@ const MyHome = () => {
 // Màn hình bên đăng ký
 const MyRegister = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Register"
+    >
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="RegisterRole" component={RegisterRole} />
       <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
@@ -223,7 +226,6 @@ const MyTab = () => {
             component={MyLogin}
             options={{ title: "Log in" }}
           />
-          
         </>
       ) : (
         <>
@@ -385,7 +387,6 @@ export default function App() {
                   )}
                 </Stack.Screen>
               </Stack.Navigator> */}
-
             </MyDispatchContext.Provider>
           </MyUserContext.Provider>
         </NavigationContainer>

@@ -67,6 +67,17 @@ const RegisterApplicant = ({ route }) => {
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const theme = useTheme();
 
+
+  const resetForm = () => {
+    setApplicant({});
+    setSelectedSkills([]);
+    setSelectedAreas([]);
+    setSelectedCareer(null);
+    setError(null);
+    setRegistrationSuccess(false);
+    setJsonLoading(false);
+  };
+
   const loadFonts = async () => {
     await Font.loadAsync({
       Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
@@ -104,6 +115,12 @@ const RegisterApplicant = ({ route }) => {
   useFocusEffect(
     React.useCallback(() => {
       setRegistrationSuccess(false);
+    }, [])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      resetForm();
     }, [])
   );
 
@@ -206,9 +223,10 @@ const RegisterApplicant = ({ route }) => {
         setSnackbarVisible(true);
         setRegistrationSuccess(true);
 
-        // setTimeout(() => {
-        //   navigation.navigate("Home");
-        // }, 2000);
+        setTimeout(() => {
+          resetForm();
+          navigation.navigate("Register");
+        }, 5000);
       }
     } catch (ex) {
       console.error(ex);
@@ -220,11 +238,13 @@ const RegisterApplicant = ({ route }) => {
   };
   const navigateToLogin = () => {
     setRegistrationSuccess(false);
+    resetForm();
     navigation.navigate("MyLogin");
   };
 
   const navigateToHome = () => {
     setRegistrationSuccess(false);
+    resetForm();
     navigation.navigate("HomeScreen");
   };
 
@@ -250,8 +270,9 @@ const RegisterApplicant = ({ route }) => {
   ) => (
     <Modal
       visible={visible}
-      onRequestClose={() => setModalVisible(false)}
+      // onRequestClose={() => setModalVisible(false)}
       animationType="slide"
+      onRequestClose={() => setRegistrationSuccess(false)}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContainer}>
