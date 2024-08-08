@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as Font from "expo-font";
+import { HelperText } from "react-native-paper";
 import {
   View,
   Text,
@@ -24,10 +25,11 @@ import {
   useTheme,
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation, useFocusEffect  } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import APIs, { endpoints } from "../../../configs/APIs";
 import LottieView from "lottie-react-native";
 import * as Animatable from "react-native-animatable";
+// import { inflateSync } from "zlib";
 // Thêm component RoundedTextInput mới
 const RoundedTextInput = ({ style, ...props }) => {
   const theme = useTheme();
@@ -45,6 +47,16 @@ const RoundedTextInput = ({ style, ...props }) => {
 const RegisterApplicant = ({ route }) => {
   const [applicant, setApplicant] = useState({});
   const [error, setError] = useState(null);
+  const [errorMessages, setErrorMessages] = useState({
+    position: '',
+    salary_expectation: '',
+    experience: '',
+    skills: '',
+    areas: '',
+    career: '',
+    cv: ''
+  });
+
   const { userId } = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -67,6 +79,9 @@ const RegisterApplicant = ({ route }) => {
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const theme = useTheme();
 
+  const formatLargeNumber = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   const resetForm = () => {
     setApplicant({});
@@ -147,7 +162,15 @@ const RegisterApplicant = ({ route }) => {
   };
 
   const updateApplicant = (field, value) => {
-    setApplicant((current) => ({ ...current, [field]: value }));
+    if (field === "salary_expectation") {
+      // Chỉ cho phép nhập số
+      const numericValue = value.replace(/[^0-9]/g, "");
+      // Loại bỏ các số 0 ở đầu
+      const formattedValue = numericValue.replace(/^0+/, "");
+      setApplicant((current) => ({ ...current, [field]: formattedValue }));
+    } else {
+      setApplicant((current) => ({ ...current, [field]: value }));
+    }
   };
 
   const toggleSkill = (skill) => {
@@ -181,6 +204,44 @@ const RegisterApplicant = ({ route }) => {
   };
 
   const handleRegister = async () => {
+    let errors = {};
+
+    // Kiểm tra các trường bắt buộc
+    if (!selectedSkills.length) {
+      errors.skills = "Please select at least one skill!";
+    }
+    if (!selectedAreas.length) {
+      errors.areas = "Please select at least one area!";
+    }
+    if (!selectedCareer) {
+      errors.career = "Please select a career!";
+    }
+    if (!applicant.salary_expectation) {
+      errors.salary_expectation = "Please enter your salary expectation!";
+    } else {
+      const salaryValue = parseInt(applicant.salary_expectation, 10);
+      if (isNaN(salaryValue)) {
+        errors.salary_expectation = "Salary must be a valid number!";
+      } else if (salaryValue < 0 || salaryValue > 2147483647) {
+        errors.salary_expectation =
+          "Salary must be between 0 and 2,147,483,647!";
+      }
+    }
+    if (!applicant.position) {
+      errors.position = "Please enter your position!";
+    }
+    if (!applicant.experience) {
+      errors.experience = "Please enter your experience!";
+    }
+    if (!applicant.cv) {
+      errors.cv = "Please upload your CV!";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors);
+      return;
+    }
+    setErrorMessages({});
     setError(null);
     setLoading(true);
     setJsonLoading(true);
@@ -213,7 +274,8 @@ const RegisterApplicant = ({ route }) => {
         }
       );
       if (res.status === 201) {
-        console.log(JSON.stringify(res.data, null, 2));
+        // Kiểm tra dữ liệu nhập vào
+        // console.log(JSON.stringify(res.data, null, 2));
 
         setApplicant({});
         setSelectedSkills([]);
@@ -227,6 +289,8 @@ const RegisterApplicant = ({ route }) => {
           resetForm();
           navigation.navigate("Register");
         }, 5000);
+      } else {
+        Alert.alert("Error", res.data?.message || "Something went wrong");
       }
     } catch (ex) {
       console.error(ex);
@@ -249,15 +313,30 @@ const RegisterApplicant = ({ route }) => {
   };
 
   const renderField = (label, icon, name, options = {}) => (
-    <RoundedTextInput
-      label={label}
-      left={<TextInput.Icon icon={icon} color={"#1E3A8A"} />}
-      onChangeText={(text) => updateApplicant(name, text)}
-      mode="outlined"
-      outlineColor={"#1E3A8A"}
-      activeOutlineColor={"#1E3A8A"}
-      {...options}
-    />
+    <>
+      <RoundedTextInput
+        label={label}
+        left={<TextInput.Icon icon={icon} color={"#1E3A8A"} />}
+        onChangeText={(text) => updateApplicant(name, text)}
+        mode="outlined"
+        outlineColor={"#1E3A8A"}
+        activeOutlineColor={"#1E3A8A"}
+        {...options}
+      />
+      <HelperText
+        type="error"
+        visible={!!errorMessages[name]}
+        style={styles.errorText}
+      >
+        {name === "salary_expectation" &&
+        errorMessages[name] &&
+        errorMessages[name].includes("between")
+          ? `Salary must be between ${formatLargeNumber(
+              0
+            )} and ${formatLargeNumber(2147483647)}!`
+          : errorMessages[name] || ""}
+      </HelperText>
+    </>
   );
 
   const renderModal = (
@@ -330,7 +409,10 @@ const RegisterApplicant = ({ route }) => {
             "What's your expected salary?",
             "currency-usd",
             "salary_expectation",
-            { keyboardType: "numeric" }
+            {
+              keyboardType: "numeric",
+              maxLength: 10, // Độ dài tối đa của số nguyên 32-bit không dấu
+            }
           )}
           {renderField(
             "Tell us about your experience",
@@ -353,6 +435,13 @@ const RegisterApplicant = ({ route }) => {
               </Text>
             </View>
           </TouchableRipple>
+          <HelperText
+            type="error"
+            visible={!!errorMessages.skills}
+            style={styles.errorText}
+          >
+            {errorMessages.skills}
+          </HelperText>
           {renderModal(
             "Select Your Top Skills",
             skills,
@@ -377,6 +466,13 @@ const RegisterApplicant = ({ route }) => {
               </Text>
             </View>
           </TouchableRipple>
+          <HelperText
+            type="error"
+            visible={!!errorMessages.areas}
+            style={styles.errorText}
+          >
+            {errorMessages.areas}
+          </HelperText>
           {renderModal(
             "Select Work Areas",
             areas,
@@ -401,6 +497,13 @@ const RegisterApplicant = ({ route }) => {
               </Text>
             </View>
           </TouchableRipple>
+          <HelperText
+            type="error"
+            visible={!!errorMessages.career}
+            style={styles.errorText}
+          >
+            {errorMessages.career}
+          </HelperText>
           {renderModal(
             "Choose Your Career Path",
             careers,
@@ -418,7 +521,13 @@ const RegisterApplicant = ({ route }) => {
               </Text>
             </View>
           </TouchableRipple>
-
+          <HelperText
+            type="error"
+            visible={!!errorMessages.cv}
+            style={styles.errorText}
+          >
+            {errorMessages.cv}
+          </HelperText>
           {applicant.cv && (
             <View style={styles.cvPreview}>
               <Image
@@ -509,7 +618,7 @@ const RegisterApplicant = ({ route }) => {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginBottom: 10,
+    marginBottom: 5,
     borderRadius: 20,
     overflow: "hidden",
     // backgroundColor: "white",
@@ -518,6 +627,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    width: '100%', // Đảm bảo các ô chiếm hết chiều rộng của container
   },
   selectionButtonContent: {
     flexDirection: "row",
@@ -525,7 +635,7 @@ const styles = StyleSheet.create({
     padding: -10,
   },
   buttonContainer: {
-    width: '100%',
+    width: "100%",
     marginTop: 20,
   },
   primaryButton: {
@@ -640,7 +750,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   input: {
-    marginBottom: 20,
+    height: 50, // Đặt chiều cao cố định cho tất cả các ô nhập liệu
+    marginBottom: 10,
     backgroundColor: "white",
     borderRadius: 10,
     borderRadius: 60, // Tăng độ bo tròn
@@ -794,6 +905,13 @@ const styles = StyleSheet.create({
   },
   snackbar: {
     backgroundColor: "#10B981",
+  },
+  errorText: {
+    color: "#ff3333",
+    fontSize: 14,
+    marginTop: -5,
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
 
