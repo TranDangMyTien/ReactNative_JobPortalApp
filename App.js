@@ -76,9 +76,9 @@ const MyRegister = () => {
       screenOptions={{ headerShown: false }}
       initialRouteName="Register"
     >
-      <Stack.Screen name="Register" component={Register} />
+      {/* <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="RegisterRole" component={RegisterRole} />
-      <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} />
+      <Stack.Screen name="RegisterApplicant" component={RegisterApplicant} /> */}
 
       <Stack.Screen name="RegisterEmployer" component={RegisterEmployer} />
     </Stack.Navigator>

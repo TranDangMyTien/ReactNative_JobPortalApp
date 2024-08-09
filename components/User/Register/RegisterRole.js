@@ -12,7 +12,6 @@ import { Button, Title, ActivityIndicator } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import * as Font from "expo-font";
-import { LinearGradient } from "expo-linear-gradient";
 
 const RegisterRole = ({ route }) => {
   const navigation = useNavigation();
