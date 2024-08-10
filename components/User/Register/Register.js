@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   titleMain: {
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: "bold",
     fontFamily: "Faustina",
     color: "#00B14F",

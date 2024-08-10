@@ -10,8 +10,9 @@ import {
   Keyboard,
   Modal,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
+import LottieView from "lottie-react-native";
 import {
   Button,
   HelperText,
@@ -25,9 +26,8 @@ import {
 import MyStyles from "../../../styles/MyStyles";
 import React, { useState, useEffect } from "react";
 import APIs, { endpoints } from "../../../configs/APIs";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { LogBox } from "react-native";
-import LottieView from "lottie-react-native";
 import * as Animatable from "react-native-animatable";
 import * as Font from "expo-font";
 
@@ -61,11 +61,11 @@ const RegisterEmployer = ({ route }) => {
   const [error, setError] = useState(null);
   const [selectedCompanyType, setSelectedCompanyType] = useState(null);
   const [loadingFonts, setLoadingFonts] = useState(true); // Thêm trạng thái cho việc tải font
-
+  const [jsonLoading, setJsonLoading] = useState(false);
   // const { userId } = route.params;
 
   // // TEST BẰNG TAY - Tạo EMPLOYER
-  const userId = 79;
+  const userId = 80;
 
   const companyTypes = [
     { id: 0, name: "Limited Liability Company" },
@@ -92,9 +92,38 @@ const RegisterEmployer = ({ route }) => {
     }
   };
 
+  const resetForm = () => {
+    setErrorMessages({});
+    setError(null);
+    setRegistrationSuccess(false);
+    setEmployer({});
+    setSelectedCompanyType(null);
+    setJsonLoading(false);
+    setCompanyTypeModalVisible(false);
+    setLoading(false);
+  };
+
   useEffect(() => {
     loadFonts();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      setRegistrationSuccess(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      resetForm();
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setRegistrationSuccess(false);
+    }, [])
+  );
 
   const updateEmployer = (field, value) => {
     setEmployer((current) => ({ ...current, [field]: value }));
@@ -133,7 +162,11 @@ const RegisterEmployer = ({ route }) => {
       setEmployer({ ...employer, company_website: "" }); // Xóa URL không hợp lệ
     }
 
-    if (!employer.company_type)
+    //Lỗi do bên JS 0 đồng nghĩa với false
+    // if (!employer.company_type)
+    //   errors.company_type = "Please select company type";
+
+    if (employer.company_type === undefined || employer.company_type === null)
       errors.company_type = "Please select company type";
 
     if (Object.keys(errors).length > 0) {
@@ -144,6 +177,7 @@ const RegisterEmployer = ({ route }) => {
     setErrorMessages({});
     setError(null);
     setLoading(true);
+    setJsonLoading(true);
 
     let form = new FormData();
     for (let key in employer) {
@@ -163,13 +197,35 @@ const RegisterEmployer = ({ route }) => {
         },
       });
 
-      if (res.status === 201) nav.navigate("MyLogin"); //Đăng ký xong thì chuyển qua login
+      if (res.status === 201) {
+        // Đăng ký xong, đặt lại dữ liệu và trạng thái
+        setEmployer({});
+        setSelectedCompanyType(null); // Đặt lại lựa chọn loại hình công ty
+        setRegistrationSuccess(true); // Hiển thị modal thành công
+        setTimeout(() => {
+          resetForm();
+          nav.navigate("Register");
+        }, 5000);
+      }
     } catch (ex) {
       console.error(ex);
       setError("Registration failed. Please try again.");
     } finally {
       setLoading(false);
+      setJsonLoading(false);
     }
+  };
+
+  const navigateToLogin = () => {
+    setRegistrationSuccess(false);
+    resetForm();
+    nav.navigate("MyLogin");
+  };
+
+  const navigateToHome = () => {
+    setRegistrationSuccess(false);
+    resetForm();
+    nav.navigate("HomeScreen");
   };
 
   const renderField = (label, icon, name, options = {}) => (
@@ -197,9 +253,9 @@ const RegisterEmployer = ({ route }) => {
   if (loadingFonts) {
     return (
       <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="#00B14F" />
-      <Text style={styles.loadingText}>Loading...</Text>
-    </View>
+        <ActivityIndicator size="large" color="#00B14F" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
     );
   }
   return (
@@ -274,6 +330,20 @@ const RegisterEmployer = ({ route }) => {
               </Button>
             </Animatable.View>
 
+            {jsonLoading && (
+              <View style={styles.loadingContainer}>
+                <LottieView
+                  source={require("../../../assets/animations/loading.json")}
+                  autoPlay
+                  loop
+                  style={styles.lottieAnimation}
+                />
+                <Text style={styles.loadingText}>
+                  Processing your application...
+                </Text>
+              </View>
+            )}
+
             <Modal
               visible={companyTypeModalVisible}
               animationType="slide"
@@ -293,7 +363,7 @@ const RegisterEmployer = ({ route }) => {
                       }}
                       style={[
                         styles.modalItem,
-                        selectedCompanyType === type.id &&
+                        selectedCompanyType === type.name &&
                           styles.selectedModalItem,
                       ]}
                     >
@@ -331,7 +401,10 @@ const RegisterEmployer = ({ route }) => {
               visible={registrationSuccess}
               transparent={true}
               animationType="fade"
-              onRequestClose={() => setRegistrationSuccess(false)}
+              onRequestClose={() => {
+                setRegistrationSuccess(false);
+                resetForm();
+              }}
             >
               <View style={styles.successModalContainer}>
                 <View style={styles.successModalContent}>
@@ -345,15 +418,22 @@ const RegisterEmployer = ({ route }) => {
                   <Text style={styles.successSubText}>
                     Your employer account has been successfully registered.
                   </Text>
-                  <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={() => {
-                      setRegistrationSuccess(false);
-                      navigation.navigate("MyLogin");
-                    }}
-                  >
-                    <Text style={styles.primaryButtonText}>Go to Login</Text>
-                  </TouchableOpacity>
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                      style={styles.primaryButton}
+                      onPress={navigateToLogin}
+                    >
+                      <Text style={styles.primaryButtonText}>Go to Login</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.secondaryButton}
+                      onPress={navigateToHome}
+                    >
+                      <Text style={styles.secondaryButtonText}>
+                        Back to Home
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Modal>
@@ -559,6 +639,59 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#00B14F",
     fontFamily: "FaustinaMd",
+  },
+  buttonContainer: {
+    width: "100%",
+    marginTop: 20,
+  },
+  primaryButton: {
+    backgroundColor: "#1E3A8A",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom: 10,
+    width: "100%",
+  },
+  primaryButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  secondaryButton: {
+    backgroundColor: "transparent",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#1E3A8A",
+    width: "100%",
+  },
+  secondaryButtonText: {
+    color: "#1E3A8A",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+  },
+  lottieAnimation: {
+    width: 200,
+    height: 200,
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 20,
+    color: "#1E3A8A",
+    textAlign: "center",
   },
 });
 export default RegisterEmployer;
