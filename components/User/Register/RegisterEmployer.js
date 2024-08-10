@@ -10,6 +10,7 @@ import {
   Keyboard,
   Modal,
   TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import {
   Button,
@@ -59,11 +60,12 @@ const RegisterEmployer = ({ route }) => {
   const theme = useTheme();
   const [error, setError] = useState(null);
   const [selectedCompanyType, setSelectedCompanyType] = useState(null);
+  const [loadingFonts, setLoadingFonts] = useState(true); // Thêm trạng thái cho việc tải font
 
   // const { userId } = route.params;
 
   // // TEST BẰNG TAY - Tạo EMPLOYER
-  const userId = 67;
+  const userId = 79;
 
   const companyTypes = [
     { id: 0, name: "Limited Liability Company" },
@@ -78,10 +80,16 @@ const RegisterEmployer = ({ route }) => {
   const [companyType, setCompanyType] = useState(""); // State mới để lưu trữ giá trị số của loại hình công ty
 
   const loadFonts = async () => {
-    await Font.loadAsync({
-      Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
-      //Faustina_ExtraBold.ttf
-    });
+    try {
+      await Font.loadAsync({
+        Faustina: require("../../../assets/fonts/Faustina_ExtraBold.ttf"),
+        FaustinaMd: require("../../../assets/fonts/Faustina_Medium.ttf"),
+      });
+    } catch (error) {
+      console.error("Error loading fonts:", error);
+    } finally {
+      setLoadingFonts(false); // Đặt lại trạng thái khi hoàn tất tải font
+    }
   };
 
   useEffect(() => {
@@ -90,23 +98,23 @@ const RegisterEmployer = ({ route }) => {
 
   const updateEmployer = (field, value) => {
     setEmployer((current) => ({ ...current, [field]: value }));
-    if (field === "company_website") {
-      validateWebsite(value);
-    }
+    // if (field === "company_website") {
+    //   validateWebsite(value);
+    // }
   };
 
-  const validateWebsite = (url) => {
-    const urlPattern =
-      /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    if (!urlPattern.test(url)) {
-      setErrorMessages((current) => ({
-        ...current,
-        company_website:
-          "Please enter a valid URL (e.g., https://www.example.com)",
-      }));
-    } else {
-      setErrorMessages((current) => ({ ...current, company_website: "" }));
-    }
+  // Hàm kiểm tra URL hợp lệ
+  const isValidURL = (url) => {
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)?" + // http hoặc https
+        "((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,}|" + // domain
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // hoặc IP (IPv4)
+        "(\\:\\d+)?(\\/[-a-zA-Z\\d%_.~+]*)*" + // cổng và đường dẫn
+        "(\\?[;&a-zA-Z\\d%_.~+=-]*)?" + // chuỗi query
+        "(\\#[-a-zA-Z\\d_]*)?$",
+      "i"
+    ); // hash
+    return !!pattern.test(url);
   };
 
   const handleRegister = async () => {
@@ -117,8 +125,14 @@ const RegisterEmployer = ({ route }) => {
     if (!employer.information)
       errors.information = "Please enter company information";
     if (!employer.address) errors.address = "Please enter address";
-    if (!employer.company_website)
-      errors.company_website = "Please enter company website";
+    // Kiểm tra URL
+    if (!employer.company_website) {
+      errors.company_website = "Website is required";
+    } else if (!isValidURL(employer.company_website)) {
+      errors.company_website = "Invalid URL. Please enter a valid website URL.";
+      setEmployer({ ...employer, company_website: "" }); // Xóa URL không hợp lệ
+    }
+
     if (!employer.company_type)
       errors.company_type = "Please select company type";
 
@@ -180,6 +194,14 @@ const RegisterEmployer = ({ route }) => {
     </>
   );
 
+  if (loadingFonts) {
+    return (
+      <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#00B14F" />
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
+    );
+  }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[MyStyles.container, MyStyles.margin]}>
@@ -218,10 +240,11 @@ const RegisterEmployer = ({ route }) => {
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {selectedCompanyType
+                  {/* {selectedCompanyType
                     ? companyTypes.find((t) => t.id === selectedCompanyType)
                         .name
-                    : "Select Company Type"}
+                    : "Select Company Type"} */}
+                  {selectedCompanyType || "Select Company Type"}
                 </Text>
               </View>
             </TouchableRipple>
@@ -264,7 +287,8 @@ const RegisterEmployer = ({ route }) => {
                       key={type.id}
                       onPress={() => {
                         updateEmployer("company_type", type.id);
-                        setSelectedCompanyType(type.id);
+                        // setSelectedCompanyType(type.id);
+                        setSelectedCompanyType(type.name); // Cập nhật tên thay vì ID
                         // setCompanyTypeModalVisible(false); // Đóng modal sau khi chọn
                       }}
                       style={[
@@ -275,7 +299,14 @@ const RegisterEmployer = ({ route }) => {
                     >
                       <View style={styles.modalItemContent}>
                         <Text style={styles.modalItemText}>{type.name}</Text>
-                        {selectedCompanyType === type.id && (
+                        {/* {selectedCompanyType === type.id && (
+                          <IconButton
+                            icon="check"
+                            size={24}
+                            color={"#4CAF50"}
+                          />
+                        )} */}
+                        {selectedCompanyType === type.name && (
                           <IconButton
                             icon="check"
                             size={24}
@@ -291,7 +322,7 @@ const RegisterEmployer = ({ route }) => {
                   onPress={() => setCompanyTypeModalVisible(false)}
                   style={styles.modalButton}
                 >
-                  Close
+                  Done
                 </Button>
               </View>
             </Modal>
@@ -350,7 +381,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   title: {
-    // fontFamily: "Faustina",
+    fontFamily: "Faustina",
     fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
@@ -360,7 +391,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   inputContainer: {
-    marginBottom: 5,
+    marginBottom: -5,
     borderRadius: 20,
     overflow: "hidden",
     shadowColor: "#000",
@@ -424,7 +455,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "white",
-    paddingTop: Platform.OS === 'ios' ? 50 : 20, // Thêm padding top cho iOS
+    paddingTop: Platform.OS === "ios" ? 50 : 20, // Thêm padding top cho iOS
   },
   modalTitle: {
     fontSize: 24,
@@ -510,12 +541,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: '100%', // Đảm bảo nội dung chiếm toàn bộ chiều cao của item
+    height: "100%", // Đảm bảo nội dung chiếm toàn bộ chiều cao của item
   },
   selectedModalItemText: {
     color: "#4CAF50",
     fontWeight: "bold",
     flex: 1, // Cho phép text chiếm hết không gian còn lại
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#00B14F",
+    fontFamily: "FaustinaMd",
   },
 });
 export default RegisterEmployer;
