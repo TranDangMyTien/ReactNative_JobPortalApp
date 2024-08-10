@@ -74,7 +74,6 @@ const RegisterEmployer = ({ route }) => {
     { id: 5, name: "Corporation" },
   ];
 
-
   const nav = useNavigation();
   const [companyType, setCompanyType] = useState(""); // State mới để lưu trữ giá trị số của loại hình công ty
 
@@ -90,22 +89,25 @@ const RegisterEmployer = ({ route }) => {
   }, []);
 
   const updateEmployer = (field, value) => {
-    setEmployer(current => ({ ...current, [field]: value }));
-    if (field === 'company_website') {
+    setEmployer((current) => ({ ...current, [field]: value }));
+    if (field === "company_website") {
       validateWebsite(value);
     }
-
   };
 
   const validateWebsite = (url) => {
-    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    const urlPattern =
+      /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     if (!urlPattern.test(url)) {
-      setErrorMessages(current => ({ ...current, company_website: "Please enter a valid URL (e.g., https://www.example.com)" }));
+      setErrorMessages((current) => ({
+        ...current,
+        company_website:
+          "Please enter a valid URL (e.g., https://www.example.com)",
+      }));
     } else {
-      setErrorMessages(current => ({ ...current, company_website: "" }));
+      setErrorMessages((current) => ({ ...current, company_website: "" }));
     }
   };
-  
 
   const handleRegister = async () => {
     setErr(false);
@@ -211,9 +213,14 @@ const RegisterEmployer = ({ route }) => {
                   size={24}
                   color={theme.colors.primary}
                 />
-                <Text style={styles.selectionButtonText}>
-                  {selectedCompanyType 
-                    ? companyTypes.find(t => t.id === selectedCompanyType).name 
+                <Text
+                  style={styles.selectionButtonText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {selectedCompanyType
+                    ? companyTypes.find((t) => t.id === selectedCompanyType)
+                        .name
                     : "Select Company Type"}
                 </Text>
               </View>
@@ -258,20 +265,16 @@ const RegisterEmployer = ({ route }) => {
                       onPress={() => {
                         updateEmployer("company_type", type.id);
                         setSelectedCompanyType(type.id);
-                        setCompanyTypeModalVisible(false);
+                        // setCompanyTypeModalVisible(false); // Đóng modal sau khi chọn
                       }}
                       style={[
                         styles.modalItem,
-                        selectedCompanyType === type.id && styles.selectedModalItem
+                        selectedCompanyType === type.id &&
+                          styles.selectedModalItem,
                       ]}
                     >
                       <View style={styles.modalItemContent}>
-                        <Text style={[
-                          styles.modalItemText,
-                          selectedCompanyType === type.id && styles.selectedModalItemText
-                        ]}>
-                          {type.name}
-                        </Text>
+                        <Text style={styles.modalItemText}>{type.name}</Text>
                         {selectedCompanyType === type.id && (
                           <IconButton
                             icon="check"
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   title: {
-    fontFamily: "Faustina",
+    // fontFamily: "Faustina",
     fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
@@ -365,7 +368,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    width: '100%',
+    width: "100%",
   },
   input: {
     height: 50,
@@ -391,6 +394,7 @@ const styles = StyleSheet.create({
   selectionButtonText: {
     color: "#1E3A8A",
     fontSize: 17,
+    flex: 1,
   },
   errorText: {
     color: "#DC2626",
@@ -420,6 +424,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "white",
+    paddingTop: Platform.OS === 'ios' ? 50 : 20, // Thêm padding top cho iOS
   },
   modalTitle: {
     fontSize: 24,
@@ -496,22 +501,21 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E0E7FF",
+    height: 60, // Đặt chiều cao cố định cho mỗi item
   },
   selectedModalItem: {
     backgroundColor: "#E0E7FF",
   },
   modalItemContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  modalItemText: {
-    fontSize: 16,
-    color: "#333",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: '100%', // Đảm bảo nội dung chiếm toàn bộ chiều cao của item
   },
   selectedModalItemText: {
     color: "#4CAF50",
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    flex: 1, // Cho phép text chiếm hết không gian còn lại
   },
 });
 export default RegisterEmployer;
