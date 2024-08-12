@@ -56,7 +56,11 @@ export const endpoints = {
     //
     'ratings': (id) => `/recruitments_post/${id}/ratings/`,
     'delete-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/delete/`,
-    'patch-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/partial-update/`
+    'patch-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/partial-update/`,
+    
+
+    //Phần kiểm tra email đã tồn tại 
+    'check_email_exists':  `/check-email/`,
     
 };
 

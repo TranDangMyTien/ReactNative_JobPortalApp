@@ -86,6 +86,18 @@ const Register = () => {
     setIsImageViewVisible(true);
   };
 
+  const checkEmailExists = async (email) => {
+    try {
+      let res = await APIs.post(endpoints["check_email_exists"], 
+        { email },
+      );
+      return res.data.exists;
+    } catch (ex) {
+      console.error(ex);
+      return false;
+    }
+  };
+
   useEffect(() => {
     Image.prefetch(
       Image.resolveAssetSource(require("../../../assets/Images/avatar_df.webp"))
@@ -167,6 +179,12 @@ const Register = () => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(user.email)) {
         errors.email = "Oops! Please enter a valid email address.";
+      } else {
+        // Kiểm tra email đã tồn tại
+        const emailExists = await checkEmailExists(user.email);
+        if (emailExists) {
+          errors.email = "This email is already registered. Please use a different email.";
+        }
       }
     }
 

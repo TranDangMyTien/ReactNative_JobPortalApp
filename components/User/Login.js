@@ -290,7 +290,7 @@ const Login = () => {
             onPress={() => nav.navigate("HomeScreen")}
           >
             <Text style={styles.experienceButtonText}>
-              EXPERIENCE WITHOUT LOOGING IN
+              EXPERIENCE WITHOUT LOGGING IN
             </Text>
           </TouchableOpacity>
         </View>
