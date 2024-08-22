@@ -542,6 +542,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 177, 79, 0.3)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
+    fontFamily: "Faustina",
   },
   subject: {
     fontSize: 24,

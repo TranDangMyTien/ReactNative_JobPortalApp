@@ -146,17 +146,6 @@ const Login = () => {
         nav.navigate("HomeScreen");
       }, 100);
     } catch (ex) {
-      // Alert.alert(
-      //   "Lỗi đăng nhập",
-      //   "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!",
-      //   [
-      //     {
-      //       text: "Đóng",
-      //       style: "cancel",
-      //     },
-      //   ],
-      //   { cancelable: false }
-      // );
       setIsAlertVisible(true);
     } finally {
       setLoading(false);
