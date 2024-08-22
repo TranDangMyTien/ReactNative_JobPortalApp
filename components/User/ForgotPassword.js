@@ -30,7 +30,9 @@ const ForgotPassword = () => {
     setIsLoading(true);
     try {
       // Check if email exists
-      let checkRes = await APIs.post(endpoints["check_email_exists"], { email });
+      let checkRes = await APIs.post(endpoints["check_email_exists"], {
+        email,
+      });
       if (!checkRes.data.exists) {
         Alert.alert(
           "Email Not Found",
@@ -44,7 +46,21 @@ const ForgotPassword = () => {
       // If email exists, proceed to send the reset code
       let sendRes = await APIs.post(endpoints["password-reset"], { email });
       console.log(sendRes);
-      Alert.alert("Success", "We have sent a code to your email for password reset!");
+      // Show success alert and navigate after user confirms
+      Alert.alert(
+        "Success",
+        "We have sent a code to your email for password reset!",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              setEmail(""); // Clear the entered email
+              setIsLoading(false);
+              navigation.navigate("PasswordReset");
+            },
+          },
+        ]
+      );
     } catch (error) {
       console.log(`Unable to send code via email, ${error}`);
       Alert.alert(
@@ -88,7 +104,9 @@ const ForgotPassword = () => {
             <TouchableOpacity
               style={[
                 styles.button,
-                email.trim().length === 0 ? styles.disabledButton : styles.enabledButton,
+                email.trim().length === 0
+                  ? styles.disabledButton
+                  : styles.enabledButton,
               ]}
               onPress={handleForgotPassword}
               disabled={isLoading || email.trim().length === 0}
@@ -99,7 +117,8 @@ const ForgotPassword = () => {
             </TouchableOpacity>
             <View style={styles.instructionContainer}>
               <Text style={styles.instruction}>
-                Enter the email address associated with your account, and we will send you a code to reset your password.
+                Enter the email address associated with your account, and we
+                will send you a code to reset your password.
               </Text>
             </View>
           </ScrollView>
@@ -108,7 +127,6 @@ const ForgotPassword = () => {
     </TouchableWithoutFeedback>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

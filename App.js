@@ -47,6 +47,7 @@ import Onbroading from "./components/SplashScreen/Onbroading";
 import { getToken, getOnboarded, storeOnboarded } from "./utils/storage";
 import TermsOfService from "./components/Rules/TermsOfService";
 import PrivacyPolicy from "./components/Rules/PrivacyPolicy";
+import PasswordReset from "./components/User/PasswordReset";
 // Cài đặt stack
 const Stack = createStackNavigator();
 
@@ -90,6 +91,7 @@ const MyLogin = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="PasswordReset" component={PasswordReset} />
     </Stack.Navigator>
   );
 };

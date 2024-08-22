@@ -59,10 +59,15 @@ export const endpoints = {
     'patch-rating': (id, ratingId) => `/recruitments_post/${id}/ratings/${ratingId}/partial-update/`,
     
 
-    //Phần kiểm tra email đã tồn tại 
+    // Phần kiểm tra email đã tồn tại 
     'check_email_exists':  `/check-email/`,
-    //Phần lấy mã code để đổi mật khẩu 
-    'password-reset' : `/password-reset/`
+    // Phần lấy mã code để đổi mật khẩu 
+    'password-reset' : `/password-reset/`,
+    // Kiểm tra sự tồn tại của token 
+    'check-token': `/check-token/`, 
+    // Đổi mật khẩu mới 
+    'change-password' :`/password-reset-confirm/`, 
+
 
 };
 
