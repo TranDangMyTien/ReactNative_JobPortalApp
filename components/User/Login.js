@@ -25,6 +25,12 @@ import {
   removeRememberedToken,
 } from "../../utils/storage";
 import Modal from "react-native-modal";
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+GoogleSignin.configure({
+  webClientId: '682401577366-u811p6igcvdmh11ao3rhtannd1e4b4p4.apps.googleusercontent.com',
+});
+
 const Login = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -152,8 +158,30 @@ const Login = () => {
     }
   };
 
-  const handleLoginWithGoogle = async () => {};
-  const handleLoginWithFacebook = async () => {};
+  const handleLoginWithGoogle = async () => {
+    console.log("Hiiiiiiiiiiiiiii");
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+      Alert.alert('Logged in successfully');
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        Alert.alert('User cancelled the login');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        Alert.alert('Signin in progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert('Play Services not available');
+      } else {
+        Alert.alert('Something went wrong', error.message);
+      }
+    }
+
+  };
+  const handleLoginWithFacebook = async () => {
+
+  };
 
   const handleRetry = () => {
     setIsAlertVisible(false);

@@ -1,4 +1,7 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19000
+  "expoServerPort": null,
+  "packagerPort": 19000,
+  "expoServerNgrokUrl": "https://ssddukm.mtie.jobportalapp.exp.direct",
+  "packagerNgrokUrl": "https://ssddukm.mtie.jobportalapp.exp.direct",
+  "ngrokPid": 11728
 }
