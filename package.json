@@ -40,7 +40,6 @@
     "expo-splash-screen": "^0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-updates": "^0.25.24",
-    "got": "^14.4.2",
     "iconsax-react-native": "^0.0.8",
     "ip": "^2.0.1",
     "lottie-react-native": "^6.7.0",
