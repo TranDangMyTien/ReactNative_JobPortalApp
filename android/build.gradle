@@ -5,7 +5,7 @@ buildscript {
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "25.1.8937393"
-        kotlinVersion = "1.6.20"
+        kotlinVersion = "1.8.0"
     }
     repositories {
         google()
@@ -19,5 +19,6 @@ buildscript {
         classpath('com.google.firebase:firebase-crashlytics-gradle:2.7.1')
         classpath 'expo-dev-launcher-gradle-plugin'
         classpath 'expo-updates-gradle-plugin'
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
