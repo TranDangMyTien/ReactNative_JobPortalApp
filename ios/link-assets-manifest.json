@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/DejaVuSerifCondensed_Bold.ttf",
+      "sha1": "87fcec62ae63119187565580aaceda4f3e39d1ae"
+    },
+    {
+      "path": "assets/fonts/Faustina_ExtraBold.ttf",
+      "sha1": "bc86eb1be7a66506398c01cec179bb9093d5b398"
+    },
+    {
+      "path": "assets/fonts/Faustina_Light.ttf",
+      "sha1": "aa3939a8e2c950d335b7d44702ecaa4cecabc582"
+    },
+    {
+      "path": "assets/fonts/Fontspring_DEMO_theseasons_bd.otf",
+      "sha1": "ad5303a699648537e278aadd0c26e2e6402b2ed1"
+    },
+    {
+      "path": "assets/fonts/Fontspring_DEMO_theseasons_lt.otf",
+      "sha1": "6c5d9f5dfb5cb085d91e11f036986468b2cfd237"
+    },
+    {
+      "path": "assets/fonts/Sansita_Bold.ttf",
+      "sha1": "9d9810f8bccf70bc251886c24dbe31ba2f87725b"
+    }
+  ]
+}

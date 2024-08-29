@@ -25,11 +25,10 @@ import {
   removeRememberedToken,
 } from "../../utils/storage";
 import Modal from "react-native-modal";
-// import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
-// import auth from '@react-native-firebase/auth';
-// GoogleSignin.configure({
-//   webClientId: '682401577366-u811p6igcvdmh11ao3rhtannd1e4b4p4.apps.googleusercontent.com',
-// });
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+GoogleSignin.configure({
+  webClientId: '682401577366-u811p6igcvdmh11ao3rhtannd1e4b4p4.apps.googleusercontent.com',
+});
 
 const Login = () => {
   const [user, setUser] = useState({});

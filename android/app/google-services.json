@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "682401577366",
+    "project_id": "oujob-aa6f4",
+    "storage_bucket": "oujob-aa6f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682401577366:android:52ec8058b43709cacec5b7",
+        "android_client_info": {
+          "package_name": "com.anonymous.JobPortalApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682401577366-v7sksimuhlo9s278gavr6oa6bqh6f7an.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.JobPortalApp",
+            "certificate_hash": "d28f811adef188c3d13c12f8c65911458fb1dba8"
+          }
+        },
+        {
+          "client_id": "682401577366-u811p6igcvdmh11ao3rhtannd1e4b4p4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUdCjvMcmBUW6HXo-9XitV_wpZqn4q6xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682401577366-u811p6igcvdmh11ao3rhtannd1e4b4p4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
