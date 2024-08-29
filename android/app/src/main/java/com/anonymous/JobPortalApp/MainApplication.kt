@@ -12,6 +12,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.reactnativegooglesignin.RNGoogleSigninPackage
 
 class MainApplication : Application(), ReactApplication {
