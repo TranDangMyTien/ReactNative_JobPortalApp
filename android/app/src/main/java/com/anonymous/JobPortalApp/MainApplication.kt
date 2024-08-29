@@ -1,5 +1,5 @@
 package com.anonymous.JobPortalApp
-
+import io.invertase.googlemobileads.ReactNativeGoogleMobileAdsPackage;
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
