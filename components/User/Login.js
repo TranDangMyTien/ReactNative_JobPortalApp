@@ -20,17 +20,17 @@ import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AlertModalLogin from "../constants/AlertModalLogin";
 import {
-  storeRememberedToken,
-  getRememberedToken,
-  removeRememberedToken,
+  storeToken,
+  getToken,
+  removeToken,
+  storeCredentials,
+  getCredentials,
+  removeCredentials
 } from "../../utils/storage";
 import Modal from "react-native-modal";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-GoogleSignin.configure({
-});
 
 const Login = () => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
   const dispatch = useContext(MyDispatchContext);
@@ -59,23 +59,27 @@ const Login = () => {
     }
   };
 
-  const checkRememberedUser = async () => {
-    const rememberedToken = await getRememberedToken();
-    if (rememberedToken) {
-      setRememberMe(true);
-      // Khi nhấn vào remember thì lần đăng nhập sau chỉ cần đúng trường username/email thì nó tự nhớ mật khẩu
-    }
-  };
+  useEffect(() => {
+    const checkRememberedUser = async () => {
+      const { username, password } = await getCredentials();
+      if (username && password) {
+        setUser({ username, password });
+        setRememberMe(true);
+      }
+    };
+
+    checkRememberedUser();
+  }, []);
 
   useEffect(() => {
     loadFonts();
   }, []);
   
-  useEffect(() => {
-    if (fontLoaded) {
-      checkRememberedUser();
-    }
-  }, [fontLoaded]);
+  // useEffect(() => {
+  //   if (fontLoaded) {
+  //     checkRememberedUser();
+  //   }
+  // }, [fontLoaded]);
 
   if (isLoading || !fontLoaded) {
     return (
@@ -133,12 +137,12 @@ const Login = () => {
         grant_type: "password",
       });
       // Luôn lưu token cho phiên hiện tại
-      await AsyncStorage.setItem("token", res.data.access_token);
+      await storeToken(res.data.access_token);
       // Nếu rememberMe được bật, lưu token riêng để sử dụng cho các lần đăng nhập sau
       if (rememberMe) {
-        await storeRememberedToken(res.data.access_token);
+        await storeCredentials(user.username, user.password);
       } else {
-        await removeRememberedToken();
+        await removeCredentials();
       }
 
       setTimeout(async () => {
@@ -156,26 +160,15 @@ const Login = () => {
     }
   };
 
-  const handleLoginWithGoogle = async () => {
-    // console.log("Hiiiiiiiiiiiiiii");
-    // try {
-    //   await GoogleSignin.hasPlayServices();
-    //   const { idToken } = await GoogleSignin.signIn();
-    //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    //   await auth().signInWithCredential(googleCredential);
-    //   Alert.alert('Logged in successfully');
-    // } catch (error) {
-    //   if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-    //     Alert.alert('User cancelled the login');
-    //   } else if (error.code === statusCodes.IN_PROGRESS) {
-    //     Alert.alert('Signin in progress');
-    //   } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-    //     Alert.alert('Play Services not available');
-    //   } else {
-    //     Alert.alert('Something went wrong', error.message);
-    //   }
-    // }
+  const handleRememberMeToggle = (value) => {
+    setRememberMe(value);
+    if (!value) {
+      removeCredentials();
+    }
+  };
 
+  const handleLoginWithGoogle = async () => {
+    
   };
   const handleLoginWithFacebook = async () => {
 
@@ -204,7 +197,7 @@ const Login = () => {
           <View style={styles.inputContainer}>
             <TextInput
               value={user.username}
-              onChangeText={(t) => change(t, "username")}
+              onChangeText={(t) => setUser(prev => ({ ...prev, username: t }))}
               style={styles.input}
               label="Username"
               left={<TextInput.Icon icon="email" />}
@@ -220,7 +213,7 @@ const Login = () => {
             {/* Cập nhật TextInput cho mật khẩu */}
             <TextInput
               value={user.password}
-              onChangeText={(t) => change(t, "password")}
+              onChangeText={(t) => setUser(prev => ({ ...prev, password: t }))}
               style={styles.input}
               label="Password"
               secureTextEntry={!passwordVisible}
@@ -242,7 +235,7 @@ const Login = () => {
             <View style={styles.rememberMeContainer}>
               <Switch
                 value={rememberMe}
-                onValueChange={setRememberMe}
+                onValueChange={handleRememberMeToggle}
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
                 thumbColor={rememberMe ? "#00B14F" : "#f4f3f4"}
                 style={styles.switch}

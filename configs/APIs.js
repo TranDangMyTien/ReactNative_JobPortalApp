@@ -1,6 +1,6 @@
 import axios from "axios";
 // const BASE_URL = "https://tdmtien.pythonanywhere.com/";
-const BASE_URL = "http://192.168.1.11:8000/";
+const BASE_URL = "http://192.168.1.7:8000/";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from '../utils/storage';

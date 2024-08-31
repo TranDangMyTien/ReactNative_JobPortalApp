@@ -46,29 +46,33 @@ export const getOnboarded = async () => {
   }
 };
 
-// Phần thực hiện Remember me 
-export const storeRememberedToken = async (token) => {
+// Phần thực hiện Remember me => Trong môi trường thực tế nên dùng react-native-keychain hoặc expo-secure-store
+// Để lưu trữ thông tin người dùng đảm bảo an toàn 
+export const storeCredentials = async (username, password) => {
   try {
-    await AsyncStorage.setItem('rememberedToken', token);
+    await AsyncStorage.setItem('rememberedUsername', username);
+    await AsyncStorage.setItem('rememberedPassword', password); // Cân nhắc mã hóa mật khẩu trước khi lưu
   } catch (error) {
-    console.error('Error storing the remembered token', error);
+    console.error('Error storing credentials', error);
   }
 };
 
-export const getRememberedToken = async () => {
+export const getCredentials = async () => {
   try {
-    const token = await AsyncStorage.getItem('rememberedToken');
-    return token;
+    const username = await AsyncStorage.getItem('rememberedUsername');
+    const password = await AsyncStorage.getItem('rememberedPassword');
+    return { username, password };
   } catch (error) {
-    console.error('Error retrieving the remembered token', error);
-    return null;
+    console.error('Error retrieving credentials', error);
+    return { username: null, password: null };
   }
 };
 
-export const removeRememberedToken = async () => {
+export const removeCredentials = async () => {
   try {
-    await AsyncStorage.removeItem('rememberedToken');
+    await AsyncStorage.removeItem('rememberedUsername');
+    await AsyncStorage.removeItem('rememberedPassword');
   } catch (error) {
-    console.error('Error removing the remembered token', error);
+    console.error('Error removing credentials', error);
   }
 };
