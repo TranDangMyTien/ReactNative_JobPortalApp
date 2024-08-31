@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { Appbar, Menu, Divider, Card } from 'react-native-paper';
+import { Appbar, Menu, Divider, Card, Button } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,6 +10,7 @@ import Ratings from './Ratings';
 import APIs, { authAPI, endpoints } from '../../configs/APIs';
 import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
+import CustomHeaderPostDetail from "../constants/CustomHeaderPostDetail";
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
 
@@ -147,8 +148,17 @@ const PostDetail = () => {
 
   if (!job) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Không tìm thấy công việc</Text>
+      <View style={styles.notFoundContainer}>
+        <Icon name="search-off" size={80} color="#666" />
+        <Text style={styles.notFoundText}>Rất tiếc, chúng tôi không tìm thấy công việc này.</Text>
+        <Text style={styles.notFoundSubText}>Công việc có thể đã bị xóa hoặc không tồn tại.</Text>
+        <Button 
+          mode="contained" 
+          onPress={() => navigation.navigate("HomeScreen")}
+          style={styles.backButton}
+        >
+          Quay lại trang chủ
+        </Button>
       </View>
     );
   }
@@ -188,23 +198,12 @@ const PostDetail = () => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.appbarHeader}>
-        <Appbar.BackAction onPress={handleGoBack} color='white'/>
-        <Appbar.Content title="Thông tin chi tiết" 
-        style={{ alignItems: 'center', justifyContent: 'center' }} 
-        titleStyle={{ color: 'white' }}
-        />
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <Appbar.Action icon="dots-vertical" color="white" onPress={() => setMenuVisible(true)} />
-          }
-        >
-          <Menu.Item onPress={handleReport} title="Báo cáo" />
-          <Menu.Item onPress={handleHide} title="Ẩn" />
-        </Menu>
-      </Appbar.Header>
+      <CustomHeaderPostDetail 
+        title="Thông tin chi tiết" 
+        onBackPress={() => navigation.navigate("HomeScreen")}
+        onReport={handleReport}
+        onHide={handleHide}
+      />
       <ScrollView nestedScrollEnabled>
         <Image source={{ uri: job.image }} style={styles.image} />
         <View style={styles.contentContainer}>
@@ -215,7 +214,7 @@ const PostDetail = () => {
             <Text style={styles.detailText}>Lĩnh vực: {job.career.name}</Text>
             <Text style={styles.detailText}>Mức lương: {`${job.salary} VNĐ`} </Text>
             <Text style={styles.detailText}>Số lượng tuyển: {job.quantity}</Text>
-            {/* <Text style={styles.detailText}>Loại thời gian: {job.employmenttype.type}</Text> */}
+            <Text style={styles.detailText}>Loại thời gian: {job.employmenttype.type}</Text>
             <Text style={styles.detailText}>Địa điểm: {job.location}</Text>
             <Text style={styles.deadline}>Hạn nộp hồ sơ: {job.deadline}</Text>
             <Divider />
@@ -399,6 +398,32 @@ const styles = StyleSheet.create({
   },
   commentsContainer: {
     marginBottom: 20,
+  },
+  notFoundContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 20,
+  },
+  notFoundText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+    color: '#333',
+  },
+  notFoundSubText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 30,
+    color: '#666',
+  },
+  backButton: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#00b14f',
   },
 });
 

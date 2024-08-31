@@ -118,7 +118,7 @@ const ProfileApplicant = () => {
         try {
             let form = new FormData();
             form.append('career', selectedCareer.id);
-            const authToken = await AsyncStorage.getItem("token");
+            const authToken = await AsyncStorage.getItem("authToken");
             let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id), 
                 form, 
@@ -146,7 +146,7 @@ const ProfileApplicant = () => {
         try {
             let form = new FormData();
             form.append('experience', selectedExperience);
-            const authToken = await AsyncStorage.getItem("token");
+            const authToken = await AsyncStorage.getItem("authToken");
             let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id), 
                 form, 
@@ -175,7 +175,7 @@ const ProfileApplicant = () => {
             try {
                 let form = new FormData();
                 form.append('salary_expectation', salary_expectation);
-                const authToken = await AsyncStorage.getItem("token");
+                const authToken = await AsyncStorage.getItem("authToken");
                 let res = await authAPI(authToken).patch(
                     endpoints["update-applicant"](user.applicant.id), 
                     form, 
@@ -203,7 +203,7 @@ const ProfileApplicant = () => {
             try {
                 let form = new FormData();
                 form.append('position', position);
-                const authToken = await AsyncStorage.getItem("token");
+                const authToken = await AsyncStorage.getItem("authToken");
                 let res = await authAPI(authToken).patch(
                     endpoints["update-applicant"](user.applicant.id), 
                     form, 
@@ -285,7 +285,7 @@ const ProfileApplicant = () => {
                     name: selectedImage.fileName || 'avatar.jpg', 
                     type: selectedImage.mimeType ||'image/jpeg'
                 });
-            const authToken = await AsyncStorage.getItem("token");
+            const authToken = await AsyncStorage.getItem("authToken");
             let res = await authAPI(authToken).patch(
                 endpoints["patch-avatar"](user.id), 
                 form, 
@@ -325,7 +325,7 @@ const ProfileApplicant = () => {
                 type: selectedCV.mimeType || 'image/jpeg' 
  
             });
-            const authToken = await AsyncStorage.getItem("token");
+            const authToken = await AsyncStorage.getItem("authToken");
             let res = await authAPI(authToken).patch(
                 endpoints["update-applicant"](user.applicant.id),  
                 form, 
