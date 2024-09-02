@@ -100,9 +100,15 @@ const ReviewsList = ({ jobId }) => {
     }
   };
 
-  const handleDeleteReview = (reviewId) => {
-    // Logic xóa đánh giá
-    console.log(`Xóa đánh giá ID: ${reviewId}`);
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      const authToken = await AsyncStorage.getItem("authToken");
+      await authAPI(authToken).delete(endpoints["delete-review"](jobId, reviewId));
+      getReviews();
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      setError("Có lỗi xảy ra khi xóa đánh giá.");
+    }
   };
 
   if (loading) {
@@ -140,7 +146,7 @@ const ReviewsList = ({ jobId }) => {
             <Text style={styles.buttonText}>Chỉnh sửa</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handleDeleteReview(item)}
+            onPress={() => handleDeleteReview(item.id)}
             style={styles.deleteButton}
           >
             <Text style={styles.buttonText}>Xóa</Text>

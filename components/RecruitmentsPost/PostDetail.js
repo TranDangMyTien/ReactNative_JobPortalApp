@@ -17,6 +17,7 @@ LogBox.ignoreLogs([
   'Warning: TapRating: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
   'Warning: Star: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
   'Warning: VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+  '[AxiosError: Request failed with status code 404]'
 ]);
 
 const PostDetail = () => {

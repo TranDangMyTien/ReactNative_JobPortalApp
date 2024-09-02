@@ -74,6 +74,8 @@ export const endpoints = {
     'job-reviews': (jobId) => `/recruitments_post/${jobId}/reviews/`,
     // Chỉnh sửa review 
     'change-review': (jobId, id) => `/recruitments_post/${jobId}/update-reviews/${id}/`,
+    // Phần xóa review 
+    'delete-review': (jobId, id) => `/recruitments_post/${jobId}/delete-review/${id}/`,
 
 };
 
