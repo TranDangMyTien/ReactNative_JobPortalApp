@@ -5,13 +5,12 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MyUserContext } from '../../configs/Contexts';
-import Comments from './Comments';
-import Ratings from './Ratings';
 import APIs, { authAPI, endpoints } from '../../configs/APIs';
 import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
 import CustomHeaderPostDetail from "../constants/CustomHeaderPostDetail";
 import ReviewForm from './ReviewForm'; // Import component ReviewForm
+import ReviewsList from './ReviewsList';
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
 
@@ -246,13 +245,12 @@ const PostDetail = () => {
               />
             </TouchableOpacity>
           </Card>
-          <View style={styles.reviewContainer}>
           <ReviewForm 
             jobId={jobId} 
             onSubmit={handleSubmitReview} 
             isUserLoggedIn={!!user}
           />
-          </View>
+          <ReviewsList jobId={jobId} />
         </View>
       </ScrollView>
       {!isKeyboardVisible && user && user.applicant && (

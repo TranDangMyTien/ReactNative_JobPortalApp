@@ -11,7 +11,6 @@ const ReviewForm = ({ jobId, onSubmit, isUserLoggedIn }) => {
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState('');
   const user = useContext(MyUserContext);
-  console.log(jobId);
 
   const handleSubmit = async () => {
     if (!isUserLoggedIn) {

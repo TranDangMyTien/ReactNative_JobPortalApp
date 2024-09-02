@@ -70,6 +70,8 @@ export const endpoints = {
 
     // Phần tạo review 
     'create-review': (id) => `/recruitments_post/${id}/review/`,
+    // Phần lấy danh sách reviews 
+    'job-reviews': (jobId) => `/recruitments_post/${jobId}/reviews/`,
 
 
 };
