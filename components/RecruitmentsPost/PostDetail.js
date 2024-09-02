@@ -332,13 +332,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   detailText: {
-    fontSize: 18,
+    fontSize: 14,
     marginBottom: 4,
   },
   deadline: {
-    fontSize: 18,
-    marginBottom: 16,
-    color: 'red',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FF0000',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 20,
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loadingOverlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -401,9 +402,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // commentsContainer: {
-  //   marginBottom: 20,
-  // },
   notFoundContainer: {
     flex: 1,
     justifyContent: 'center',
