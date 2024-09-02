@@ -76,6 +76,8 @@ export const endpoints = {
     'change-review': (jobId, id) => `/recruitments_post/${jobId}/update-reviews/${id}/`,
     // Phần xóa review 
     'delete-review': (jobId, id) => `/recruitments_post/${jobId}/delete-review/${id}/`,
+    // Phần like bài đăng tuyển dụng 
+    'like-post': (id) => `/recruitments_post/${id}/like/`,
 
 };
 
