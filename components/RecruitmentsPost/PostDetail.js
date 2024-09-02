@@ -11,6 +11,7 @@ import APIs, { authAPI, endpoints } from '../../configs/APIs';
 import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
 import CustomHeaderPostDetail from "../constants/CustomHeaderPostDetail";
+import ReviewForm from './ReviewForm'; // Import component ReviewForm
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
 
@@ -34,6 +35,12 @@ const PostDetail = () => {
   const handleGoBack = () => {
     navigation.navigate("HomeScreen");
   };
+
+  const handleSubmitReview = async (review) => {
+    console.log('New review submitted:', reviewData);
+    //CẬP NHẬT LẠI DANH SÁCH REVIEW 
+  };
+
 
   //xử lý chức năng ứng tuyển
   const handleApplyJob = async () => {
@@ -239,14 +246,12 @@ const PostDetail = () => {
               />
             </TouchableOpacity>
           </Card>
-          <View style={styles.commentsContainer}>
-            <Text style={styles.sectionTitle}>Đánh giá:</Text>
-            <Ratings jobId={jobId} rating={rating} setRating={setRating} />
-          </View>
-          <Divider/>
-          <View style={styles.commentsContainer}>
-            <Text style={styles.sectionTitle}>Bình luận:</Text>
-            <Comments jobId={jobId} comments={comments} setComments={setComments} />
+          <View style={styles.reviewContainer}>
+          <ReviewForm 
+            jobId={jobId} 
+            onSubmit={handleSubmitReview} 
+            isUserLoggedIn={!!user}
+          />
           </View>
         </View>
       </ScrollView>
@@ -396,9 +401,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  commentsContainer: {
-    marginBottom: 20,
-  },
+  // commentsContainer: {
+  //   marginBottom: 20,
+  // },
   notFoundContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -424,6 +429,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 20,
     backgroundColor: '#00b14f',
+  },
+  reviewContainer: {
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 16,
   },
 });
 

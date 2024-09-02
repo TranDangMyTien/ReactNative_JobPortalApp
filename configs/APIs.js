@@ -68,6 +68,9 @@ export const endpoints = {
     // Đổi mật khẩu mới 
     'change-password' :`/password-reset-confirm/`, 
 
+    // Phần tạo review 
+    'create-review': (id) => `/recruitments_post/${id}/review/`,
+
 
 };
 
