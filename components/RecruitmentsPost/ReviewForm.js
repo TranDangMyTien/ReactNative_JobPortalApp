@@ -7,10 +7,11 @@ import { MyUserContext } from "../../configs/Contexts";
 
 const { width } = Dimensions.get('window');
 
-const ReviewForm = ({ jobId, onSubmit, isUserLoggedIn }) => {
+const ReviewForm = ({ jobId, onSubmit, isUserLoggedIn}) => {
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState('');
   const user = useContext(MyUserContext);
+
 
   const handleSubmit = async () => {
     if (!isUserLoggedIn) {
@@ -51,9 +52,9 @@ const ReviewForm = ({ jobId, onSubmit, isUserLoggedIn }) => {
     } catch (error) {
       console.error('Error submitting review:', error);
       if (error.response) {
-        console.error('Error data:', error.response.data);
-        console.error('Error status:', error.response.status);
-        console.error('Error headers:', error.response.headers);
+        // console.error('Error data:', error.response.data);
+        // console.error('Error status:', error.response.status);
+        // console.error('Error headers:', error.response.headers);
         Alert.alert('Lỗi', `Có lỗi xảy ra khi gửi đánh giá: ${error.response.data.message || 'Vui lòng thử lại sau.'}`);
       } else if (error.request) {
         console.error('Error request:', error.request);

@@ -44,6 +44,7 @@
     "iconsax-react-native": "^0.0.8",
     "ip": "^2.0.1",
     "lottie-react-native": "^6.7.0",
+    "lucide-react-native": "^0.438.0",
     "metro-config": "^0.80.10",
     "metro-react-native-babel-preset": "^0.77.0",
     "moment": "^2.30.1",

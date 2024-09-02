@@ -48,6 +48,8 @@ import { getToken, getOnboarded, storeOnboarded } from "./utils/storage";
 import TermsOfService from "./components/Rules/TermsOfService";
 import PrivacyPolicy from "./components/Rules/PrivacyPolicy";
 import PasswordReset from "./components/User/PasswordReset";
+import ReviewForm from "./components/RecruitmentsPost/ReviewForm";
+import ReviewsList from "./components/RecruitmentsPost/ReviewsList";
 // import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';
 // GoogleSignin.configure({
@@ -70,6 +72,8 @@ const MyHome = () => {
         <Stack.Screen name="FavoriteJobs" component={FavoriteJobs} />
         <Stack.Screen name="AllJobs" component={AllJobs} />
         <Stack.Screen name="PopularJobs" component={PopularJobs} />
+        <Stack.Screen name="ReviewForm" component={ReviewForm} />
+        <Stack.Screen name="ReviewsList" component={ReviewsList} />
       </Stack.Navigator>
     </PaperProvider>
   );

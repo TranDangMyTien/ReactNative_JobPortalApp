@@ -6,13 +6,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MyUserContext } from '../../configs/Contexts';
 import APIs, { authAPI, endpoints } from '../../configs/APIs';
-import { LogBox } from 'react-native';
 import { getToken } from '../../utils/storage';
 import CustomHeaderPostDetail from "../constants/CustomHeaderPostDetail";
 import ReviewForm from './ReviewForm'; // Import component ReviewForm
 import ReviewsList from './ReviewsList';
+import { LogBox } from 'react-native';
 
-LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
+// Ignore specific warnings
+LogBox.ignoreLogs([
+  'Warning: TapRating: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
+  'Warning: Star: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
+  'Warning: VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+]);
 
 const PostDetail = () => {
   const navigation = useNavigation();
@@ -30,14 +35,26 @@ const PostDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false); // State hide and report
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false); // keyboard visibility
   const [isLiked, setIsLiked] = useState(false);
-
+  const [refreshKey, setRefreshKey] = useState(0);
   const handleGoBack = () => {
     navigation.navigate("HomeScreen");
   };
 
   const handleSubmitReview = async (review) => {
-    console.log('New review submitted:', reviewData);
-    //CẬP NHẬT LẠI DANH SÁCH REVIEW 
+    try {
+      // Fetch updated reviews
+      const response = await APIs.get(endpoints['job-reviews'](jobId));
+      setComments(response.data);
+      Alert.alert('Thành công', 'Đánh giá của bạn đã được gửi và danh sách đánh giá đã được cập nhật.');
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      Alert.alert('Lỗi', 'Có lỗi xảy ra khi cập nhật danh sách đánh giá.');
+    }
+  };
+
+  // Hàm để làm mới danh sách đánh giá
+  const handleReviewAdded = () => {
+    setRefreshKey(prevKey => prevKey + 1); // Thay đổi refreshKey để làm mới ReviewsList
   };
 
 
@@ -247,11 +264,13 @@ const PostDetail = () => {
           </Card>
           <ReviewForm 
             jobId={jobId} 
-            onSubmit={handleSubmitReview} 
+            onSubmit={handleReviewAdded} 
             isUserLoggedIn={!!user}
           />
-          <ReviewsList jobId={jobId} />
+          <ReviewsList key={refreshKey} jobId={jobId} />
+          
         </View>
+        
       </ScrollView>
       {!isKeyboardVisible && user && user.applicant && (
         <View style={styles.applyButtonContainer}>
