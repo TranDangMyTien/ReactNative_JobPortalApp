@@ -1,6 +1,6 @@
 import axios from "axios";
 // const BASE_URL = "https://tdmtien.pythonanywhere.com/";
-const BASE_URL = "http://192.168.1.11:8000/";
+const BASE_URL = "http://192.168.1.7:8000/";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from '../utils/storage';
@@ -68,6 +68,18 @@ export const endpoints = {
     // Đổi mật khẩu mới 
     'change-password' :`/password-reset-confirm/`, 
 
+    // Phần tạo review 
+    'create-review': (id) => `/recruitments_post/${id}/review/`,
+    // Phần lấy danh sách reviews 
+    'job-reviews': (jobId) => `/recruitments_post/${jobId}/reviews/`,
+    // Chỉnh sửa review 
+    'change-review': (jobId, id) => `/recruitments_post/${jobId}/update-reviews/${id}/`,
+    // Phần xóa review 
+    'delete-review': (jobId, id) => `/recruitments_post/${jobId}/delete-review/${id}/`,
+    // Phần like bài đăng tuyển dụng 
+    'like-post': (id) => `/recruitments_post/${id}/like/`,
+    // Chỉnh sửa bài đăng tuyển dụng 
+    'edit-post': (id) => `/recruitments_post/${id}/edit-post/`,
 
 };
 

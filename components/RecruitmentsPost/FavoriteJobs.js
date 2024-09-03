@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Appbar } from 'react-native-paper';
+import CustomHeader from "../constants/CustomHeader";
 
 const FavoriteJobs = () => {
   const navigation = useNavigation();
@@ -27,10 +28,10 @@ const FavoriteJobs = () => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={handleGoBack} />
-        <Appbar.Content title="Danh sách bài viết yêu thích" style={{alignItems: 'center', fontSize: 8}}/>
-      </Appbar.Header>
+      <CustomHeader
+        title="Danh sách bài viết yêu thích"
+        onBackPress={handleGoBack}
+      />
 
       <FlatList
         data={favoriteJobs}
