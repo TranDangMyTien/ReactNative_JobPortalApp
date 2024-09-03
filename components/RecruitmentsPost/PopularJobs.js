@@ -3,7 +3,7 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOp
 import { useNavigation } from '@react-navigation/native';
 import { Searchbar, Appbar } from 'react-native-paper';
 import { fetchPopularJobs } from '../../configs/APIs';
-
+import CustomHeader from "../constants/CustomHeader";
 const PopularJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
@@ -91,13 +91,11 @@ const PopularJobs = () => {
 
   return (
     <>
-      <Appbar.Header style={{ backgroundColor: '#28A745', height: 45 }}>
-        <Appbar.BackAction onPress={handleGoBack} color="white" />
-        <Appbar.Content title="Công việc phổ biến"
-          style={{ alignItems: 'center', justifyContent: 'center' }}
-          titleStyle={{ color: 'white' }}
-        />
-      </Appbar.Header>
+      <CustomHeader
+        title="Công việc phổ biến"
+        onBackPress={handleGoBack}
+      />
+
       <View style={styles.container}>
         <View style={{ marginBottom: 10, marginTop: 10 }}>
           <Searchbar

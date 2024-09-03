@@ -3,6 +3,7 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOp
 import { useNavigation } from '@react-navigation/native';
 import { Searchbar, Appbar } from 'react-native-paper';
 import { fetchAllJobs} from '../../configs/APIs';
+import CustomHeader from "../constants/CustomHeader";
 
 const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -91,13 +92,10 @@ const AllJobs = () => {
 
   return (
     <>
-      <Appbar.Header style={{ backgroundColor: '#28A745', height: 45 }}>
-        <Appbar.BackAction onPress={handleGoBack} color="white" />
-        <Appbar.Content title="Tất cả bài tuyển dụng"
-          style={{ alignItems: 'center', justifyContent: 'center' }}
-          titleStyle={{ color: 'white' }}
-        />
-      </Appbar.Header>
+      <CustomHeader
+        title="Tất bài tuyển dụng"
+        onBackPress={handleGoBack}
+      />
       <View style={styles.container}>
         <View style={{ marginBottom: 10, marginTop: 10 }}>
           <Searchbar

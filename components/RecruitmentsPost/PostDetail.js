@@ -267,6 +267,7 @@ const PostDetail = () => {
         endpoints["like-post"](jobId)
       );
 
+      
       // Log the full response for debugging
       console.log("API Response:", response.data);
 
@@ -288,6 +289,11 @@ const PostDetail = () => {
       Alert.alert("Lỗi", "Có lỗi xảy ra khi thích công việc.");
     }
   };
+
+  const handleEditJob = () => {
+    navigation.navigate("EditJobScreen", { jobId: job.id });
+  };
+
 
   return (
     <View style={styles.container}>
@@ -373,23 +379,41 @@ const PostDetail = () => {
 
       {user &&
         user.employer?.id === job.employer?.id && ( // Nếu employer hoặc id là null hoặc undefined, phép so sánh sẽ không thực hiện => nút xóa kh hiện
-          <View style={{ margin: "auto" }}>
-            <View
-              style={{
-                alignItems: "center",
-                width: "50%",
-                backgroundColor: "#a52a2a",
-                borderRadius: 20,
-                margin: 10,
-              }}
-            >
-              <Menu.Item
-                onPress={() => handleDeleteJob(job.id)}
-                title="Xóa bài tuyển dụng"
-                titleStyle={{ color: "white" }}
-              />
-            </View>
+          // <View style={{ margin: "auto" }}>
+          //   <View
+          //     style={{
+          //       alignItems: "center",
+          //       width: "50%",
+          //       backgroundColor: "#a52a2a",
+          //       borderRadius: 20,
+          //       margin: 10,
+          //     }}
+          //   >
+          //     <Menu.Item
+          //       onPress={() => handleDeleteJob(job.id)}
+          //       title="Xóa bài tuyển dụng"
+          //       titleStyle={{ color: "white" }}
+          //     />
+          //   </View>
+          // </View>
+          
+          <View style={styles.buttonContainer}>
+          <View style={styles.editButtonWrapper}>
+            <Menu.Item
+              onPress={handleEditJob}
+              title="Chỉnh sửa bài tuyển dụng"
+              titleStyle={styles.menuItemText}
+            />
           </View>
+          <View style={styles.deleteButtonWrapper}>
+            <Menu.Item
+              onPress={() => handleDeleteJob(job.id)}
+              title="Xóa bài tuyển dụng"
+              titleStyle={styles.menuItemText}
+            />
+          </View>
+        </View>
+
         )}
 
       {isSubmittingFavorite && (
@@ -542,6 +566,39 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#f5f5f5",
     paddingHorizontal: 16,
+  },
+  buttonContainer: {
+
+    flexDirection: 'row',
+    justifyContent: 'space-around', 
+    padding: 10, 
+    
+  },
+  editButtonWrapper: {
+    flex: 1,
+    backgroundColor: "#4CAF50", 
+    borderRadius: 20,
+    marginHorizontal: 5,
+    paddingVertical: 5,
+    alignItems: "center",
+  },
+  deleteButtonWrapper: {
+    flex: 1,
+    backgroundColor: "#F44336", // Màu đỏ cho nút xóa
+    borderRadius: 20,
+    marginHorizontal: 5,
+    paddingVertical: 5,
+    alignItems: "center",
+  },
+  // buttonWrapper: {
+  //   alignItems: "center",
+  //   width: "45%",
+  //   backgroundColor: "#a52a2a",
+  //   borderRadius: 20,
+  //   margin: 10,
+  // },
+  menuItemText: {
+    color: "white",
   },
 });
 

@@ -78,6 +78,8 @@ export const endpoints = {
     'delete-review': (jobId, id) => `/recruitments_post/${jobId}/delete-review/${id}/`,
     // Phần like bài đăng tuyển dụng 
     'like-post': (id) => `/recruitments_post/${id}/like/`,
+    // Chỉnh sửa bài đăng tuyển dụng 
+    'edit-post': (id) => `/recruitments_post/${id}/edit-post/`,
 
 };
 
