@@ -10,8 +10,8 @@ import {
   Alert,
   Keyboard,
 } from "react-native";
-import { Appbar, Menu, Divider, Card, Button } from "react-native-paper";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { Menu, Divider, Card, Button } from "react-native-paper";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { MyUserContext } from "../../configs/Contexts";
@@ -160,25 +160,32 @@ const PostDetail = () => {
     };
   }, []);
 
+  const getJobDetails = async () => {
+    try {
+      const response = await APIs.get(endpoints["job-detail"](jobId));
+      setJob(response.data);
+
+      const favoriteJobs =
+        JSON.parse(await AsyncStorage.getItem("favoriteJobs")) || [];
+      const isFav = favoriteJobs.some((item) => item.id === jobId);
+      setIsFavorite(isFav);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getJobDetails = async () => {
-      try {
-        const response = await APIs.get(endpoints["job-detail"](jobId));
-        setJob(response.data);
-
-        const favoriteJobs =
-          JSON.parse(await AsyncStorage.getItem("favoriteJobs")) || [];
-        const isFav = favoriteJobs.some((item) => item.id === jobId);
-        setIsFavorite(isFav);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     getJobDetails();
   }, [jobId]);
+
+  // Make sure job details are updated when returning to this screen
+  useFocusEffect(
+    React.useCallback(() => {
+      getJobDetails();
+    }, [jobId])
+  );
 
   if (loading) {
     return (
