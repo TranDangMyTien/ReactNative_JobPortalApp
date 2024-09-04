@@ -229,9 +229,11 @@ const PostDetail = () => {
 
   const handleDeleteJob = async (jobId, userId) => {
     try {
-      const token = await getToken();
-      let res = await authAPI(token).delete(
-        endpoints["delete-post"](jobId, userId)
+      // const authToken = await AsyncStorage.getItem("authToken");
+      // const response = await authAPI(authToken).patch
+      const authToken = await AsyncStorage.getItem("authToken");
+      let res = await authAPI(authToken).delete(
+        endpoints["delete-post"](jobId)
       );
       if (res.status === 204) {
         Alert.alert("Thông báo", "Xóa bài tuyển dụng thành công.");

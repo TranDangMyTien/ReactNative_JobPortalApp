@@ -41,7 +41,7 @@ export const endpoints = {
     'apply-job': (id) => `/recruitments_post/${id}/apply/`, 
     'create-recruitment': '/recruitments_post/',
     'list-createpost': (id, pageNum) => `/employers/${id}/recruitment_posts/?page=${pageNum}`,
-    'delete-post': (id, post_id ) => `/employers/${id}/recruitment_posts/${post_id}/delete/`,
+    
     'detail-apply': (id) => `/recruitments_post/${id}/list_apply/`,
     'list-apply': (id, pageNum) => `/applicants/${id}/applied_jobs/?page=${pageNum}`,
 
@@ -80,7 +80,8 @@ export const endpoints = {
     'like-post': (id) => `/recruitments_post/${id}/like/`,
     // Chỉnh sửa bài đăng tuyển dụng 
     'edit-post': (id) => `/recruitments_post/${id}/edit-post/`,
-
+    // Phần xóa bài đăng tuyển dụng 
+    'delete-post': (id) => `/recruitments_post/${id}/delete/`,
 };
 
 
