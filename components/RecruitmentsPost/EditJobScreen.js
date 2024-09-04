@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { getToken } from "../../utils/storage";
@@ -31,16 +33,16 @@ const EditJobScreen = ({ route, navigation }) => {
     const fetchJobDetails = async () => {
       try {
         const response = await APIs.get(endpoints["job-detail"](jobId));
-        setJob(response.data);
+        const jobData = response.data;
         setFormData({
-          title: response.data.title,
-          position: response.data.position,
-          deadline: response.data.deadline,
-          quantity: response.data.quantity,
-          location: response.data.location,
-          salary: response.data.salary,
-          description: response.data.description,
-          experience: response.data.experience,
+          title: jobData.title,
+          position: jobData.position,
+          deadline: jobData.deadline,
+          quantity: jobData.quantity?.toString() || "",
+          location: jobData.location,
+          salary: jobData.salary?.toString() || "",
+          description: jobData.description,
+          experience: jobData.experience,
         });
         setLoading(false);
       } catch (error) {
@@ -53,7 +55,13 @@ const EditJobScreen = ({ route, navigation }) => {
   }, [jobId]);
 
   const handleChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+    // Ensure that quantity and salary are handled as numbers
+    if (name === "quantity" || name === "salary") {
+      const numberValue = value === "" ? "" : parseInt(value, 10);
+      setFormData({ ...formData, [name]: isNaN(numberValue) ? "" : numberValue.toString() });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async () => {
@@ -61,7 +69,11 @@ const EditJobScreen = ({ route, navigation }) => {
       const authToken = await AsyncStorage.getItem("authToken");
       const response = await authAPI(authToken).patch(
         endpoints["edit-post"](jobId),
-        formData
+        {
+          ...formData,
+          quantity: parseInt(formData.quantity, 10),
+          salary: parseInt(formData.salary, 10),
+        }
       );
       if (response.status === 200) {
         Alert.alert("Success", "Job post updated successfully!");
@@ -80,26 +92,35 @@ const EditJobScreen = ({ route, navigation }) => {
   }
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    >
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Chỉnh sửa bài đăng tuyển dụng</Text>
+      <Text style={styles.sectionTitle}>Title</Text>
       <TextInput
         style={styles.input}
         placeholder="Title"
         value={formData.title}
         onChangeText={(text) => handleChange("title", text)}
       />
+      <Text style={styles.sectionTitle}>Position</Text>
       <TextInput
         style={styles.input}
         placeholder="Position"
         value={formData.position}
         onChangeText={(text) => handleChange("position", text)}
       />
+      <Text style={styles.sectionTitle}>Deadline</Text>
       <TextInput
         style={styles.input}
         placeholder="Deadline"
         value={formData.deadline}
         onChangeText={(text) => handleChange("deadline", text)}
       />
+      <Text style={styles.sectionTitle}>Quantity</Text>
       <TextInput
         style={styles.input}
         placeholder="Quantity"
@@ -107,12 +128,14 @@ const EditJobScreen = ({ route, navigation }) => {
         value={formData.quantity.toString()}
         onChangeText={(text) => handleChange("quantity", parseInt(text))}
       />
+      <Text style={styles.sectionTitle}>Location</Text>
       <TextInput
         style={styles.input}
-        placeholder="Address"
-        value={formData.address}
+        placeholder="Location"
+        value={formData.location}
         onChangeText={(text) => handleChange("location", text)}
       />
+      <Text style={styles.sectionTitle}>Salary</Text>
       <TextInput
         style={styles.input}
         placeholder="Salary"
@@ -120,6 +143,7 @@ const EditJobScreen = ({ route, navigation }) => {
         value={formData.salary.toString()}
         onChangeText={(text) => handleChange("salary", parseInt(text))}
       />
+      <Text style={styles.sectionTitle}>Description</Text>
       <TextInput
         style={styles.input}
         placeholder="Description"
@@ -128,6 +152,7 @@ const EditJobScreen = ({ route, navigation }) => {
         value={formData.description}
         onChangeText={(text) => handleChange("description", text)}
       />
+      <Text style={styles.sectionTitle}>Experience</Text>
       <TextInput
         style={styles.input}
         placeholder="Experience"
@@ -138,6 +163,7 @@ const EditJobScreen = ({ route, navigation }) => {
       />
       <Button title="Update Job Post" onPress={handleSubmit} />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -150,6 +176,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
@@ -157,6 +184,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 12,
+    marginBottom: 4,
   },
 });
 
