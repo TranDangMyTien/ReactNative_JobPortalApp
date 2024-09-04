@@ -217,20 +217,45 @@ const PostDetail = () => {
   }
 
   // Handle menu actions
-  const handleReport = () => {
-    Alert.alert("Báo cáo", "Bạn đã báo cáo công việc này.");
-    //setMenuVisible(false);
+  const handleReport = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("authToken");
+      const response = await authAPI(authToken).patch(
+        endpoints["report-post"](jobId),
+        { reported: true }
+      );
+
+      if (response.status === 200) {
+        Alert.alert("Báo cáo", "Bạn đã báo cáo công việc này.");
+      } else {
+        Alert.alert("Thông báo", "Báo cáo không thành công.");
+      }
+    } catch (error) {
+      console.error("Error reporting job post:", error);
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi báo cáo công việc.");
+    }
   };
 
-  const handleHide = () => {
-    Alert.alert("Ẩn", "Bạn đã ẩn công việc này.");
-    //setMenuVisible(false);
+  const handleHide = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("authToken");
+      let res = await authAPI(authToken).post(
+        endpoints["hide-post"](jobId)
+      );
+      if (res.status === 200) {
+        Alert.alert("Thông báo", "Ẩn bài tuyển dụng thành công.");
+        navigation.navigate("HomeScreen");
+      } else {
+        Alert.alert("Thông báo", "Ẩn bài tuyển dụng không thành công.");
+      }
+    } catch (error) {
+      console.error("Error hiding job:", error);
+      Alert.alert("Lỗi", "Đã xảy ra lỗi khi ẩn bài tuyển dụng.");
+    }
   };
 
   const handleDeleteJob = async (jobId, userId) => {
     try {
-      // const authToken = await AsyncStorage.getItem("authToken");
-      // const response = await authAPI(authToken).patch
       const authToken = await AsyncStorage.getItem("authToken");
       let res = await authAPI(authToken).delete(
         endpoints["delete-post"](jobId)
@@ -242,7 +267,7 @@ const PostDetail = () => {
         Alert.alert("Thông báo", "Xóa bài tuyển dụng không thành công.");
       }
     } catch (error) {
-      console.error("Error deleting job:", error);
+      console.error("Failed to hide the job post:", error);
       Alert.alert("Lỗi", "Đã xảy ra lỗi khi xóa bài tuyển dụng.");
     }
   };

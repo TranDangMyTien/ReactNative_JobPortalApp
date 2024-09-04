@@ -82,6 +82,10 @@ export const endpoints = {
     'edit-post': (id) => `/recruitments_post/${id}/edit-post/`,
     // Phần xóa bài đăng tuyển dụng 
     'delete-post': (id) => `/recruitments_post/${id}/delete/`,
+    // Báo cáo bài đăng tuyển dụng 
+    'report-post': (id) => `/recruitments_post/${id}/report/`,
+    // Ẩn bài đăng tuyển dụng 
+    'hide-post': (id) => `/recruitments_post/${id}/hide_post/`,
 };
 
 
