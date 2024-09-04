@@ -18,25 +18,13 @@ const EditJobScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
-    companyName: "",
     position: "",
-    information: "",
-    address: "",
-    company_website: "",
-    company_type: 0,
-    image: "",
-    career: { name: "" },
-    employmenttype: { type: "" },
-    area: { name: "" },
     deadline: "",
     quantity: 0,
-    gender: 0,
     location: "",
     salary: 0,
     description: "",
     experience: "",
-    reported: true,
-    active: true,
   });
 
   useEffect(() => {
@@ -45,10 +33,14 @@ const EditJobScreen = ({ route, navigation }) => {
         const response = await APIs.get(endpoints["job-detail"](jobId));
         setJob(response.data);
         setFormData({
-          ...response.data,
-          career: response.data.career.name,
-          employmenttype: response.data.employmenttype.type,
-          area: response.data.area.name,
+          title: response.data.title,
+          position: response.data.position,
+          deadline: response.data.deadline,
+          quantity: response.data.quantity,
+          location: response.data.location,
+          salary: response.data.salary,
+          description: response.data.description,
+          experience: response.data.experience,
         });
         setLoading(false);
       } catch (error) {
@@ -89,7 +81,7 @@ const EditJobScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Edit Job Post</Text>
+      <Text style={styles.title}>Chỉnh sửa bài đăng tuyển dụng</Text>
       <TextInput
         style={styles.input}
         placeholder="Title"
@@ -98,17 +90,52 @@ const EditJobScreen = ({ route, navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Company Name"
-        value={formData.companyName}
-        onChangeText={(text) => handleChange("companyName", text)}
-      />
-      <TextInput
-        style={styles.input}
         placeholder="Position"
         value={formData.position}
         onChangeText={(text) => handleChange("position", text)}
       />
-      {/* Add more inputs for other fields */}
+      <TextInput
+        style={styles.input}
+        placeholder="Deadline"
+        value={formData.deadline}
+        onChangeText={(text) => handleChange("deadline", text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Quantity"
+        keyboardType="numeric"
+        value={formData.quantity.toString()}
+        onChangeText={(text) => handleChange("quantity", parseInt(text))}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Address"
+        value={formData.address}
+        onChangeText={(text) => handleChange("location", text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Salary"
+        keyboardType="numeric"
+        value={formData.salary.toString()}
+        onChangeText={(text) => handleChange("salary", parseInt(text))}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Description"
+        multiline
+        numberOfLines={4}
+        value={formData.description}
+        onChangeText={(text) => handleChange("description", text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Experience"
+        multiline
+        numberOfLines={2}
+        value={formData.experience}
+        onChangeText={(text) => handleChange("experience", text)}
+      />
       <Button title="Update Job Post" onPress={handleSubmit} />
     </ScrollView>
   );
