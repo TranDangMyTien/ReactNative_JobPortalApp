@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  Button,
+  TouchableOpacity,
   StyleSheet,
   Alert,
   ScrollView,
@@ -11,12 +11,10 @@ import {
   Platform,
 } from "react-native";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
-import { getToken } from "../../utils/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EditJobScreen = ({ route, navigation }) => {
   const { jobId } = route.params;
-  const [job, setJob] = useState({});
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
@@ -55,7 +53,6 @@ const EditJobScreen = ({ route, navigation }) => {
   }, [jobId]);
 
   const handleChange = (name, value) => {
-    // Ensure that quantity and salary are handled as numbers
     if (name === "quantity" || name === "salary") {
       const numberValue = value === "" ? "" : parseInt(value, 10);
       setFormData({ ...formData, [name]: isNaN(numberValue) ? "" : numberValue.toString() });
@@ -77,7 +74,7 @@ const EditJobScreen = ({ route, navigation }) => {
       );
       if (response.status === 200) {
         Alert.alert("Success", "Job post updated successfully!");
-        navigation.goBack(); // Navigate back to the job details screen
+        navigation.navigate("JobDetail", { jobId });
       } else {
         Alert.alert("Error", "Failed to update job post.");
       }
@@ -88,88 +85,50 @@ const EditJobScreen = ({ route, navigation }) => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Text style={styles.loadingText}>Loading...</Text>;
   }
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Chỉnh sửa bài đăng tuyển dụng</Text>
-      <Text style={styles.sectionTitle}>Title</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={formData.title}
-        onChangeText={(text) => handleChange("title", text)}
-      />
-      <Text style={styles.sectionTitle}>Position</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Position"
-        value={formData.position}
-        onChangeText={(text) => handleChange("position", text)}
-      />
-      <Text style={styles.sectionTitle}>Deadline</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Deadline"
-        value={formData.deadline}
-        onChangeText={(text) => handleChange("deadline", text)}
-      />
-      <Text style={styles.sectionTitle}>Quantity</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Quantity"
-        keyboardType="numeric"
-        value={formData.quantity.toString()}
-        onChangeText={(text) => handleChange("quantity", parseInt(text))}
-      />
-      <Text style={styles.sectionTitle}>Location</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Location"
-        value={formData.location}
-        onChangeText={(text) => handleChange("location", text)}
-      />
-      <Text style={styles.sectionTitle}>Salary</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Salary"
-        keyboardType="numeric"
-        value={formData.salary.toString()}
-        onChangeText={(text) => handleChange("salary", parseInt(text))}
-      />
-      <Text style={styles.sectionTitle}>Description</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        multiline
-        numberOfLines={4}
-        value={formData.description}
-        onChangeText={(text) => handleChange("description", text)}
-      />
-      <Text style={styles.sectionTitle}>Experience</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Experience"
-        multiline
-        numberOfLines={2}
-        value={formData.experience}
-        onChangeText={(text) => handleChange("experience", text)}
-      />
-      <Button title="Update Job Post" onPress={handleSubmit} />
-    </ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>Edit Job Post</Text>
+        {Object.keys(formData).map((key) => (
+          <View key={key} style={styles.inputContainer}>
+            <Text style={styles.sectionTitle}>{capitalizeFirstLetter(key)}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={capitalizeFirstLetter(key)}
+              value={formData[key].toString()}
+              onChangeText={(text) => handleChange(key, text)}
+              keyboardType={key === "quantity" || key === "salary" ? "numeric" : "default"}
+              multiline={key === "description" || key === "experience"}
+              numberOfLines={key === "description" ? 4 : key === "experience" ? 2 : 1}
+              placeholderTextColor="#888"
+            />
+          </View>
+        ))}
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Update Job Post</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
+};
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F5F5F5",
+  },
+  scrollContainer: {
     padding: 16,
   },
   title: {
@@ -177,19 +136,50 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
+    color: "#333",
+    textTransform: "uppercase",
+  },
+  inputContainer: {
+    marginBottom: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 12,
+    borderColor: "#E0E0E0",
+    borderRadius: 10,
+    padding: 12,
+    backgroundColor: "#FFF",
+    fontSize: 16,
+    color: "#333",
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#555",
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    alignItems: "center",
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 18,
     fontWeight: "bold",
-    marginTop: 12,
-    marginBottom: 4,
+  },
+  loadingText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 18,
+    color: "#555",
   },
 });
 
