@@ -340,7 +340,10 @@ const PostDetail = () => {
       <ScrollView nestedScrollEnabled>
         <Image source={{ uri: job.image }} style={styles.image} />
         <View style={styles.contentContainer}>
-          <Text style={styles.title}>{job.title}</Text>
+
+        <Text style={styles.title}>{job.title}</Text>
+        
+          
           <Text style={styles.updatedDate}>
             Cập nhật lần cuối: {new Date(job.updated_date).toLocaleDateString()}
           </Text>
@@ -356,7 +359,7 @@ const PostDetail = () => {
               Số lượng tuyển: {job.quantity}
             </Text>
             <Text style={styles.detailText}>
-              Loại thời gian: {job.employmenttype.type}
+              Loại hình công việc: {job.employmenttype.type}
             </Text>
             <Text style={styles.detailText}>Địa điểm: {job.location}</Text>
             <Text style={styles.deadline}>Hạn nộp hồ sơ: {job.deadline}</Text>
@@ -415,23 +418,7 @@ const PostDetail = () => {
 
       {user &&
         user.employer?.id === job.employer?.id && ( // Nếu employer hoặc id là null hoặc undefined, phép so sánh sẽ không thực hiện => nút xóa kh hiện
-          // <View style={{ margin: "auto" }}>
-          //   <View
-          //     style={{
-          //       alignItems: "center",
-          //       width: "50%",
-          //       backgroundColor: "#a52a2a",
-          //       borderRadius: 20,
-          //       margin: 10,
-          //     }}
-          //   >
-          //     <Menu.Item
-          //       onPress={() => handleDeleteJob(job.id)}
-          //       title="Xóa bài tuyển dụng"
-          //       titleStyle={{ color: "white" }}
-          //     />
-          //   </View>
-          // </View>
+
           
           <View style={styles.buttonContainer}>
           <View style={styles.editButtonWrapper}>
@@ -491,19 +478,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
-  card: {
-    padding: 10,
-    paddingBottom: 30,
-    backgroundColor: "#fffff0",
-    marginBottom: 20,
-  },
   company: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 4,
   },
   detailText: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 4,
   },
   deadline: {
@@ -627,13 +608,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignItems: "center",
   },
-  // buttonWrapper: {
-  //   alignItems: "center",
-  //   width: "45%",
-  //   backgroundColor: "#a52a2a",
-  //   borderRadius: 20,
-  //   margin: 10,
-  // },
+  updatedDate: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 10,
+  },
   menuItemText: {
     color: "white",
   },
