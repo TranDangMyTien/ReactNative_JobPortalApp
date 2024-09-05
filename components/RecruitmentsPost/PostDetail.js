@@ -341,7 +341,9 @@ const PostDetail = () => {
         <Image source={{ uri: job.image }} style={styles.image} />
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{job.title}</Text>
-          <Card style={styles.card}>
+          <Text style={styles.updatedDate}>
+            Cập nhật lần cuối: {new Date(job.updated_date).toLocaleDateString()}
+          </Text>
             <Text style={styles.company}>
               Công ty: {job.employer.companyName}
             </Text>
@@ -387,7 +389,7 @@ const PostDetail = () => {
                 style={{ marginRight: 10 }}
               />
             </TouchableOpacity>
-          </Card>
+        
           <ReviewForm
             jobId={jobId}
             onSubmit={handleReviewAdded}
@@ -471,6 +473,7 @@ const PostDetail = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
   },
   appbarHeader: {
     backgroundColor: "#28A745",
