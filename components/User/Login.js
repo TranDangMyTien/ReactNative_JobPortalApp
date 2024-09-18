@@ -19,18 +19,23 @@ import { MyDispatchContext } from "../../configs/Contexts";
 import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AlertModalLogin from "../constants/AlertModalLogin";
+import { Linking } from "react-native";
+import {auth} from "../../firebaseConfig";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
 import {
   storeToken,
   getToken,
   removeToken,
   storeCredentials,
   getCredentials,
-  removeCredentials
+  removeCredentials,
 } from "../../utils/storage";
 import Modal from "react-native-modal";
-
+import {GoogleAuthProvider, onAuthStateChanged, signInWithCredential} from "firebase/auth";
+WebBrowser.maybeCompleteAuthSession();
 const Login = () => {
-  const [user, setUser] = useState({ username: '', password: '' });
+  const [user, setUser] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
   const dispatch = useContext(MyDispatchContext);
@@ -42,6 +47,11 @@ const Login = () => {
   const [errors, setErrors] = useState({
     username: "",
     password: "",
+  });
+  const [userInfo, setUserInfo] = useState();
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId:'899497425158-6vcg6s5t4s0o64drl57uitivp0d4jebo.apps.googleusercontent.com',
+    androidClientId:'899497425158-vhcrste5is511btu4vijtadb4sssetl1.apps.googleusercontent.com',
   });
 
   const loadFonts = async () => {
@@ -74,12 +84,14 @@ const Login = () => {
   useEffect(() => {
     loadFonts();
   }, []);
-  
-  // useEffect(() => {
-  //   if (fontLoaded) {
-  //     checkRememberedUser();
-  //   }
-  // }, [fontLoaded]);
+
+  useEffect(() => {
+    if (response?.type == "success"){
+      const {id_token} = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential);
+    }
+  }, [response])
 
   if (isLoading || !fontLoaded) {
     return (
@@ -102,7 +114,8 @@ const Login = () => {
     let newErrors = {};
 
     if (!user.username) {
-      newErrors.username = "Oops! It looks like you forgot to enter your username.";
+      newErrors.username =
+        "Oops! It looks like you forgot to enter your username.";
       isValid = false;
     }
 
@@ -110,7 +123,8 @@ const Login = () => {
       newErrors.password = "Please provide a password to secure your account.";
       isValid = false;
     } else if (user.password.length < 6) {
-      newErrors.password = "Your password should be at least 6 characters long for better security.";
+      newErrors.password =
+        "Your password should be at least 6 characters long for better security.";
       isValid = false;
     }
 
@@ -167,12 +181,29 @@ const Login = () => {
     }
   };
 
-  const handleLoginWithGoogle = async () => {
-    
-  };
-  const handleLoginWithFacebook = async () => {
+  // const handleLoginWithGoogle = async () => {
+  //   const googleCallbackLogin = endpoints["googleCallbackLogin"];
+  //   const redirectUri = encodeURIComponent(googleCallbackLogin);
 
+
+  //   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+  //   // Lấy URL frontend hiện tại để truyền qua backend
+  //   const currentFrontendUrl = "http://172.20.10.3:8000/";
+
+  //   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&access_type=offline&prompt=select_account&state=${currentFrontendUrl}`;
+
+  //   // Sử dụng Linking để mở trình duyệt
+  //   try {
+  //     await Linking.openURL(authUrl);
+  //   } catch (error) {
+  //     console.error("Failed to open URL: ", error);
+  //   }
+  // };
+  const handleLoginWithGoogle = async () => {
+    await promptAsync(); // Bắt đầu quá trình đăng nhập với Google
   };
+  const handleLoginWithFacebook = async () => {};
 
   const handleRetry = () => {
     setIsAlertVisible(false);
@@ -197,7 +228,9 @@ const Login = () => {
           <View style={styles.inputContainer}>
             <TextInput
               value={user.username}
-              onChangeText={(t) => setUser(prev => ({ ...prev, username: t }))}
+              onChangeText={(t) =>
+                setUser((prev) => ({ ...prev, username: t }))
+              }
               style={styles.input}
               label="Username"
               left={<TextInput.Icon icon="email" />}
@@ -213,7 +246,9 @@ const Login = () => {
             {/* Cập nhật TextInput cho mật khẩu */}
             <TextInput
               value={user.password}
-              onChangeText={(t) => setUser(prev => ({ ...prev, password: t }))}
+              onChangeText={(t) =>
+                setUser((prev) => ({ ...prev, password: t }))
+              }
               style={styles.input}
               label="Password"
               secureTextEntry={!passwordVisible}
@@ -226,7 +261,11 @@ const Login = () => {
               }
               theme={{ colors: { primary: "#00B14F" } }}
             />
-            <HelperText type="error" visible={!!errors.password} style={styles.errorText}>
+            <HelperText
+              type="error"
+              visible={!!errors.password}
+              style={styles.errorText}
+            >
               {errors.password}
             </HelperText>
           </View>
@@ -481,7 +520,7 @@ const styles = StyleSheet.create({
     color: "#00B14F",
     fontFamily: "FaustinaMd",
   },
-   errorText: {
+  errorText: {
     color: "#ff3333",
     fontSize: 14,
     marginTop: -5,

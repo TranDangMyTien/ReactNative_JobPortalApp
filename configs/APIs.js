@@ -1,6 +1,7 @@
 import axios from "axios";
 // const BASE_URL = "https://tdmtien.pythonanywhere.com/";
-const BASE_URL = "http://192.168.1.7:8000/";
+const BASE_URL = "http://192.168.1.57:8000/";
+
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from '../utils/storage';
@@ -86,6 +87,10 @@ export const endpoints = {
     'report-post': (id) => `/recruitments_post/${id}/report/`,
     // Ẩn bài đăng tuyển dụng 
     'hide-post': (id) => `/recruitments_post/${id}/hide_post/`,
+
+    // Login với Google 
+    'googleCallbackLogin': `${BASE_URL}/auth/google/callback/login`,
+
 };
 
 
